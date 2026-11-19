@@ -1,0 +1,1302 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>BYN AI Finance Planner</title>
+  <!-- Telegram WebApp SDK -->
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <style>
+    :root {
+      --bg: #0f172a;
+      --card-bg: #1e293b;
+      --card-border: #334155;
+      --primary: #3b82f6;
+      --primary-hover: #2563eb;
+      --accent: #10b981;
+      --accent-hover: #059669;
+      --danger: #ef4444;
+      --warning: #f59e0b;
+      --text: #f8fafc;
+      --text-muted: #94a3b8;
+      --input-bg: #0f172a;
+      --radius: 16px;
+      --nav-height: 70px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      padding-bottom: calc(var(--nav-height) + 20px);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .container {
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 16px;
+      width: 100%;
+    }
+
+    /* Header */
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .user-welcome {
+      font-size: 1.25rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .badge-byn {
+      background: rgba(59, 130, 246, 0.2);
+      color: var(--primary);
+      border: 1px solid var(--primary);
+      font-size: 0.75rem;
+      padding: 2px 8px;
+      border-radius: 20px;
+      font-weight: 600;
+    }
+
+    /* Cards */
+    .card {
+      background-color: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius);
+      padding: 20px;
+      margin-bottom: 16px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+    }
+
+    .card-title {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 8px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    /* Dashboard Main Goal Card */
+    .goal-card {
+      background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+      border: 1px solid #3b82f655;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .goal-amount {
+      font-size: 2rem;
+      font-weight: 800;
+      color: #ffffff;
+      margin: 4px 0;
+    }
+
+    .progress-bar-bg {
+      background: rgba(255, 255, 255, 0.1);
+      height: 12px;
+      border-radius: 6px;
+      overflow: hidden;
+      margin: 14px 0 8px 0;
+    }
+
+    .progress-bar-fill {
+      background: linear-gradient(90deg, var(--primary), var(--accent));
+      height: 100%;
+      width: 0%;
+      transition: width 0.5s ease;
+      border-radius: 6px;
+    }
+
+    .goal-stats {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+
+    /* Stat Grid */
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .grid-4 {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+    }
+
+    @media (min-width: 480px) {
+      .grid-4 {
+        grid-template-columns: repeat(4, 1fr);
+      }
+    }
+
+    .stat-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 14px;
+      text-align: center;
+    }
+
+    .stat-value {
+      font-size: 1.2rem;
+      font-weight: 700;
+      margin-top: 4px;
+    }
+
+    .stat-value.green { color: var(--accent); }
+    .stat-value.red { color: var(--danger); }
+    .stat-value.blue { color: var(--primary); }
+    .stat-value.orange { color: var(--warning); }
+
+    /* Period Filter Pills */
+    .period-selector {
+      display: flex;
+      background: var(--input-bg);
+      padding: 4px;
+      border-radius: 12px;
+      margin-bottom: 16px;
+      border: 1px solid var(--card-border);
+    }
+
+    .period-btn {
+      flex: 1;
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      padding: 8px 0;
+      font-size: 0.85rem;
+      font-weight: 600;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .period-btn.active {
+      background: var(--primary);
+      color: #ffffff;
+    }
+
+    /* Alerts */
+    .alert {
+      padding: 12px 16px;
+      border-radius: 12px;
+      margin-bottom: 16px;
+      font-size: 0.9rem;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .alert-warning {
+      background: rgba(245, 158, 11, 0.15);
+      border: 1px solid var(--warning);
+      color: #fcd34d;
+    }
+
+    .alert-danger {
+      background: rgba(239, 68, 68, 0.15);
+      border: 1px solid var(--danger);
+      color: #fca5a5;
+    }
+
+    .alert-success {
+      background: rgba(16, 185, 129, 0.15);
+      border: 1px solid var(--accent);
+      color: #6ee7b7;
+    }
+
+    /* Transaction List */
+    .tx-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 0;
+      border-bottom: 1px solid var(--card-border);
+    }
+
+    .tx-item:last-child {
+      border-bottom: none;
+    }
+
+    .tx-info h4 {
+      font-size: 0.95rem;
+      margin-bottom: 2px;
+    }
+
+    .tx-info span {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+
+    .tx-amount {
+      font-weight: 700;
+      font-size: 1rem;
+    }
+
+    .tx-amount.plus { color: var(--accent); }
+    .tx-amount.minus { color: var(--danger); }
+
+    .btn-delete {
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      cursor: pointer;
+      padding: 4px 8px;
+      margin-left: 8px;
+      font-size: 0.9rem;
+    }
+
+    .btn-delete:hover {
+      color: var(--danger);
+    }
+
+    /* Form & Controls */
+    .form-group {
+      margin-bottom: 14px;
+    }
+
+    label {
+      display: block;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      margin-bottom: 6px;
+    }
+
+    input, select {
+      width: 100%;
+      padding: 12px;
+      background: var(--input-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 10px;
+      color: var(--text);
+      font-size: 1rem;
+      outline: none;
+    }
+
+    input:focus, select:focus {
+      border-color: var(--primary);
+    }
+
+    .btn {
+      width: 100%;
+      padding: 14px;
+      border: none;
+      border-radius: 12px;
+      font-weight: 700;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: background 0.2s;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background: var(--primary-hover);
+    }
+
+    .btn-accent {
+      background: var(--accent);
+      color: white;
+    }
+
+    .btn-secondary {
+      background: transparent;
+      border: 1px solid var(--card-border);
+      color: var(--text-muted);
+      margin-top: 8px;
+    }
+
+    /* Charts (Native CSS SVG) */
+    .chart-bar-row {
+      margin-bottom: 10px;
+    }
+
+    .chart-bar-label {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.8rem;
+      margin-bottom: 4px;
+    }
+
+    .chart-bar-track {
+      height: 8px;
+      background: var(--input-bg);
+      border-radius: 4px;
+      overflow: hidden;
+    }
+
+    .chart-bar-fill {
+      height: 100%;
+      background: var(--primary);
+      border-radius: 4px;
+    }
+
+    /* Live AI Split Display */
+    .split-box {
+      background: rgba(59, 130, 246, 0.1);
+      border: 1px dashed var(--primary);
+      border-radius: 10px;
+      padding: 12px;
+      margin-top: 10px;
+      font-size: 0.85rem;
+    }
+
+    .split-row {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 4px;
+    }
+
+    /* Bottom Navigation */
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: var(--nav-height);
+      background: var(--card-bg);
+      border-top: 1px solid var(--card-border);
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      z-index: 100;
+      padding-bottom: env(safe-area-inset-bottom);
+    }
+
+    .nav-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 0.7rem;
+      background: none;
+      border: none;
+      cursor: pointer;
+      width: 20%;
+      height: 100%;
+    }
+
+    .nav-item icon {
+      font-size: 1.3rem;
+      margin-bottom: 2px;
+    }
+
+    .nav-item.active {
+      color: var(--primary);
+    }
+
+    /* Modals */
+    .modal-overlay {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.75);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 200;
+      padding: 16px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s ease;
+    }
+
+    .modal-overlay.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .modal {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius);
+      width: 100%;
+      max-width: 450px;
+      padding: 20px;
+      max-height: 90vh;
+      overflow-y: auto;
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+
+    .modal-close {
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      font-size: 1.5rem;
+      cursor: pointer;
+    }
+
+    .preset-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 6px;
+      margin-top: 6px;
+    }
+
+    .btn-preset {
+      background: var(--input-bg);
+      border: 1px solid var(--card-border);
+      color: var(--text);
+      padding: 6px;
+      font-size: 0.75rem;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    .btn-preset:hover {
+      border-color: var(--primary);
+    }
+
+    .tab-content {
+      display: none;
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <!-- Header -->
+    <header>
+      <div class="user-welcome">
+        <span id="userGreeting">Привет, Финансист</span> 👋
+      </div>
+      <div class="badge-byn">BYN (Br)</div>
+    </header>
+
+    <!-- TAB: DASHBOARD -->
+    <div id="tab-dashboard" class="tab-content active">
+      
+      <!-- Main Goal Progress -->
+      <div class="card goal-card">
+        <div class="card-title">
+          <span>🎯 Ваша цель</span>
+          <span id="goalDeadlineDays">-- дней</span>
+        </div>
+        <h2 id="goalNameDisplay">Загрузка цели...</h2>
+        <div class="goal-amount" id="goalTargetDisplay">0 BYN</div>
+        
+        <div class="progress-bar-bg">
+          <div class="progress-bar-fill" id="goalProgressBar"></div>
+        </div>
+
+        <div class="goal-stats">
+          <span>Собрано: <b id="goalSavedDisplay" style="color:var(--accent)">0 BYN</b></span>
+          <span id="goalPercentDisplay">0%</span>
+          <span>Осталось: <b id="goalRemainingDisplay">0 BYN</b></span>
+        </div>
+      </div>
+
+      <!-- Safe Spending Alert Banner -->
+      <div id="alertContainer"></div>
+
+      <!-- Quick Numbers Grid -->
+      <div class="grid-2" style="margin-bottom: 16px;">
+        <div class="stat-card">
+          <div class="card-title" style="justify-content:center;">🛡️ Безопасно на сегодня</div>
+          <div class="stat-value green" id="safeDailySpend">0 BYN</div>
+        </div>
+        <div class="stat-card">
+          <div class="card-title" style="justify-content:center;">📌 План накоплений/день</div>
+          <div class="stat-value blue" id="requiredDailySave">0 BYN</div>
+        </div>
+      </div>
+
+      <!-- Overview Balance Grid -->
+      <div class="card">
+        <div class="card-title">💰 Текущий баланс</div>
+        <div class="grid-2">
+          <div>
+            <label>Всего доходов</label>
+            <div class="stat-value green" id="totalIncomeDisplay">0 BYN</div>
+          </div>
+          <div>
+            <label>Всего расходов</label>
+            <div class="stat-value red" id="totalExpenseDisplay">0 BYN</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quick Action Buttons -->
+      <div class="grid-2" style="margin-bottom: 16px;">
+        <button class="btn btn-accent" onclick="openIncomeModal()">➕ Добавить доход</button>
+        <button class="btn btn-primary" style="background:#ef4444;" onclick="openExpenseModal()">➖ Добавить расход</button>
+      </div>
+
+      <!-- Recent Transactions -->
+      <div class="card">
+        <div class="card-title">
+          <span>📋 Последние операции</span>
+        </div>
+        <div id="recentTransactionsList">
+          <div style="color:var(--text-muted); font-size:0.85rem; text-align:center; padding: 10px;">Операций пока нет</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB: INCOMES -->
+    <div id="tab-incomes" class="tab-content">
+      <div class="card">
+        <div class="card-title">💵 Управление доходами</div>
+        <button class="btn btn-accent" onclick="openIncomeModal()" style="margin-bottom: 16px;">+ Добавить доход</button>
+        <div id="incomesList"></div>
+      </div>
+    </div>
+
+    <!-- TAB: EXPENSES -->
+    <div id="tab-expenses" class="tab-content">
+      <div class="card">
+        <div class="card-title">🛒 Управление расходами</div>
+        <button class="btn btn-primary" style="background:#ef4444; margin-bottom: 16px;" onclick="openExpenseModal()">+ Добавить расход</button>
+        <div id="expensesList"></div>
+      </div>
+    </div>
+
+    <!-- TAB: AI PLANNER -->
+    <div id="tab-ai-planner" class="tab-content">
+      <div class="period-selector">
+        <button class="period-btn active" onclick="setTimePeriod('day')">День</button>
+        <button class="period-btn" onclick="setTimePeriod('week')">Неделя</button>
+        <button class="period-btn" onclick="setTimePeriod('month')">Месяц</button>
+        <button class="period-btn" onclick="setTimePeriod('year')">Год</button>
+      </div>
+
+      <div class="card">
+        <div class="card-title">🤖 AI Бюджетный План (<span id="periodTitle">День</span>)</div>
+        <div class="grid-2" style="margin-bottom: 14px;">
+          <div class="stat-card">
+            <label>Лимит трат</label>
+            <div class="stat-value orange" id="aiSpendLimit">0 BYN</div>
+          </div>
+          <div class="stat-card">
+            <label>План накоплений</label>
+            <div class="stat-value blue" id="aiSaveTarget">0 BYN</div>
+          </div>
+        </div>
+        <div id="aiPlanAdvice" style="font-size:0.85rem; line-height:1.4; color:var(--text-muted); background:var(--input-bg); padding:12px; border-radius:10px;">
+          Анализ бюджета...
+        </div>
+      </div>
+
+      <!-- Expense Categories Chart -->
+      <div class="card">
+        <div class="card-title">📊 Структура расходов по категориям</div>
+        <div id="categoryChartContainer">
+          <div style="color:var(--text-muted); font-size:0.85rem; text-align:center;">Данные отсутствуют</div>
+        </div>
+      </div>
+
+      <!-- Smart Recommendations -->
+      <div class="card">
+        <div class="card-title">💡 Умные рекомендации AI</div>
+        <div id="smartAdviceList" style="font-size:0.85rem; line-height:1.5;"></div>
+      </div>
+    </div>
+
+    <!-- TAB: GOAL SETTINGS -->
+    <div id="tab-goal-settings" class="tab-content">
+      <div class="card">
+        <div class="card-title">⚙️ Настройка цели накопления</div>
+        <form id="goalForm" onsubmit="saveGoalSettings(event)">
+          <div class="form-group">
+            <label>Название цели</label>
+            <input type="text" id="goalNameInput" required placeholder="Например: Новый ноутбук, Поездка...">
+          </div>
+          <div class="form-group">
+            <label>Целевая сумма (BYN)</label>
+            <input type="number" step="0.01" min="1" id="goalTargetInput" required placeholder="1200">
+          </div>
+          <div class="form-group">
+            <label>Срок достижения (Быстрый выбор месяцев)</label>
+            <div class="preset-grid">
+              <button type="button" class="btn-preset" onclick="applyPeriodPreset(30)">1 мес (30 д)</button>
+              <button type="button" class="btn-preset" onclick="applyPeriodPreset(60)">2 мес (60 д)</button>
+              <button type="button" class="btn-preset" onclick="applyPeriodPreset(90)">3 мес (90 д)</button>
+              <button type="button" class="btn-preset" onclick="applyPeriodPreset(180)">6 мес (180 д)</button>
+              <button type="button" class="btn-preset" onclick="applyPeriodPreset(270)">9 мес (270 д)</button>
+              <button type="button" class="btn-preset" onclick="applyPeriodPreset(360)">12 мес (360 д)</button>
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Кастомный дедлайн (Дата)</label>
+            <input type="date" id="goalDeadlineInput" required>
+          </div>
+          <button type="submit" class="btn btn-primary">Сохранить цель</button>
+        </form>
+      </div>
+
+      <div class="card">
+        <div class="card-title">🔄 Сброс данных</div>
+        <p style="font-size:0.8rem; color:var(--text-muted); margin-bottom:12px;">Вы можете сбросить данные к начальным демо-данным в любой момент.</p>
+        <button class="btn btn-secondary" onclick="resetToDemoData()">Восстановить демо-данные</button>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- MODAL: ADD INCOME -->
+  <div class="modal-overlay" id="incomeModal">
+    <div class="modal">
+      <div class="modal-header">
+        <h3>➕ Добавить доход</h3>
+        <button class="modal-close" onclick="closeIncomeModal()">&times;</button>
+      </div>
+      <form onsubmit="handleAddIncome(event)">
+        <div class="form-group">
+          <label>Название</label>
+          <input type="text" id="incTitle" placeholder="Стипендия, Зарплата, Фриланс" required>
+        </div>
+        <div class="form-group">
+          <label>Источник</label>
+          <select id="incSource">
+            <option value="Стипендия">Стипендия</option>
+            <option value="Зарплата">Зарплата</option>
+            <option value="Подработка / Фриланс">Подработка / Фриланс</option>
+            <option value="Подарок / Семья">Подарок / Семья</option>
+            <option value="Другое">Другое</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Сумма (BYN)</label>
+          <input type="number" step="0.01" min="0.1" id="incAmount" placeholder="250" required oninput="calculateIncomeSplit()">
+        </div>
+
+        <!-- Dynamic Live Income Split Calculator -->
+        <div class="split-box" id="incSplitBox" style="display:none;">
+          <div style="font-weight:700; color:var(--primary); margin-bottom:6px;">🤖 AI Рекомендация распределения:</div>
+          <div class="split-row">
+            <span>Отложить на цель (<span id="splitSavePct">0</span>%):</span>
+            <b id="splitSaveVal" style="color:var(--accent);">0 BYN</b>
+          </div>
+          <div class="split-row">
+            <span>Свободно на расходы (<span id="splitSpendPct">0</span>%):</span>
+            <b id="splitSpendVal">0 BYN</b>
+          </div>
+        </div>
+
+        <div class="form-group" style="margin-top:12px;">
+          <label>Дата</label>
+          <input type="date" id="incDate" required>
+        </div>
+        <button type="submit" class="btn btn-accent">Сохранить доход</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL: ADD EXPENSE -->
+  <div class="modal-overlay" id="expenseModal">
+    <div class="modal">
+      <div class="modal-header">
+        <h3>➖ Добавить расход</h3>
+        <button class="modal-close" onclick="closeExpenseModal()">&times;</button>
+      </div>
+      <form onsubmit="handleAddExpense(event)">
+        <div class="form-group">
+          <label>Название</label>
+          <input type="text" id="expTitle" placeholder="Продукты, Проезд, Кафе..." required>
+        </div>
+        <div class="form-group">
+          <label>Категория</label>
+          <select id="expCategory">
+            <option value="Еда и продукты">Еда и продукты</option>
+            <option value="Транспорт">Транспорт</option>
+            <option value="Развлечения">Развлечения</option>
+            <option value="Покупки">Покупки</option>
+            <option value="Подписки">Подписки</option>
+            <option value="Образование">Образование</option>
+            <option value="Здоровье">Здоровье</option>
+            <option value="Прочее">Прочее</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Сумма (BYN)</label>
+          <input type="number" step="0.01" min="0.1" id="expAmount" placeholder="15" required>
+        </div>
+        <div class="form-group">
+          <label>Дата</label>
+          <input type="date" id="expDate" required>
+        </div>
+        <button type="submit" class="btn btn-primary" style="background:var(--danger);">Сохранить расход</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Bottom Navigation Bar -->
+  <nav class="bottom-nav">
+    <button class="nav-item active" onclick="switchTab('dashboard', this)">
+      <icon>📊</icon>
+      <span>Обзор</span>
+    </button>
+    <button class="nav-item" onclick="switchTab('incomes', this)">
+      <icon>💵</icon>
+      <span>Доходы</span>
+    </button>
+    <button class="nav-item" onclick="switchTab('expenses', this)">
+      <icon>🛒</icon>
+      <span>Расходы</span>
+    </button>
+    <button class="nav-item" onclick="switchTab('ai-planner', this)">
+      <icon>🤖</icon>
+      <span>AI План</span>
+    </button>
+    <button class="nav-item" onclick="switchTab('goal-settings', this)">
+      <icon>⚙️</icon>
+      <span>Цель</span>
+    </button>
+  </nav>
+
+  <script>
+    /* Safe Storage Fallback Wrapper for Restricted Webviews */
+    const SafeStore = {
+      _mem: {},
+      get(key, fallback) {
+        try {
+          const v = localStorage.getItem(key);
+          return v ? JSON.parse(v) : fallback;
+        } catch (e) {
+          return this._mem[key] !== undefined ? this._mem[key] : fallback;
+        }
+      },
+      set(key, val) {
+        try {
+          localStorage.setItem(key, JSON.stringify(val));
+        } catch (e) {
+          this._mem[key] = val;
+        }
+      }
+    };
+
+    const STORAGE_KEY = 'byn_fin_planner_v2';
+
+    // Demo Initial Data
+    const DEMO_DATA = {
+      goal: {
+        name: 'Новый ноутбук / Поездка',
+        target: 1200,
+        deadline: new Date(Date.now() + 90 * 24 * 60 * 60 * 1000).toISOString().split('T')[0]
+      },
+      incomes: [
+        { id: '1', title: 'Стипендия', source: 'Стипендия', amount: 210, date: new Date().toISOString().split('T')[0] },
+        { id: '2', title: 'Фриланс проект', source: 'Подработка / Фриланс', amount: 350, date: new Date().toISOString().split('T')[0] }
+      ],
+      expenses: [
+        { id: '101', title: 'Продукты на неделю', category: 'Еда и продукты', amount: 85, date: new Date().toISOString().split('T')[0] },
+        { id: '102', title: 'Проездной', category: 'Транспорт', amount: 35, date: new Date().toISOString().split('T')[0] },
+        { id: '103', title: 'Сервис Яндекс/Spotify', category: 'Подписки', amount: 15, date: new Date().toISOString().split('T')[0] }
+      ]
+    };
+
+    let appState = SafeStore.get(STORAGE_KEY, DEMO_DATA);
+    let activePeriod = 'day'; // 'day', 'week', 'month', 'year'
+
+    // Init App & Telegram SDK
+    document.addEventListener('DOMContentLoaded', () => {
+      initTelegram();
+      initDates();
+      renderAll();
+    });
+
+    function initTelegram() {
+      if (window.Telegram && window.Telegram.WebApp) {
+        const tg = window.Telegram.WebApp;
+        tg.ready();
+        tg.expand();
+        if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
+          const user = tg.initDataUnsafe.user;
+          document.getElementById('userGreeting').textContent = `Привет, ${user.first_name || 'Финансист'}`;
+        }
+      }
+    }
+
+    function initDates() {
+      const today = new Date().toISOString().split('T')[0];
+      document.getElementById('incDate').value = today;
+      document.getElementById('expDate').value = today;
+      if (!appState.goal.deadline) {
+        applyPeriodPreset(90);
+      }
+    }
+
+    function saveData() {
+      SafeStore.set(STORAGE_KEY, appState);
+      renderAll();
+    }
+
+    function resetToDemoData() {
+      if (confirm('Сбросить данные к начальным демо-данным?')) {
+        appState = JSON.parse(JSON.stringify(DEMO_DATA));
+        appState.goal.deadline = new Date(Date.now() + 90 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
+        saveData();
+      }
+    }
+
+    /* Core Calculation Engine */
+    function calc() {
+      const totalIncome = appState.incomes.reduce((acc, item) => acc + Number(item.amount), 0);
+      const totalExpense = appState.expenses.reduce((acc, item) => acc + Number(item.amount), 0);
+      const currentBalance = totalIncome - totalExpense;
+      const savedMoney = Math.max(0, currentBalance);
+
+      const target = appState.goal.target || 1;
+      const remainingTarget = Math.max(0, target - savedMoney);
+
+      // Days Calculation
+      const today = new Date();
+      today.setHours(0,0,0,0);
+      const deadlineDate = new Date(appState.goal.deadline || today);
+      deadlineDate.setHours(0,0,0,0);
+
+      const diffTime = deadlineDate - today;
+      const daysLeft = Math.max(1, Math.ceil(diffTime / (1000 * 60 * 60 * 24)));
+
+      // Required Savings Rates
+      const requiredDailySave = remainingTarget / daysLeft;
+      const requiredWeeklySave = requiredDailySave * 7;
+      const requiredMonthlySave = requiredDailySave * 30.4375;
+      const requiredYearlySave = requiredDailySave * 365;
+
+      // Daily Free Budget calculation
+      const safeDailySpend = Math.max(0, (totalIncome - totalExpense - remainingTarget) / daysLeft);
+
+      // Percentage
+      const progressPercent = Math.min(100, Math.round((savedMoney / target) * 100));
+
+      return {
+        totalIncome,
+        totalExpense,
+        currentBalance,
+        savedMoney,
+        target,
+        remainingTarget,
+        daysLeft,
+        progressPercent,
+        requiredDailySave,
+        requiredWeeklySave,
+        requiredMonthlySave,
+        requiredYearlySave,
+        safeDailySpend
+      };
+    }
+
+    /* Main Render Orchestrator */
+    function renderAll() {
+      const c = calc();
+
+      // Goal Card Updates
+      document.getElementById('goalNameDisplay').textContent = appState.goal.name;
+      document.getElementById('goalTargetDisplay').textContent = `${c.target.toFixed(2)} BYN`;
+      document.getElementById('goalSavedDisplay').textContent = `${c.savedMoney.toFixed(2)} BYN`;
+      document.getElementById('goalRemainingDisplay').textContent = `${c.remainingTarget.toFixed(2)} BYN`;
+      document.getElementById('goalPercentDisplay').textContent = `${c.progressPercent}%`;
+      document.getElementById('goalProgressBar').style.width = `${c.progressPercent}%`;
+      document.getElementById('goalDeadlineDays').textContent = `${c.daysLeft} дн. остав.`;
+
+      // Quick Stats
+      document.getElementById('safeDailySpend').textContent = `${c.safeDailySpend.toFixed(2)} BYN`;
+      document.getElementById('requiredDailySave').textContent = `${c.requiredDailySave.toFixed(2)} BYN`;
+      document.getElementById('totalIncomeDisplay').textContent = `${c.totalIncome.toFixed(2)} BYN`;
+      document.getElementById('totalExpenseDisplay').textContent = `${c.totalExpense.toFixed(2)} BYN`;
+
+      // Goal Form Fill
+      document.getElementById('goalNameInput').value = appState.goal.name;
+      document.getElementById('goalTargetInput').value = appState.goal.target;
+      document.getElementById('goalDeadlineInput').value = appState.goal.deadline;
+
+      // Render Alert Banners
+      renderAlerts(c);
+
+      // Render Transaction Lists
+      renderRecentTransactions();
+      renderIncomesList();
+      renderExpensesList();
+
+      // Render AI Section & Charts
+      renderAIPlanner(c);
+      renderCategoryChart();
+    }
+
+    /* Render Smart Alerts */
+    function renderAlerts(c) {
+      const alertContainer = document.getElementById('alertContainer');
+      alertContainer.innerHTML = '';
+
+      if (c.progressPercent >= 100) {
+        alertContainer.innerHTML = `
+          <div class="alert alert-success">
+            🎉 <b>Поздравляем!</b> Вы полностью собрали необходимую сумму на цель!
+          </div>`;
+        return;
+      }
+
+      if (c.currentBalance < 0) {
+        alertContainer.innerHTML = `
+          <div class="alert alert-danger">
+            ⚠️ <b>Перерасход бюджета!</b> Ваши расходы превышают доходы на ${Math.abs(c.currentBalance).toFixed(2)} BYN.
+          </div>`;
+      } else if (c.safeDailySpend <= 0) {
+        alertContainer.innerHTML = `
+          <div class="alert alert-warning">
+            ⏳ <b>Цель под риском!</b> Чтобы успеть к сроку, рекомендуется временно сократить ежедневные расходы.
+          </div>`;
+      }
+    }
+
+    /* Render Transaction Lists */
+    function renderRecentTransactions() {
+      const container = document.getElementById('recentTransactionsList');
+      const allTx = [
+        ...appState.incomes.map(i => ({ ...i, type: 'inc' })),
+        ...appState.expenses.map(e => ({ ...e, type: 'exp' }))
+      ].sort((a,b) => new Date(b.date) - new Date(a.date)).slice(0, 5);
+
+      if (allTx.length === 0) {
+        container.innerHTML = `<div style="color:var(--text-muted); font-size:0.85rem; text-align:center; padding: 10px;">Операций пока нет</div>`;
+        return;
+      }
+
+      container.innerHTML = allTx.map(tx => `
+        <div class="tx-item">
+          <div class="tx-info">
+            <h4>${escapeHtml(tx.title)}</h4>
+            <span>${tx.date} • ${tx.type === 'inc' ? tx.source : tx.category}</span>
+          </div>
+          <div style="display:flex; align-items:center;">
+            <span class="tx-amount ${tx.type === 'inc' ? 'plus' : 'minus'}">
+              ${tx.type === 'inc' ? '+' : '-'}${Number(tx.amount).toFixed(2)} BYN
+            </span>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function renderIncomesList() {
+      const container = document.getElementById('incomesList');
+      if (appState.incomes.length === 0) {
+        container.innerHTML = `<div style="color:var(--text-muted); font-size:0.85rem; text-align:center; padding: 12px;">Доходы не добавлены</div>`;
+        return;
+      }
+      container.innerHTML = appState.incomes.map(item => `
+        <div class="tx-item">
+          <div class="tx-info">
+            <h4>${escapeHtml(item.title)}</h4>
+            <span>${item.date} • ${item.source}</span>
+          </div>
+          <div style="display:flex; align-items:center;">
+            <span class="tx-amount plus">+${Number(item.amount).toFixed(2)} BYN</span>
+            <button class="btn-delete" onclick="deleteIncome('${item.id}')">🗑️</button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function renderExpensesList() {
+      const container = document.getElementById('expensesList');
+      if (appState.expenses.length === 0) {
+        container.innerHTML = `<div style="color:var(--text-muted); font-size:0.85rem; text-align:center; padding: 12px;">Расходы не добавлены</div>`;
+        return;
+      }
+      container.innerHTML = appState.expenses.map(item => `
+        <div class="tx-item">
+          <div class="tx-info">
+            <h4>${escapeHtml(item.title)}</h4>
+            <span>${item.date} • ${item.category}</span>
+          </div>
+          <div style="display:flex; align-items:center;">
+            <span class="tx-amount minus">-${Number(item.amount).toFixed(2)} BYN</span>
+            <button class="btn-delete" onclick="deleteExpense('${item.id}')">🗑️</button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    /* AI Planner & Period View */
+    function setTimePeriod(period) {
+      activePeriod = period;
+      document.querySelectorAll('.period-btn').forEach(btn => btn.classList.remove('active'));
+      event.target.classList.add('active');
+      renderAll();
+    }
+
+    function renderAIPlanner(c) {
+      const titleElem = document.getElementById('periodTitle');
+      const limitElem = document.getElementById('aiSpendLimit');
+      const targetElem = document.getElementById('aiSaveTarget');
+      const adviceElem = document.getElementById('aiPlanAdvice');
+
+      let limit = 0;
+      let target = 0;
+      let periodLabel = 'День';
+
+      if (activePeriod === 'day') {
+        periodLabel = 'День';
+        limit = c.safeDailySpend;
+        target = c.requiredDailySave;
+      } else if (activePeriod === 'week') {
+        periodLabel = 'Неделю';
+        limit = c.safeDailySpend * 7;
+        target = c.requiredWeeklySave;
+      } else if (activePeriod === 'month') {
+        periodLabel = 'Месяц';
+        limit = c.safeDailySpend * 30.4375;
+        target = c.requiredMonthlySave;
+      } else if (activePeriod === 'year') {
+        periodLabel = 'Год';
+        limit = c.safeDailySpend * 365;
+        target = c.requiredYearlySave;
+      }
+
+      titleElem.textContent = periodLabel;
+      limitElem.textContent = `${limit.toFixed(2)} BYN`;
+      targetElem.textContent = `${target.toFixed(2)} BYN`;
+
+      // Dynamic AI Text Insight
+      if (c.remainingTarget <= 0) {
+        adviceElem.textContent = `🎉 Цель "${appState.goal.name}" достигнута! Вы можете сформировать новую финансовую цель.`;
+      } else if (c.safeDailySpend > 0) {
+        adviceElem.textContent = `💡 На период (${periodLabel.toLowerCase()}) вам рекомендуется откладывать ${target.toFixed(2)} BYN. Ваша безопасная норма трат на жизненные нужды составляет ${limit.toFixed(2)} BYN.`;
+      } else {
+        adviceElem.textContent = `⚠️ Текущего темпа поступлений недостаточно для выполнения цели за ${c.daysLeft} дней. Рекомендуется оптимизировать расходы по категории "${getTopExpenseCategory()}" или добавить источники дохода.`;
+      }
+
+      renderSmartAdvice(c);
+    }
+
+    /* Category Chart Visualizer */
+    function renderCategoryChart() {
+      const container = document.getElementById('categoryChartContainer');
+      const catTotals = {};
+
+      appState.expenses.forEach(e => {
+        catTotals[e.category] = (catTotals[e.category] || 0) + Number(e.amount);
+      });
+
+      const totalExp = Object.values(catTotals).reduce((a,b) => a + b, 0);
+
+      if (totalExp === 0) {
+        container.innerHTML = `<div style="color:var(--text-muted); font-size:0.85rem; text-align:center;">Расходы еще не зафиксированы</div>`;
+        return;
+      }
+
+      const sortedCats = Object.entries(catTotals).sort((a,b) => b[1] - a[1]);
+
+      container.innerHTML = sortedCats.map(([cat, amount]) => {
+        const pct = Math.round((amount / totalExp) * 100);
+        return `
+          <div class="chart-bar-row">
+            <div class="chart-bar-label">
+              <span>${cat}</span>
+              <b>${amount.toFixed(2)} BYN (${pct}%)</b>
+            </div>
+            <div class="chart-bar-track">
+              <div class="chart-bar-fill" style="width:${pct}%"></div>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function getTopExpenseCategory() {
+      const catTotals = {};
+      appState.expenses.forEach(e => {
+        catTotals[e.category] = (catTotals[e.category] || 0) + Number(e.amount);
+      });
+      const sorted = Object.entries(catTotals).sort((a,b) => b[1] - a[1]);
+      return sorted.length > 0 ? sorted[0][0] : 'Прочее';
+    }
+
+    function renderSmartAdvice(c) {
+      const container = document.getElementById('smartAdviceList');
+      const topCat = getTopExpenseCategory();
+      
+      let html = `<ul style="padding-left: 18px; display:flex; flex-direction:column; gap:8px;">`;
+      
+      html += `<li>Наибольшая статья расходов приходится на <b>${topCat}</b>. Пересмотрите необязательные покупки в этой категории.</li>`;
+      
+      if (c.daysLeft > 0 && c.remainingTarget > 0) {
+        html += `<li>Чтобы гарантированно накопить оставшиеся <b>${c.remainingTarget.toFixed(2)} BYN</b> за ${c.daysLeft} дн., сохраняйте минимум <b>${c.requiredDailySave.toFixed(2)} BYN</b> ежеденевно.</li>`;
+      }
+
+      html += `<li>Ваш общий доход составляет <b>${c.totalIncome.toFixed(2)} BYN</b>. Откладывание 20% от дохода дает <b>${(c.totalIncome * 0.2).toFixed(2)} BYN</b> в месяц.</li>`;
+      html += `</ul>`;
+
+      container.innerHTML = html;
+    }
+
+    /* Dynamic Live Income Split Calculation */
+    function calculateIncomeSplit() {
+      const amountInput = parseFloat(document.getElementById('incAmount').value);
+      const splitBox = document.getElementById('incSplitBox');
+
+      if (!amountInput || amountInput <= 0) {
+        splitBox.style.display = 'none';
+        return;
+      }
+
+      const c = calc();
+      let savePct = 30; // standard fallback
+
+      if (c.remainingTarget > 0) {
+        // Calculate dynamic ratio based on urgency
+        const targetShare = (c.requiredDailySave * 30) / Math.max(1, (c.totalIncome || amountInput));
+        savePct = Math.min(70, Math.max(15, Math.round(targetShare * 100)));
+      }
+
+      const spendPct = 100 - savePct;
+      const saveVal = (amountInput * (savePct / 100)).toFixed(2);
+      const spendVal = (amountInput * (spendPct / 100)).toFixed(2);
+
+      document.getElementById('splitSavePct').textContent = savePct;
+      document.getElementById('splitSpendPct').textContent = spendPct;
+      document.getElementById('splitSaveVal').textContent = `${saveVal} BYN`;
+      document.getElementById('splitSpendVal').textContent = `${spendVal} BYN`;
+
+      splitBox.style.display = 'block';
+    }
+
+    /* Actions & Form Handlers */
+    function handleAddIncome(e) {
+      e.preventDefault();
+      const title = document.getElementById('incTitle').value.trim();
+      const source = document.getElementById('incSource').value;
+      const amount = parseFloat(document.getElementById('incAmount').value);
+      const date = document.getElementById('incDate').value;
+
+      if (!title || isNaN(amount) || amount <= 0) return;
+
+      appState.incomes.push({
+        id: Date.now().toString(),
+        title,
+        source,
+        amount,
+        date
+      });
+
+      saveData();
+      closeIncomeModal();
+      e.target.reset();
+      initDates();
+    }
+
+    function handleAddExpense(e) {
+      e.preventDefault();
+      const title = document.getElementById('expTitle').value.trim();
+      const category = document.getElementById('expCategory').value;
+      const amount = parseFloat(document.getElementById('expAmount').value);
+      const date = document.getElementById('expDate').value;
+
+      if (!title || isNaN(amount) || amount <= 0) return;
+
+      appState.expenses.push({
+        id: Date.now().toString(),
+        title,
+        category,
+        amount,
+        date
+      });
+
+      saveData();
+      closeExpenseModal();
+      e.target.reset();
+      initDates();
+    }
+
+    function deleteIncome(id) {
+      appState.incomes = appState.incomes.filter(item => item.id !== id);
+      saveData();
+    }
+
+    function deleteExpense(id) {
+      appState.expenses = appState.expenses.filter(item => item.id !== id);
+      saveData();
+    }
+
+    function saveGoalSettings(e) {
+      e.preventDefault();
+      const name = document.getElementById('goalNameInput').value.trim();
+      const target = parseFloat(document.getElementById('goalTargetInput').value);
+      const deadline = document.getElementById('goalDeadlineInput').value;
+
+      if (!name || isNaN(target) || target <= 0 || !deadline) return;
+
+      appState.goal = { name, target, deadline };
+      saveData();
+      switchTab('dashboard', document.querySelectorAll('.nav-item')[0]);
+    }
+
+    function applyPeriodPreset(days) {
+      const targetDate = new Date();
+      targetDate.setDate(targetDate.getDate() + days);
+      document.getElementById('goalDeadlineInput').value = targetDate.toISOString().split('T')[0];
+    }
+
+    /* Navigation Tab Switcher */
+    function switchTab(tabId, btnElem) {
+      document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+      document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+
+      document.getElementById(`tab-${tabId}`).classList.add('active');
+      if (btnElem) btnElem.classList.add('active');
+    }
+
+    /* Modal Controls */
+    function openIncomeModal() {
+      document.getElementById('incomeModal').classList.add('active');
+      document.getElementById('incSplitBox').style.display = 'none';
+    }
+    function closeIncomeModal() {
+      document.getElementById('incomeModal').classList.remove('active');
+    }
+    function openExpenseModal() {
+      document.getElementById('expenseModal').classList.add('active');
+    }
+    function closeExpenseModal() {
+      document.getElementById('expenseModal').classList.remove('active');
+    }
+
+    /* Helper Utilities */
+    function escapeHtml(str) {
+      return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
+    }
+  </script>
+</body>
+</html>
