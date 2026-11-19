@@ -2,1321 +2,1999 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-  <title>BYN AI Finance Planner</title>
-  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1, viewport-fit=cover"
+  >
+  <meta name="theme-color" content="#f5f6f8">
+  <title>Финансы · BYN</title>
+  <script src="https://telegram.org/js/telegram-web-app.js" defer></script>
 
   <style>
     :root {
-      --bg: #0b0f19;
-      --card-bg: rgba(21, 28, 44, 0.88);
-      --card-solid: #151c2c;
-      --card-border: rgba(255, 255, 255, 0.1);
-      --primary: #3b82f6;
-      --primary-glow: rgba(59, 130, 246, 0.35);
-      --accent: #10b981;
-      --danger: #f43f5e;
-      --text: #f8fafc;
-      --text-muted: #94a3b8;
-      --input-bg: #0f172a;
-      --radius: 20px;
-      --radius-sm: 14px;
-      --nav-base-height: 64px;
-      color-scheme: dark;
+      color-scheme: light;
+
+      --bg: #f5f6f8;
+      --surface: #ffffff;
+      --surface-soft: #f7f8fa;
+      --input: #f5f6f8;
+      --text: #172033;
+      --muted: #748092;
+      --line: #e9edf2;
+      --track: #e9edf2;
+
+      --blue: #1769db;
+      --blue-soft: #eaf2ff;
+      --green: #118b70;
+      --green-soft: #e8f6f1;
+      --red: #e5535c;
+      --red-soft: #fff0f1;
+
+      --nav-bg: rgba(250, 251, 253, 0.91);
+      --shadow: 0 8px 28px rgba(35, 49, 76, 0.045);
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        color-scheme: dark;
+
+        --bg: #101319;
+        --surface: #1c222c;
+        --surface-soft: #242b36;
+        --input: #252c37;
+        --text: #f4f6fa;
+        --muted: #a0aab8;
+        --line: #313a47;
+        --track: #35404e;
+
+        --blue: #80b1ff;
+        --blue-soft: #263a58;
+        --green: #68d8b8;
+        --green-soft: #214039;
+        --red: #ff858c;
+        --red-soft: #432b32;
+
+        --nav-bg: rgba(22, 27, 35, 0.93);
+        --shadow: 0 8px 28px rgba(0, 0, 0, 0.11);
+      }
     }
 
     * {
       box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display",
-        "SF Pro Text", "Segoe UI", Roboto, "Helvetica Neue", sans-serif;
-      -webkit-tap-highlight-color: transparent;
-      touch-action: manipulation;
     }
 
     html {
-      width: 100%;
-      height: 100%;
+      min-height: 100%;
       background: var(--bg);
       -webkit-text-size-adjust: 100%;
     }
 
     body {
-      width: 100%;
+      min-width: 280px;
       min-height: 100vh;
       min-height: 100dvh;
-      overflow-x: hidden;
+      margin: 0;
+      padding:
+        max(18px, env(safe-area-inset-top))
+        max(16px, env(safe-area-inset-right))
+        calc(105px + env(safe-area-inset-bottom))
+        max(16px, env(safe-area-inset-left));
+
+      background: var(--bg);
       color: var(--text);
-      background-color: var(--bg);
-      background-image:
-        radial-gradient(circle at 10% 10%, rgba(59, 130, 246, 0.15), transparent 40%),
-        radial-gradient(circle at 90% 80%, rgba(16, 185, 129, 0.1), transparent 40%);
-      background-attachment: fixed;
-      padding-top: max(12px, env(safe-area-inset-top));
-      padding-left: max(16px, env(safe-area-inset-left));
-      padding-right: max(16px, env(safe-area-inset-right));
-      padding-bottom: calc(var(--nav-base-height) + env(safe-area-inset-bottom) + 20px);
+      font-family:
+        -apple-system, BlinkMacSystemFont, "SF Pro Text",
+        "Segoe UI", Roboto, "Helvetica Neue", sans-serif;
+      line-height: 1.4;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
     }
 
-    .container {
+    body.sheet-open {
+      overflow: hidden;
+    }
+
+    button,
+    input,
+    select {
+      font: inherit;
+    }
+
+    button {
+      cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    button:focus-visible,
+    input:focus-visible,
+    select:focus-visible {
+      outline: 3px solid rgba(23, 105, 219, 0.35);
+      outline-offset: 2px;
+    }
+
+    input,
+    select {
+      font-size: 16px !important;
+    }
+
+    [hidden] {
+      display: none !important;
+    }
+
+    .app {
       width: 100%;
-      max-width: 500px;
+      max-width: 540px;
       margin: 0 auto;
     }
 
-    header {
+    .topbar {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      gap: 10px;
-      margin-bottom: 18px;
-      padding: 4px 0;
+      gap: 14px;
+      margin: 2px 2px 24px;
     }
 
-    .user-welcome {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      min-width: 0;
-      font-size: 1.2rem;
-      font-weight: 800;
+    .top-date {
+      margin: 0 0 2px;
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 600;
+      text-transform: capitalize;
     }
 
-    .user-welcome span {
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
+    .topbar h1 {
+      margin: 0;
+      font-size: 30px;
+      font-weight: 780;
+      line-height: 1.12;
+      letter-spacing: -0.045em;
     }
 
-    .badge-byn {
+    .top-greeting {
+      margin: 5px 0 0;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .avatar {
+      display: grid;
       flex-shrink: 0;
-      padding: 5px 12px;
-      border: 1px solid rgba(59, 130, 246, 0.4);
-      border-radius: 20px;
-      background: linear-gradient(135deg, rgba(59, 130, 246, 0.25), rgba(16, 185, 129, 0.25));
-      color: #60a5fa;
-      font-size: 0.75rem;
+      place-items: center;
+      width: 43px;
+      height: 43px;
+      border-radius: 15px;
+      background: var(--blue-soft);
+      color: var(--blue);
+      font-size: 15px;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+    }
+
+    .tab {
+      display: none;
+    }
+
+    .tab.active {
+      display: block;
+    }
+
+    .page-title {
+      margin: 0 2px 16px;
+      font-size: 25px;
+      font-weight: 750;
+      letter-spacing: -0.035em;
+    }
+
+    .page-subtitle {
+      margin: -7px 2px 18px;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    .section-heading {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      margin: 23px 2px 11px;
+    }
+
+    .section-heading h2 {
+      margin: 0;
+      font-size: 18px;
+      font-weight: 760;
+      letter-spacing: -0.025em;
+    }
+
+    .text-link {
+      padding: 5px 0 5px 8px;
+      border: 0;
+      background: none;
+      color: var(--blue);
+      font-size: 13px;
       font-weight: 700;
-      box-shadow: 0 0 12px rgba(59, 130, 246, 0.2);
+      white-space: nowrap;
     }
 
     .card {
-      padding: 18px 20px;
-      margin-bottom: 16px;
-      border: 1px solid var(--card-border);
-      border-radius: var(--radius);
-      background: var(--card-bg);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
-      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.35);
+      margin-bottom: 14px;
+      padding: 19px;
+      border: 1px solid var(--line);
+      border-radius: 23px;
+      background: var(--surface);
+      box-shadow: var(--shadow);
     }
 
     .card-title {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 8px;
-      margin-bottom: 12px;
-      color: var(--text-muted);
-      font-size: 0.78rem;
-      font-weight: 700;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
+      margin: 0 0 14px;
+      font-size: 16px;
+      font-weight: 750;
+      letter-spacing: -0.02em;
     }
 
-    /* Карточка актуального баланса */
-    .actual-balance-card {
+    .muted {
+      color: var(--muted);
+    }
+
+    .small-note {
+      margin: 12px 0 0;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.5;
+    }
+
+    /* Главное число */
+    .balance-card {
       position: relative;
+      isolation: isolate;
       overflow: hidden;
-      border-color: rgba(16, 185, 129, 0.38);
-      background: linear-gradient(135deg, rgba(20, 51, 52, 0.9), rgba(15, 23, 42, 0.98));
-      box-shadow: 0 12px 38px rgba(0, 0, 0, 0.4), 0 0 22px rgba(16, 185, 129, 0.12);
+      padding: 23px;
+      border: 1px solid rgba(255, 255, 255, 0.13);
+      border-radius: 26px;
+      background: linear-gradient(145deg, #264b82 0%, #18365f 55%, #152c4c 100%);
+      color: #fff;
+      box-shadow: 0 15px 32px rgba(25, 55, 96, 0.18);
     }
 
-    .actual-balance-card::before,
-    .goal-card::before {
-      content: "";
+    .balance-card::after {
       position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      height: 3px;
-      background: linear-gradient(90deg, var(--primary), var(--accent));
+      z-index: -1;
+      top: -120px;
+      right: -100px;
+      width: 300px;
+      height: 300px;
+      border-radius: 50%;
+      background: radial-gradient(
+        circle,
+        rgba(157, 207, 255, 0.18),
+        transparent 68%
+      );
+      content: "";
+      pointer-events: none;
     }
 
-    .actual-balance-main {
-      margin: 4px 0 16px;
-      font-size: clamp(29px, 8vw, 42px);
-      font-weight: 900;
-      letter-spacing: -0.04em;
-      overflow-wrap: anywhere;
-    }
-
-    .actual-balance-main.negative,
-    .balance-line .negative {
-      color: #f87171;
-    }
-
-    .balance-line {
+    .balance-eyebrow {
       display: flex;
       justify-content: space-between;
-      flex-wrap: wrap;
-      gap: 4px 10px;
-      margin-top: 10px;
-      color: #cbd5e1;
-      font-size: 0.9rem;
-    }
-
-    .balance-line strong {
-      color: #f8fafc;
-      font-weight: 800;
-    }
-
-    .balance-line strong.saved-value {
-      color: #34d399;
-    }
-
-    .balance-caption {
-      margin-top: 12px;
-      color: var(--text-muted);
-      font-size: 0.76rem;
-      line-height: 1.45;
-    }
-
-    .balance-form {
-      margin-top: 16px;
-      padding-top: 15px;
-      border-top: 1px solid rgba(255, 255, 255, 0.1);
-    }
-
-    .balance-input-row {
-      display: flex;
+      align-items: center;
       gap: 8px;
+      color: rgba(255, 255, 255, 0.87);
+      font-size: 13px;
+      font-weight: 650;
     }
 
-    .balance-input-row input {
-      flex: 1;
-      min-width: 0;
-    }
-
-    .balance-input-row .btn {
-      width: auto;
-      flex-shrink: 0;
-      padding-left: 14px;
-      padding-right: 14px;
-    }
-
-    /* Карточка цели */
-    .goal-card {
-      position: relative;
-      overflow: hidden;
-      border-color: rgba(59, 130, 246, 0.35);
-      background: linear-gradient(135deg, rgba(30, 41, 59, 0.88), rgba(15, 23, 42, 0.98));
-      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.45), 0 0 24px rgba(59, 130, 246, 0.15);
-    }
-
-    .goal-title {
-      margin-bottom: 2px;
+    .balance-pill {
+      padding: 5px 9px;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 20px;
+      background: rgba(255, 255, 255, 0.11);
       color: #fff;
-      font-size: 1.25rem;
-      font-weight: 800;
-      overflow-wrap: anywhere;
-    }
-
-    .goal-amount {
-      margin: 4px 0 14px;
-      font-size: 2.1rem;
-      font-weight: 900;
-      letter-spacing: -0.03em;
-      background: linear-gradient(180deg, #fff, #cbd5e1);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
-
-    .progress-bar-bg {
-      height: 12px;
-      margin-bottom: 12px;
-      padding: 2px;
-      overflow: hidden;
-      border: 1px solid rgba(255, 255, 255, 0.05);
-      border-radius: 10px;
-      background: rgba(255, 255, 255, 0.08);
-    }
-
-    .progress-bar-fill {
-      width: 0%;
-      height: 100%;
-      border-radius: 8px;
-      background: linear-gradient(90deg, #3b82f6, #10b981);
-      box-shadow: 0 0 12px rgba(16, 185, 129, 0.5);
-      transition: width 0.6s ease;
-    }
-
-    .goal-stats {
-      display: flex;
-      justify-content: space-between;
-      flex-wrap: wrap;
-      gap: 6px 12px;
-      color: var(--text-muted);
-      font-size: 0.85rem;
-      font-weight: 600;
-    }
-
-    .grid-2 {
-      display: grid;
-      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-      gap: 12px;
-    }
-
-    .stat-card {
-      padding: 14px;
-      border: 1px solid var(--card-border);
-      border-radius: var(--radius-sm);
-      background: rgba(15, 23, 42, 0.7);
-      text-align: center;
-    }
-
-    .stat-value {
-      margin-top: 4px;
-      font-size: 1.2rem;
-      font-weight: 800;
-      overflow-wrap: anywhere;
-    }
-
-    .stat-value.green { color: #34d399; }
-    .stat-value.red { color: #f87171; }
-    .stat-value.blue { color: #60a5fa; }
-    .stat-value.orange { color: #fbbf24; }
-
-    .period-selector {
-      display: flex;
-      margin-bottom: 16px;
-      padding: 4px;
-      border: 1px solid var(--card-border);
-      border-radius: 14px;
-      background: var(--input-bg);
-    }
-
-    .period-btn {
-      flex: 1;
-      padding: 10px 0;
-      border: none;
-      border-radius: 10px;
-      background: transparent;
-      color: var(--text-muted);
-      font-size: 0.85rem;
-      font-weight: 700;
-      cursor: pointer;
-    }
-
-    .period-btn.active {
-      background: var(--primary);
-      color: #fff;
-      box-shadow: 0 4px 12px var(--primary-glow);
-    }
-
-    .alert {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      padding: 14px 16px;
-      margin-bottom: 16px;
-      border-radius: var(--radius-sm);
-      font-size: 0.88rem;
-      line-height: 1.4;
-    }
-
-    .alert-warning {
-      border: 1px solid rgba(245, 158, 11, 0.4);
-      background: rgba(245, 158, 11, 0.12);
-      color: #fcd34d;
-    }
-
-    .alert-danger {
-      border: 1px solid rgba(244, 63, 94, 0.4);
-      background: rgba(244, 63, 94, 0.12);
-      color: #fca5a5;
-    }
-
-    .alert-success {
-      border: 1px solid rgba(16, 185, 129, 0.4);
-      background: rgba(16, 185, 129, 0.12);
-      color: #6ee7b7;
-    }
-
-    .tx-item {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 6px;
-      padding: 12px 0;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
-    }
-
-    .tx-item:last-child { border-bottom: none; }
-
-    .tx-left {
-      display: flex;
-      align-items: center;
-      flex: 1;
-      min-width: 0;
-      gap: 12px;
-    }
-
-    .tx-icon-chip {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-shrink: 0;
-      width: 42px;
-      height: 42px;
-      border: 1px solid var(--card-border);
-      border-radius: 12px;
-      background: rgba(255, 255, 255, 0.05);
-      font-size: 1.2rem;
-    }
-
-    .tx-info {
-      min-width: 0;
-      overflow-wrap: anywhere;
-    }
-
-    .tx-info h4 {
-      margin-bottom: 2px;
-      color: #f1f5f9;
-      font-size: 0.92rem;
-      font-weight: 700;
-    }
-
-    .tx-info span {
-      color: var(--text-muted);
-      font-size: 0.75rem;
-    }
-
-    .tx-amount {
-      font-size: 0.95rem;
-      font-weight: 800;
+      font-size: 11px;
       white-space: nowrap;
     }
 
-    .tx-amount.plus { color: #34d399; }
-    .tx-amount.minus { color: #f87171; }
+    .balance-total {
+      margin: 25px 0 4px;
+      font-size: clamp(32px, 8.3vw, 45px);
+      font-weight: 780;
+      line-height: 1.06;
+      letter-spacing: -0.055em;
+      overflow-wrap: anywhere;
+    }
 
-    .btn-delete {
-      padding: 8px;
-      margin-left: 6px;
-      border: none;
-      background: none;
-      color: var(--text-muted);
-      font-size: 1rem;
-      cursor: pointer;
+    .balance-total.negative {
+      color: #ffd7d9;
+    }
+
+    .balance-description {
+      margin: 0;
+      color: rgba(255, 255, 255, 0.7);
+      font-size: 12px;
+    }
+
+    .balance-details {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+      margin-top: 23px;
+      padding-top: 16px;
+      border-top: 1px solid rgba(255, 255, 255, 0.18);
+    }
+
+    .balance-detail-label {
+      display: block;
+      margin-bottom: 5px;
+      color: rgba(255, 255, 255, 0.71);
+      font-size: 11px;
+    }
+
+    .balance-detail-value {
+      display: block;
+      font-size: 15px;
+      font-weight: 750;
+      overflow-wrap: anywhere;
+    }
+
+    .balance-adjust {
+      width: 100%;
+      min-height: 39px;
+      margin-top: 19px;
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.1);
+      color: #fff;
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .balance-adjust:active {
+      background: rgba(255, 255, 255, 0.18);
+    }
+
+    /* Цель */
+    .goal-top {
+      display: flex;
+      align-items: center;
+      gap: 11px;
+    }
+
+    .goal-icon {
+      display: grid;
+      flex-shrink: 0;
+      place-items: center;
+      width: 42px;
+      height: 42px;
+      border-radius: 14px;
+      background: var(--blue-soft);
+      color: var(--blue);
+      font-size: 27px;
+      line-height: 1;
+    }
+
+    .goal-name-wrap {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .goal-kicker {
+      display: block;
+      color: var(--muted);
+      font-size: 11px;
+    }
+
+    .goal-name {
+      display: block;
+      margin-top: 2px;
+      font-size: 15px;
+      font-weight: 750;
+      overflow-wrap: anywhere;
+    }
+
+    .goal-percent {
+      color: var(--blue);
+      font-size: 14px;
+      font-weight: 800;
+    }
+
+    .goal-sums {
+      display: flex;
+      align-items: baseline;
+      flex-wrap: wrap;
+      gap: 4px 7px;
+      margin-top: 21px;
+    }
+
+    .goal-saved {
+      font-size: 22px;
+      font-weight: 780;
+      letter-spacing: -0.035em;
+    }
+
+    .goal-target {
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .progress {
+      height: 8px;
+      margin-top: 12px;
+      overflow: hidden;
+      border-radius: 10px;
+      background: var(--track);
+    }
+
+    .progress-fill {
+      width: 0%;
+      height: 100%;
+      border-radius: inherit;
+      background: #4f92ed;
+      transition: width 0.4s ease;
+    }
+
+    .goal-foot {
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 5px 10px;
+      margin-top: 11px;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .goal-foot strong {
+      color: var(--text);
+      font-weight: 700;
+    }
+
+    /* Кнопки и показатели */
+    .quick-actions,
+    .stats-grid,
+    .plan-grid,
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 11px;
+    }
+
+    .quick-actions {
+      margin-top: 14px;
+    }
+
+    .quick-action {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 9px;
+      min-height: 53px;
+      border: 0;
+      border-radius: 16px;
+      font-size: 15px;
+      font-weight: 740;
+    }
+
+    .quick-action:active,
+    .btn:active {
+      transform: scale(0.98);
+    }
+
+    .quick-action.income {
+      background: var(--green-soft);
+      color: var(--green);
+    }
+
+    .quick-action.expense {
+      background: var(--red-soft);
+      color: var(--red);
+    }
+
+    .quick-sign {
+      display: grid;
+      place-items: center;
+      width: 24px;
+      height: 24px;
+      border: 1.5px solid currentColor;
+      border-radius: 50%;
+      font-size: 17px;
+      line-height: 1;
+    }
+
+    .stat-tile {
+      min-height: 115px;
+      padding: 16px;
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      background: var(--surface);
+      box-shadow: var(--shadow);
+    }
+
+    .stat-label {
+      display: block;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.35;
+    }
+
+    .stat-number {
+      display: block;
+      margin-top: 12px;
+      color: var(--text);
+      font-size: clamp(17px, 4.4vw, 23px);
+      font-weight: 780;
+      letter-spacing: -0.035em;
+      overflow-wrap: anywhere;
+    }
+
+    .stat-number.blue {
+      color: var(--blue);
+    }
+
+    .stat-caption {
+      display: block;
+      margin-top: 3px;
+      color: var(--muted);
+      font-size: 11px;
     }
 
     .btn {
-      display: flex;
+      display: inline-flex;
       justify-content: center;
       align-items: center;
-      gap: 8px;
+      gap: 7px;
       width: 100%;
       min-height: 48px;
-      padding: 12px 16px;
-      border: none;
+      padding: 11px 15px;
+      border: 0;
       border-radius: 14px;
-      font-size: 0.92rem;
-      font-weight: 800;
-      cursor: pointer;
-      transition: transform 0.15s, opacity 0.2s;
+      font-size: 15px;
+      font-weight: 730;
+      text-align: center;
+      transition: transform 0.15s, opacity 0.15s;
       -webkit-appearance: none;
       appearance: none;
     }
 
-    .btn:active {
-      transform: scale(0.97);
-      opacity: 0.9;
-    }
-
     .btn:disabled {
-      opacity: 0.5;
+      opacity: 0.48;
       cursor: not-allowed;
     }
 
     .btn-primary {
-      background: linear-gradient(135deg, #3b82f6, #2563eb);
-      color: #fff;
-      box-shadow: 0 4px 16px var(--primary-glow);
-    }
-
-    .btn-accent {
-      background: linear-gradient(135deg, #10b981, #059669);
-      color: #fff;
-      box-shadow: 0 4px 16px rgba(16, 185, 129, 0.25);
-    }
-
-    .btn-secondary {
-      border: 1px solid var(--card-border);
-      background: rgba(255, 255, 255, 0.08);
-      color: #cbd5e1;
-    }
-
-    .btn-danger {
-      background: linear-gradient(135deg, #f43f5e, #e11d48);
+      background: #1769db;
       color: #fff;
     }
 
-    .form-group { margin-bottom: 14px; }
-
-    label {
-      display: block;
-      margin-bottom: 6px;
-      color: var(--text-muted);
-      font-size: 0.78rem;
-      font-weight: 700;
-      letter-spacing: 0.05em;
-      text-transform: uppercase;
+    .btn-green {
+      background: #138b70;
+      color: #fff;
     }
 
-    input, select {
-      width: 100%;
-      min-height: 46px;
-      padding: 12px 14px;
-      border: 1px solid var(--card-border);
-      border-radius: 12px;
-      background: var(--input-bg);
+    .btn-quiet {
+      background: var(--surface-soft);
       color: var(--text);
-      font-size: 16px !important;
-      font-weight: 600;
+    }
+
+    .btn-outline {
+      border: 1px solid var(--line);
+      background: var(--surface);
+      color: var(--text);
+    }
+
+    /* Операции */
+    .transaction-list {
+      margin: -3px -2px;
+    }
+
+    .tx-row {
+      display: flex;
+      align-items: center;
+      gap: 11px;
+      min-height: 67px;
+      padding: 10px 2px;
+    }
+
+    .tx-row + .tx-row,
+    .info-row + .info-row {
+      border-top: 1px solid var(--line);
+    }
+
+    .tx-icon {
+      display: grid;
+      flex-shrink: 0;
+      place-items: center;
+      width: 40px;
+      height: 40px;
+      border-radius: 13px;
+      background: var(--surface-soft);
+      font-size: 19px;
+    }
+
+    .tx-icon.income {
+      background: var(--green-soft);
+    }
+
+    .tx-copy {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .tx-name {
+      display: block;
+      font-size: 13px;
+      font-weight: 720;
+      overflow-wrap: anywhere;
+    }
+
+    .tx-sub {
+      display: block;
+      margin-top: 3px;
+      color: var(--muted);
+      font-size: 11px;
+      line-height: 1.35;
+      overflow-wrap: anywhere;
+    }
+
+    .tx-side {
+      display: flex;
+      align-items: center;
+      flex-shrink: 0;
+      gap: 3px;
+    }
+
+    .tx-amount {
+      font-size: 13px;
+      font-weight: 760;
+      white-space: nowrap;
+    }
+
+    .tx-amount.income {
+      color: var(--green);
+    }
+
+    .tx-amount.expense {
+      color: var(--text);
+    }
+
+    .tx-actions {
+      display: flex;
+      align-items: center;
+      margin-left: 3px;
+    }
+
+    .icon-button {
+      display: grid;
+      place-items: center;
+      width: 31px;
+      height: 34px;
+      padding: 0;
+      border: 0;
+      background: none;
+      color: var(--muted);
+      font-size: 18px;
+    }
+
+    .icon-button.delete {
+      color: var(--red);
+    }
+
+    .empty {
+      padding: 21px 8px;
+      color: var(--muted);
+      font-size: 13px;
+      text-align: center;
+      line-height: 1.5;
+    }
+
+    .info-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 11px 0;
+      font-size: 13px;
+    }
+
+    .info-row:first-child {
+      padding-top: 0;
+    }
+
+    .info-row:last-child {
+      padding-bottom: 0;
+    }
+
+    .info-row span {
+      color: var(--muted);
+    }
+
+    .info-row strong {
+      text-align: right;
+      font-weight: 750;
+      overflow-wrap: anywhere;
+    }
+
+    /* Формы */
+    .field {
+      margin-bottom: 15px;
+    }
+
+    .field label,
+    .input-label {
+      display: block;
+      margin-bottom: 7px;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 650;
+    }
+
+    .field input,
+    .field select {
+      width: 100%;
+      min-height: 47px;
+      padding: 11px 13px;
+      border: 1px solid var(--line);
+      border-radius: 13px;
+      background: var(--input);
+      color: var(--text);
       outline: none;
       -webkit-appearance: none;
       appearance: none;
     }
 
-    input:focus, select:focus {
-      border-color: var(--primary);
+    .field input::placeholder {
+      color: var(--muted);
+      opacity: 0.75;
     }
 
-    .preset-grid {
+    .field input:focus,
+    .field select:focus {
+      border-color: var(--blue);
+    }
+
+    .field-hint {
+      margin: 7px 0 0;
+      color: var(--muted);
+      font-size: 11px;
+      line-height: 1.45;
+    }
+
+    .form-divider {
+      height: 1px;
+      margin: 19px 0;
+      background: var(--line);
+    }
+
+    .schedule-label {
+      margin: 0 0 10px;
+      font-size: 14px;
+      font-weight: 750;
+    }
+
+    /* План */
+    .segmented {
       display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 6px;
-      margin-top: 6px;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 3px;
+      margin-bottom: 16px;
+      padding: 4px;
+      border-radius: 14px;
+      background: var(--surface-soft);
     }
 
-    .btn-preset {
-      padding: 10px 4px;
-      border: 1px solid var(--card-border);
+    .segment {
+      min-height: 36px;
+      padding: 5px 2px;
+      border: 0;
       border-radius: 10px;
-      background: var(--input-bg);
-      color: var(--text);
-      font-size: 0.75rem;
+      background: transparent;
+      color: var(--muted);
+      font-size: 12px;
       font-weight: 700;
-      cursor: pointer;
     }
 
-    .chart-container {
+    .segment.active {
+      background: var(--surface);
+      color: var(--text);
+      box-shadow: 0 1px 5px rgba(21, 36, 62, 0.11);
+    }
+
+    .plan-value {
+      min-height: 108px;
+      padding: 14px;
+      border-radius: 16px;
+      background: var(--surface-soft);
+    }
+
+    .plan-value span {
+      display: block;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .plan-value strong {
+      display: block;
+      margin-top: 12px;
+      font-size: clamp(17px, 4.3vw, 22px);
+      font-weight: 770;
+      letter-spacing: -0.03em;
+      overflow-wrap: anywhere;
+    }
+
+    .plan-value strong.blue {
+      color: var(--blue);
+    }
+
+    .plan-explanation {
+      margin-top: 15px;
+      padding: 13px 14px;
+      border-radius: 13px;
+      background: var(--blue-soft);
+      color: var(--text);
+      font-size: 12px;
+      line-height: 1.55;
+    }
+
+    .tip-list {
+      display: grid;
+      gap: 11px;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      color: var(--text);
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    .tip-list li::before {
+      margin-right: 8px;
+      color: var(--blue);
+      content: "•";
+    }
+
+    /* График */
+    .chart-layout {
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 16px;
-      margin-top: 10px;
+      gap: 20px;
     }
 
-    .svg-donut {
+    .donut-wrap {
+      position: relative;
       flex-shrink: 0;
-      width: 130px;
-      height: 130px;
-      border-radius: 50%;
+      width: 142px;
+      height: 142px;
+    }
+
+    .donut {
+      width: 100%;
+      height: 100%;
       transform: rotate(-90deg);
     }
 
-    .chart-legend {
-      flex: 1;
-      min-width: 0;
-      width: 100%;
-    }
-
-    .chart-bar-row { margin-bottom: 10px; }
-
-    .chart-bar-label {
-      display: flex;
-      justify-content: space-between;
-      flex-wrap: wrap;
-      gap: 3px 8px;
-      margin-bottom: 4px;
-      font-size: 0.82rem;
-      font-weight: 600;
-    }
-
-    .chart-bar-track {
-      height: 8px;
-      overflow: hidden;
-      border: 1px solid rgba(255, 255, 255, 0.05);
-      border-radius: 6px;
-      background: var(--input-bg);
-    }
-
-    .chart-bar-fill {
-      height: 100%;
-      border-radius: 6px;
-      transition: width 0.5s ease;
-    }
-
-    .split-box {
-      padding: 14px;
-      margin-top: 12px;
-      border: 1px dashed rgba(59, 130, 246, 0.4);
-      border-radius: 14px;
-      background: rgba(59, 130, 246, 0.08);
-      font-size: 0.85rem;
-    }
-
-    .split-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 8px;
-      margin-bottom: 8px;
-      font-weight: 600;
-    }
-
-    .split-input {
-      width: 110px !important;
-      min-height: 36px !important;
-      padding: 6px 10px !important;
-      font-size: 16px !important;
-      text-align: right;
-    }
-
-    .recurring-box {
-      padding: 16px;
-      margin-bottom: 16px;
-      border: 1px solid rgba(16, 185, 129, 0.25);
-      border-radius: var(--radius-sm);
-      background: rgba(16, 185, 129, 0.06);
-    }
-
-    .recurring-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 8px;
-      margin-bottom: 12px;
-    }
-
-    .recurring-title {
-      color: #34d399;
-      font-size: 0.88rem;
-      font-weight: 800;
-    }
-
-    .bottom-nav {
-      position: fixed;
-      z-index: 100;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      display: flex;
-      justify-content: space-around;
-      align-items: center;
-      height: calc(var(--nav-base-height) + env(safe-area-inset-bottom));
-      padding-bottom: env(safe-area-inset-bottom);
-      border-top: 1px solid var(--card-border);
-      background: rgba(15, 23, 42, 0.94);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
-    }
-
-    .nav-item {
+    .donut-center {
+      position: absolute;
+      inset: 0;
       display: flex;
       flex-direction: column;
       justify-content: center;
       align-items: center;
-      width: 20%;
-      height: 100%;
-      border: none;
-      background: none;
-      color: var(--text-muted);
-      font-size: 0.72rem;
+      padding: 19px;
+      text-align: center;
+      pointer-events: none;
+    }
+
+    .donut-center strong {
+      max-width: 100%;
+      font-size: 13px;
+      font-weight: 780;
+      overflow-wrap: anywhere;
+    }
+
+    .donut-center span {
+      margin-top: 2px;
+      color: var(--muted);
+      font-size: 10px;
+    }
+
+    .chart-bars {
+      width: 100%;
+      min-width: 0;
+    }
+
+    .chart-row + .chart-row {
+      margin-top: 12px;
+    }
+
+    .chart-row-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 7px;
+      margin-bottom: 6px;
+      font-size: 11px;
+    }
+
+    .chart-row-head span {
+      min-width: 0;
+      overflow-wrap: anywhere;
+    }
+
+    .chart-row-head strong {
+      flex-shrink: 0;
       font-weight: 700;
-      cursor: pointer;
     }
 
-    .nav-item icon {
-      margin-bottom: 2px;
-      font-size: 1.35rem;
+    .chart-track {
+      height: 6px;
+      overflow: hidden;
+      border-radius: 6px;
+      background: var(--track);
     }
 
-    .nav-item.active { color: #60a5fa; }
+    .chart-fill {
+      height: 100%;
+      border-radius: inherit;
+    }
 
-    .modal-overlay {
+    /* Срок цели */
+    .presets {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 7px;
+      margin: 8px 0 16px;
+    }
+
+    .preset {
+      min-height: 39px;
+      padding: 6px 4px;
+      border: 1px solid var(--line);
+      border-radius: 11px;
+      background: var(--surface-soft);
+      color: var(--text);
+      font-size: 11px;
+      font-weight: 680;
+    }
+
+    /* Уведомления */
+    .notice {
+      margin-bottom: 14px;
+      padding: 13px 15px;
+      border-radius: 14px;
+      background: var(--red-soft);
+      color: var(--text);
+      font-size: 12px;
+      line-height: 1.5;
+    }
+
+    .notice.success {
+      background: var(--green-soft);
+    }
+
+    .notice.warning {
+      background: var(--blue-soft);
+    }
+
+    /* Нижняя панель */
+    .tabbar {
       position: fixed;
-      z-index: 200;
+      z-index: 50;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      padding:
+        8px max(10px, env(safe-area-inset-right))
+        max(9px, env(safe-area-inset-bottom))
+        max(10px, env(safe-area-inset-left));
+      border-top: 1px solid var(--line);
+      background: var(--nav-bg);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+    }
+
+    .tabbar-inner {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      max-width: 540px;
+      margin: 0 auto;
+    }
+
+    .tab-button {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      gap: 3px;
+      min-height: 53px;
+      padding: 4px 1px;
+      border: 0;
+      background: transparent;
+      color: var(--muted);
+      font-size: 10px;
+      font-weight: 650;
+    }
+
+    .tab-button.active {
+      color: var(--blue);
+    }
+
+    .tab-button svg {
+      width: 23px;
+      height: 23px;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 1.8;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    /* Модальные окна в виде iOS-листа */
+    .overlay {
+      position: fixed;
+      z-index: 100;
       inset: 0;
       display: flex;
       justify-content: center;
       align-items: flex-end;
-      background: rgba(0, 0, 0, 0.78);
-      backdrop-filter: blur(8px);
-      -webkit-backdrop-filter: blur(8px);
+      background: rgba(9, 15, 25, 0.48);
       opacity: 0;
+      visibility: hidden;
       pointer-events: none;
-      transition: opacity 0.25s ease;
+      transition: opacity 0.22s, visibility 0.22s;
     }
 
-    .modal-overlay.active {
+    .overlay.active {
       opacity: 1;
+      visibility: visible;
       pointer-events: auto;
     }
 
-    .modal {
+    .sheet {
       width: 100%;
-      max-width: 480px;
+      max-width: 540px;
       max-height: 88vh;
       max-height: 88dvh;
-      padding: 24px;
-      padding-bottom: calc(24px + env(safe-area-inset-bottom));
+      padding: 12px 20px calc(23px + env(safe-area-inset-bottom));
       overflow-y: auto;
-      border: 1px solid var(--card-border);
-      border-top-left-radius: 24px;
-      border-top-right-radius: 24px;
-      background: var(--card-solid);
+      border-radius: 26px 26px 0 0;
+      background: var(--surface);
+      color: var(--text);
       -webkit-overflow-scrolling: touch;
       transform: translateY(100%);
       transition: transform 0.3s ease;
     }
 
-    .modal-overlay.active .modal {
+    .overlay.active .sheet {
       transform: translateY(0);
     }
 
-    .modal-header {
+    .sheet-grabber {
+      width: 36px;
+      height: 5px;
+      margin: 0 auto 19px;
+      border-radius: 5px;
+      background: var(--line);
+    }
+
+    .sheet-head {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 18px;
+      gap: 10px;
+      margin-bottom: 17px;
     }
 
-    .modal-header h3 {
-      font-size: 1.15rem;
-      font-weight: 800;
+    .sheet-head h2 {
+      margin: 0;
+      font-size: 21px;
+      font-weight: 770;
+      letter-spacing: -0.035em;
     }
 
-    .modal-close {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      width: 34px;
-      height: 34px;
-      border: none;
+    .sheet-close {
+      display: grid;
+      flex-shrink: 0;
+      place-items: center;
+      width: 31px;
+      height: 31px;
+      border: 0;
       border-radius: 50%;
-      background: rgba(255, 255, 255, 0.08);
-      color: var(--text-muted);
-      font-size: 1.2rem;
-      cursor: pointer;
+      background: var(--surface-soft);
+      color: var(--muted);
+      font-size: 23px;
+      line-height: 1;
     }
 
-    .tab-content { display: none; }
-    .tab-content.active { display: block; }
+    .split-card {
+      margin: 4px 0 16px;
+      padding: 15px;
+      border-radius: 16px;
+      background: var(--blue-soft);
+    }
 
-    @media (min-width: 380px) {
-      .chart-container {
+    .split-title {
+      margin: 0 0 4px;
+      font-size: 13px;
+      font-weight: 750;
+    }
+
+    .split-caption {
+      margin: 0 0 14px;
+      color: var(--muted);
+      font-size: 11px;
+    }
+
+    .split-line {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      margin-top: 10px;
+      font-size: 12px;
+    }
+
+    .split-line strong {
+      text-align: right;
+    }
+
+    .split-line input {
+      width: 118px;
+      min-height: 40px;
+      padding: 8px;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      background: var(--surface);
+      color: var(--text);
+      text-align: right;
+      outline: none;
+    }
+
+    .sheet-actions {
+      display: grid;
+      gap: 9px;
+      margin-top: 18px;
+    }
+
+    @media (min-width: 390px) {
+      .chart-layout {
         flex-direction: row;
-        justify-content: space-around;
+        align-items: center;
       }
     }
 
-    @media (min-width: 480px) {
-      .modal-overlay {
+    @media (min-width: 600px) {
+      .overlay {
         align-items: center;
-        padding: 16px;
+        padding: 18px;
       }
 
-      .modal {
+      .sheet {
+        max-height: 85vh;
         padding-bottom: 24px;
-        border-radius: var(--radius);
-        transform: translateY(20px);
+        border-radius: 25px;
+        transform: translateY(18px);
       }
     }
 
     @media (max-width: 360px) {
-      .card { padding: 16px; }
-
-      .balance-input-row { flex-wrap: wrap; }
-
-      .balance-input-row input,
-      .balance-input-row .btn {
-        flex: 1 0 100%;
+      .card {
+        padding: 16px;
       }
 
-      .tx-left { gap: 7px; }
-      .tx-icon-chip { width: 36px; height: 36px; }
-      .tx-amount { font-size: 0.78rem; }
-      .goal-stats { font-size: 0.78rem; }
+      .balance-card {
+        padding: 19px;
+      }
+
+      .tx-side {
+        flex-direction: column;
+        align-items: flex-end;
+      }
+
+      .tx-amount {
+        font-size: 11px;
+      }
+
+      .tx-icon {
+        width: 35px;
+        height: 35px;
+      }
+
+      .stat-tile,
+      .plan-value {
+        padding: 12px;
+      }
+
+      .tab-button {
+        font-size: 9px;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *,
+      *::before,
+      *::after {
+        scroll-behavior: auto !important;
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.01ms !important;
+      }
     }
   </style>
 </head>
 
 <body>
-  <div class="container">
-    <header>
-      <div class="user-welcome">
-        <span id="userGreeting">Привет, Финансист</span> 👋
+  <main class="app">
+    <header class="topbar">
+      <div>
+        <p class="top-date" id="todayLabel"></p>
+        <h1>Финансы</h1>
+        <p class="top-greeting" id="userGreeting">Ваш личный бюджет</p>
       </div>
-      <div class="badge-byn">BYN (Br)</div>
+      <div class="avatar" id="userAvatar" aria-hidden="true">BYN</div>
     </header>
 
-    <!-- ОБЗОР -->
-    <div id="tab-dashboard" class="tab-content active">
-      <div id="storageWarning" class="alert alert-warning" style="display:none;">
-        ⚠️ Хранилище устройства недоступно или повреждено. Новые записи могут
-        исчезнуть после закрытия приложения.
-      </div>
-
-      <div class="card actual-balance-card">
-        <div class="card-title">
-          <span>💳 Актуальный баланс</span>
-          <span style="color:#34d399;">Без копилки</span>
-        </div>
-
-        <!-- ГЛАВНАЯ СУММА: только доступные деньги -->
-        <div id="actualBalanceTotal" class="actual-balance-main">0.00 BYN</div>
-
-        <div class="balance-line">
-          <span>🎯 В копилке цели</span>
-          <strong id="actualBalanceSaved" class="saved-value">0.00 BYN</strong>
-        </div>
-
-        <div class="balance-line">
-          <span>🧾 Всего вместе с копилкой</span>
-          <strong id="actualBalanceGross">0.00 BYN</strong>
-        </div>
-
-        <p class="balance-caption">
-          Большая сумма — деньги, доступные для трат. Копилка в неё не входит.
-          Запланированные зарплата и аванс не учитываются до их получения.
-        </p>
-
-        <form class="balance-form" onsubmit="setActualBalance(event)">
-          <label for="actualBalanceInput">
-            Уточнить актуальный баланс БЕЗ копилки (BYN)
-          </label>
-          <div class="balance-input-row">
-            <input
-              id="actualBalanceInput"
-              type="text"
-              inputmode="decimal"
-              autocomplete="off"
-              placeholder="Например: 400,00"
-              required
-            >
-            <button type="submit" class="btn btn-primary">Уточнить</button>
-          </div>
-          <p class="balance-caption">
-            Например: всего 500 BYN, из них 100 BYN в копилке —
-            введите здесь 400 BYN. Старые операции не удалятся.
-          </p>
-        </form>
-      </div>
-
-      <div class="card goal-card">
-        <div class="card-title">
-          <span>🎯 Накопление на цель</span>
-          <span id="goalDeadlineDays" style="color:#60a5fa;text-transform:none;">
-            -- дней
-          </span>
-        </div>
-
-        <h2 class="goal-title" id="goalNameDisplay">Моя цель</h2>
-        <div class="goal-amount" id="goalTargetDisplay">0 BYN</div>
-
-        <div class="progress-bar-bg">
-          <div class="progress-bar-fill" id="goalProgressBar"></div>
-        </div>
-
-        <div class="goal-stats">
-          <span>
-            В копилке:
-            <b id="goalSavedDisplay" style="color:#34d399;">0 BYN</b>
-          </span>
-          <span id="goalPercentDisplay" style="color:#fff;">0%</span>
-          <span>
-            Осталось:
-            <b id="goalRemainingDisplay" style="color:#f87171;">0 BYN</b>
-          </span>
-        </div>
-      </div>
-
-      <div id="alertContainer"></div>
-
-      <div class="grid-2" style="margin-bottom:16px;">
-        <div class="stat-card">
-          <div class="card-title" style="justify-content:center;margin-bottom:4px;">
-            🛡️ Безопасно / день
-          </div>
-          <div class="stat-value green" id="safeDailySpend">0 BYN</div>
-        </div>
-        <div class="stat-card">
-          <div class="card-title" style="justify-content:center;margin-bottom:4px;">
-            📌 План откладывания
-          </div>
-          <div class="stat-value blue" id="requiredDailySave">0 BYN</div>
-        </div>
-      </div>
-
-      <div class="card">
-        <div class="card-title">💰 Учтённые операции</div>
-
-        <div class="grid-2">
-          <div>
-            <label>Получено</label>
-            <div class="stat-value green" id="totalIncomeDisplay">0 BYN</div>
-          </div>
-          <div>
-            <label>Потрачено</label>
-            <div class="stat-value red" id="totalExpenseDisplay">0 BYN</div>
-          </div>
-        </div>
-
-        <p class="balance-caption">
-          Уточнение остатка:
-          <b id="balanceAdjustmentDisplay">0.00 BYN</b>.
-          Актуальный баланс = получено − потрачено + уточнение − копилка.
-        </p>
-      </div>
-
-      <div class="grid-2" style="margin-bottom:16px;">
-        <button type="button" class="btn btn-accent" onclick="openIncomeModal()">
-          ➕ Доход
-        </button>
-        <button type="button" class="btn btn-danger" onclick="openExpenseModal()">
-          ➖ Расход
-        </button>
-      </div>
-
-      <div class="card">
-        <div class="card-title">📋 Последние операции</div>
-        <div id="recentTransactionsList"></div>
-      </div>
+    <div id="storageWarning" class="notice" hidden>
+      Хранилище браузера недоступно или данные не удалось прочитать.
+      Новые записи могут не сохраниться после закрытия приложения.
+      По возможности сохраните резервную копию.
     </div>
 
-    <!-- ДОХОДЫ -->
-    <div id="tab-incomes" class="tab-content">
-      <div class="recurring-box">
-        <div class="recurring-header">
-          <div class="recurring-title">💼 Фиксированный доход (ЗП / Аванс)</div>
-          <span style="font-size:0.75rem;color:var(--text-muted);">
-            Ежемесячно
+    <!-- ОБЗОР -->
+    <section id="tab-dashboard" class="tab active">
+      <div class="balance-card">
+        <div class="balance-eyebrow">
+          <span>Актуальный баланс</span>
+          <span class="balance-pill">Без копилки</span>
+        </div>
+
+        <div class="balance-total" id="actualBalanceTotal">0,00 BYN</div>
+        <p class="balance-description">Деньги, доступные для трат</p>
+
+        <div class="balance-details">
+          <div>
+            <span class="balance-detail-label">В копилке</span>
+            <strong class="balance-detail-value" id="actualBalanceSaved">
+              0,00 BYN
+            </strong>
+          </div>
+          <div>
+            <span class="balance-detail-label">Всего с копилкой</span>
+            <strong class="balance-detail-value" id="actualBalanceGross">
+              0,00 BYN
+            </strong>
+          </div>
+        </div>
+
+        <button
+          type="button"
+          class="balance-adjust"
+          onclick="openBalanceModal()"
+        >
+          Уточнить остаток
+        </button>
+      </div>
+
+      <div id="alertContainer" style="margin-top:14px;"></div>
+
+      <div class="quick-actions">
+        <button
+          type="button"
+          class="quick-action income"
+          onclick="openIncomeModal()"
+        >
+          <span class="quick-sign" aria-hidden="true">+</span>
+          Доход
+        </button>
+        <button
+          type="button"
+          class="quick-action expense"
+          onclick="openExpenseModal()"
+        >
+          <span class="quick-sign" aria-hidden="true">−</span>
+          Расход
+        </button>
+      </div>
+
+      <div class="section-heading">
+        <h2>Ваша цель</h2>
+        <button
+          type="button"
+          class="text-link"
+          onclick="switchTab('goal-settings')"
+        >
+          Настроить →
+        </button>
+      </div>
+
+      <div class="card">
+        <div class="goal-top">
+          <div class="goal-icon" aria-hidden="true">◎</div>
+          <div class="goal-name-wrap">
+            <span class="goal-kicker">Накопление</span>
+            <strong class="goal-name" id="goalNameDisplay">
+              Моя финансовая цель
+            </strong>
+          </div>
+          <strong class="goal-percent" id="goalPercentDisplay">0%</strong>
+        </div>
+
+        <div class="goal-sums">
+          <strong class="goal-saved" id="goalSavedDisplay">0,00 BYN</strong>
+          <span class="goal-target">
+            из <span id="goalTargetDisplay">0,00 BYN</span>
           </span>
         </div>
 
-        <form onsubmit="saveRecurringIncome(event)">
-          <div class="grid-2" style="margin-bottom:10px;">
-            <div>
-              <label for="recAdvanceAmount">Аванс (BYN)</label>
+        <div
+          class="progress"
+          role="progressbar"
+          aria-label="Прогресс накопления"
+          aria-valuemin="0"
+          aria-valuemax="100"
+          aria-valuenow="0"
+          id="goalProgressTrack"
+        >
+          <div class="progress-fill" id="goalProgressBar"></div>
+        </div>
+
+        <div class="goal-foot">
+          <span id="goalDeadlineDays">Срок не выбран</span>
+          <span>
+            Осталось: <strong id="goalRemainingDisplay">0,00 BYN</strong>
+          </span>
+        </div>
+      </div>
+
+      <div class="section-heading">
+        <h2>Ориентиры</h2>
+      </div>
+
+      <div class="stats-grid">
+        <div class="stat-tile">
+          <span class="stat-label">Можно тратить в день</span>
+          <strong class="stat-number" id="safeDailySpend">0,00 BYN</strong>
+          <span class="stat-caption">Из текущего остатка</span>
+        </div>
+        <div class="stat-tile">
+          <span class="stat-label">Откладывать в день</span>
+          <strong class="stat-number blue" id="requiredDailySave">
+            0,00 BYN
+          </strong>
+          <span class="stat-caption">Чтобы успеть к цели</span>
+        </div>
+      </div>
+
+      <div class="section-heading">
+        <h2>Последние операции</h2>
+      </div>
+
+      <div class="card">
+        <div class="transaction-list" id="recentTransactionsList"></div>
+      </div>
+
+      <div class="section-heading">
+        <h2>Учёт</h2>
+      </div>
+
+      <div class="card">
+        <div class="info-row">
+          <span>Получено</span>
+          <strong id="totalIncomeDisplay">0,00 BYN</strong>
+        </div>
+        <div class="info-row">
+          <span>Потрачено</span>
+          <strong id="totalExpenseDisplay">0,00 BYN</strong>
+        </div>
+        <div class="info-row">
+          <span>Уточнение остатка</span>
+          <strong id="balanceAdjustmentDisplay">0,00 BYN</strong>
+        </div>
+        <p class="small-note">
+          Доступный баланс = получено − потрачено + уточнение − копилка.
+        </p>
+      </div>
+    </section>
+
+    <!-- ДОХОДЫ -->
+    <section id="tab-incomes" class="tab">
+      <h2 class="page-title">Доходы</h2>
+      <p class="page-subtitle">
+        Плановые выплаты не увеличивают баланс, пока вы не отметите,
+        что деньги действительно получены.
+      </p>
+
+      <div class="card">
+        <h3 class="card-title">Регулярные поступления</h3>
+
+        <form id="recurringForm" onsubmit="saveRecurringIncome(event)">
+          <p class="schedule-label">Аванс</p>
+          <div class="form-grid">
+            <div class="field">
+              <label for="recAdvanceAmount">Сумма · BYN</label>
               <input
-                type="number" step="0.01" min="0"
-                id="recAdvanceAmount" placeholder="400"
+                id="recAdvanceAmount"
+                type="text"
+                inputmode="decimal"
+                placeholder="400"
               >
             </div>
-            <div>
-              <label for="recAdvanceDay">День аванса</label>
+            <div class="field">
+              <label for="recAdvanceDay">День месяца</label>
               <input
-                type="number" min="1" max="31"
-                id="recAdvanceDay" placeholder="15"
+                id="recAdvanceDay"
+                type="number"
+                inputmode="numeric"
+                min="1"
+                max="31"
+                placeholder="15"
               >
             </div>
           </div>
 
-          <div class="grid-2" style="margin-bottom:12px;">
-            <div>
-              <label for="recSalaryAmount">Зарплата (BYN)</label>
+          <div class="form-divider"></div>
+
+          <p class="schedule-label">Зарплата</p>
+          <div class="form-grid">
+            <div class="field">
+              <label for="recSalaryAmount">Сумма · BYN</label>
               <input
-                type="number" step="0.01" min="0"
-                id="recSalaryAmount" placeholder="800"
+                id="recSalaryAmount"
+                type="text"
+                inputmode="decimal"
+                placeholder="800"
               >
             </div>
-            <div>
-              <label for="recSalaryDay">День зарплаты</label>
+            <div class="field">
+              <label for="recSalaryDay">День месяца</label>
               <input
-                type="number" min="1" max="31"
-                id="recSalaryDay" placeholder="30"
+                id="recSalaryDay"
+                type="number"
+                inputmode="numeric"
+                min="1"
+                max="31"
+                placeholder="30"
               >
             </div>
           </div>
 
-          <button type="submit" class="btn btn-accent">
-            Сохранить ЗП и Аванс
+          <button type="submit" class="btn btn-primary">
+            Сохранить расписание
           </button>
         </form>
 
-        <p id="recurringPlanNote" class="balance-caption"></p>
+        <p class="small-note" id="recurringPlanNote"></p>
+      </div>
+
+      <div class="section-heading">
+        <h2>Полученные деньги</h2>
       </div>
 
       <div class="card">
-        <div class="card-title">💵 Фактически полученные доходы</div>
         <button
           type="button"
-          class="btn btn-accent"
+          class="btn btn-green"
           onclick="openIncomeModal()"
-          style="margin-bottom:16px;"
+          style="margin-bottom:12px;"
         >
           + Добавить доход
         </button>
-        <div id="incomesList"></div>
+        <div class="transaction-list" id="incomesList"></div>
       </div>
-    </div>
+    </section>
 
     <!-- РАСХОДЫ -->
-    <div id="tab-expenses" class="tab-content">
+    <section id="tab-expenses" class="tab">
+      <h2 class="page-title">Расходы</h2>
+      <p class="page-subtitle">
+        Записывайте покупки, чтобы видеть реальный доступный остаток.
+      </p>
+
       <div class="card">
-        <div class="card-title">🛒 Управление расходами</div>
         <button
           type="button"
-          class="btn btn-danger"
+          class="btn btn-quiet"
           onclick="openExpenseModal()"
-          style="margin-bottom:16px;"
+          style="margin-bottom:12px;"
         >
           + Добавить расход
         </button>
-        <div id="expensesList"></div>
+        <div class="transaction-list" id="expensesList"></div>
       </div>
-    </div>
 
-    <!-- AI-ПЛАН -->
-    <div id="tab-ai-planner" class="tab-content">
-      <div class="period-selector">
+      <div class="section-heading">
+        <h2>По категориям</h2>
+      </div>
+
+      <div class="card" id="categoryChartContainer"></div>
+    </section>
+
+    <!-- ПЛАН -->
+    <section id="tab-ai-planner" class="tab">
+      <h2 class="page-title">План</h2>
+      <p class="page-subtitle">
+        Ориентир по тратам и накоплениям на основе ваших записей.
+      </p>
+
+      <div class="segmented" aria-label="Период планирования">
         <button
           type="button"
-          class="period-btn active"
-          onclick="setTimePeriod('day', this)"
+          class="segment active"
+          data-period="day"
+          onclick="setTimePeriod('day')"
         >День</button>
         <button
           type="button"
-          class="period-btn"
-          onclick="setTimePeriod('week', this)"
+          class="segment"
+          data-period="week"
+          onclick="setTimePeriod('week')"
         >Неделя</button>
         <button
           type="button"
-          class="period-btn"
-          onclick="setTimePeriod('month', this)"
+          class="segment"
+          data-period="month"
+          onclick="setTimePeriod('month')"
         >Месяц</button>
         <button
           type="button"
-          class="period-btn"
-          onclick="setTimePeriod('year', this)"
+          class="segment"
+          data-period="year"
+          onclick="setTimePeriod('year')"
         >Год</button>
       </div>
 
       <div class="card">
-        <div class="card-title">
-          🤖 AI Бюджет (<span id="periodTitle">День</span>)
-        </div>
+        <h3 class="card-title">
+          План на <span id="periodTitle">день</span>
+        </h3>
 
-        <div class="grid-2" style="margin-bottom:14px;">
-          <div class="stat-card">
-            <label>Лимит трат</label>
-            <div class="stat-value orange" id="aiSpendLimit">0 BYN</div>
+        <div class="plan-grid">
+          <div class="plan-value">
+            <span>Можно потратить</span>
+            <strong id="aiSpendLimit">0,00 BYN</strong>
           </div>
-          <div class="stat-card">
-            <label>Цель отложить</label>
-            <div class="stat-value blue" id="aiSaveTarget">0 BYN</div>
+          <div class="plan-value">
+            <span>Нужно отложить</span>
+            <strong class="blue" id="aiSaveTarget">0,00 BYN</strong>
           </div>
         </div>
 
-        <div
-          id="aiPlanAdvice"
-          style="font-size:0.85rem;line-height:1.4;color:var(--text-muted);background:var(--input-bg);padding:12px;border-radius:12px;border:1px solid var(--card-border);"
-        >
-          Анализ бюджета...
-        </div>
+        <div class="plan-explanation" id="aiPlanAdvice"></div>
+
+        <p class="small-note">
+          Лимит трат считается из денег, которые доступны сейчас.
+          Сумма «нужно отложить» — цель на будущее, а не деньги,
+          уже лежащие на счёте. Автоматических переводов нет.
+        </p>
+      </div>
+
+      <div class="section-heading">
+        <h2>Подсказки</h2>
       </div>
 
       <div class="card">
-        <div class="card-title">📊 График расходов по категориям</div>
-        <div id="categoryChartContainer"></div>
+        <ul class="tip-list" id="smartAdviceList"></ul>
       </div>
+    </section>
+
+    <!-- ЦЕЛЬ И ДАННЫЕ -->
+    <section id="tab-goal-settings" class="tab">
+      <h2 class="page-title">Цель</h2>
+      <p class="page-subtitle">
+        Настройте накопление и срок, к которому хотите прийти.
+      </p>
 
       <div class="card">
-        <div class="card-title">💡 Умные рекомендации AI</div>
-        <div id="smartAdviceList" style="font-size:0.85rem;line-height:1.5;"></div>
-      </div>
-    </div>
-
-    <!-- ЦЕЛЬ -->
-    <div id="tab-goal-settings" class="tab-content">
-      <div class="card">
-        <div class="card-title">⚙️ Настройка цели накопления</div>
+        <h3 class="card-title">Моя копилка</h3>
 
         <form id="goalForm" onsubmit="saveGoalSettings(event)">
-          <div class="form-group">
+          <div class="field">
             <label for="goalNameInput">Название цели</label>
             <input
-              type="text"
               id="goalNameInput"
+              type="text"
               required
-              placeholder="Например: Новый ноутбук"
+              placeholder="Например, новый ноутбук"
             >
           </div>
 
-          <div class="form-group">
-            <label for="goalTargetInput">Целевая сумма (BYN)</label>
+          <div class="field">
+            <label for="goalTargetInput">Нужно накопить · BYN</label>
             <input
-              type="number" step="0.01" min="1"
-              id="goalTargetInput" required placeholder="1000"
+              id="goalTargetInput"
+              type="text"
+              inputmode="decimal"
+              required
+              placeholder="1000"
             >
           </div>
 
-          <div class="form-group">
-            <label for="goalSavedInput">Уже в копилке (BYN)</label>
+          <div class="field">
+            <label for="goalSavedInput">Уже в копилке · BYN</label>
             <input
-              type="number" step="0.01" min="0"
-              id="goalSavedInput" placeholder="0"
+              id="goalSavedInput"
+              type="text"
+              inputmode="decimal"
+              placeholder="0"
             >
-            <p class="balance-caption">
-              Деньги в копилке вычитаются из актуального баланса.
+            <p class="field-hint">
+              Эта сумма не входит в актуальный баланс для трат.
             </p>
           </div>
 
-          <div class="form-group">
-            <label>Срок достижения (быстрый выбор)</label>
-            <div class="preset-grid">
-              <button type="button" class="btn-preset" onclick="applyPeriodPreset(30)">
-                1 мес (30 д)
-              </button>
-              <button type="button" class="btn-preset" onclick="applyPeriodPreset(60)">
-                2 мес (60 д)
-              </button>
-              <button type="button" class="btn-preset" onclick="applyPeriodPreset(90)">
-                3 мес (90 д)
-              </button>
-              <button type="button" class="btn-preset" onclick="applyPeriodPreset(180)">
-                6 мес (180 д)
-              </button>
-              <button type="button" class="btn-preset" onclick="applyPeriodPreset(270)">
-                9 мес (270 д)
-              </button>
-              <button type="button" class="btn-preset" onclick="applyPeriodPreset(360)">
-                12 мес (360 д)
-              </button>
-            </div>
+          <span class="input-label">Быстрый выбор срока</span>
+          <div class="presets">
+            <button type="button" class="preset" onclick="applyPeriodPreset(30)">
+              1 месяц
+            </button>
+            <button type="button" class="preset" onclick="applyPeriodPreset(60)">
+              2 месяца
+            </button>
+            <button type="button" class="preset" onclick="applyPeriodPreset(90)">
+              3 месяца
+            </button>
+            <button type="button" class="preset" onclick="applyPeriodPreset(180)">
+              6 месяцев
+            </button>
+            <button type="button" class="preset" onclick="applyPeriodPreset(270)">
+              9 месяцев
+            </button>
+            <button type="button" class="preset" onclick="applyPeriodPreset(360)">
+              12 месяцев
+            </button>
           </div>
 
-          <div class="form-group">
-            <label for="goalDeadlineInput">Дата дедлайна</label>
-            <input type="date" id="goalDeadlineInput" required>
+          <div class="field">
+            <label for="goalDeadlineInput">Дата достижения</label>
+            <input id="goalDeadlineInput" type="date" required>
           </div>
 
           <button type="submit" class="btn btn-primary">
-            Сохранить параметры цели
+            Сохранить цель
           </button>
         </form>
       </div>
+
+      <div class="section-heading">
+        <h2>Ваши данные</h2>
+      </div>
+
+      <div class="card">
+        <h3 class="card-title">Резервная копия</h3>
+        <p class="page-subtitle" style="margin:0 0 15px;">
+          Записи хранятся в браузере на этом устройстве.
+          Они не синхронизируются между телефонами.
+        </p>
+
+        <div class="form-grid">
+          <button
+            type="button"
+            class="btn btn-outline"
+            onclick="exportBackup()"
+          >
+            Сохранить копию
+          </button>
+          <button
+            type="button"
+            class="btn btn-outline"
+            onclick="document.getElementById('backupFile').click()"
+          >
+            Восстановить
+          </button>
+        </div>
+
+        <input
+          id="backupFile"
+          type="file"
+          accept=".json,application/json"
+          onchange="importBackup(event)"
+          hidden
+        >
+
+        <p class="small-note">
+          Копия содержит ваши финансовые записи — не передавайте
+          файл посторонним. Если Telegram не даёт сохранить файл,
+          откройте приложение в браузере телефона.
+        </p>
+      </div>
+    </section>
+  </main>
+
+  <!-- НИЖНЕЕ МЕНЮ -->
+  <nav class="tabbar" aria-label="Основные разделы">
+    <div class="tabbar-inner">
+      <button
+        type="button"
+        class="tab-button active"
+        data-tab="dashboard"
+        aria-current="page"
+        onclick="switchTab('dashboard')"
+      >
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M3 10.5 12 3l9 7.5V20a1 1 0 0 1-1 1h-5v-7H9v7H4a1 1 0 0 1-1-1z"/>
+        </svg>
+        <span>Обзор</span>
+      </button>
+
+      <button
+        type="button"
+        class="tab-button"
+        data-tab="incomes"
+        onclick="switchTab('incomes')"
+      >
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M12 20V4M6 10l6-6 6 6"/>
+          <path d="M4 20h16"/>
+        </svg>
+        <span>Доходы</span>
+      </button>
+
+      <button
+        type="button"
+        class="tab-button"
+        data-tab="expenses"
+        onclick="switchTab('expenses')"
+      >
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M12 4v16M6 14l6 6 6-6"/>
+          <path d="M4 4h16"/>
+        </svg>
+        <span>Расходы</span>
+      </button>
+
+      <button
+        type="button"
+        class="tab-button"
+        data-tab="ai-planner"
+        onclick="switchTab('ai-planner')"
+      >
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M4 19h16M6 15l4-5 4 3 4-7"/>
+          <path d="M18 6h-4M18 6v4"/>
+        </svg>
+        <span>План</span>
+      </button>
+
+      <button
+        type="button"
+        class="tab-button"
+        data-tab="goal-settings"
+        onclick="switchTab('goal-settings')"
+      >
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <circle cx="12" cy="12" r="8"/>
+          <circle cx="12" cy="12" r="4"/>
+          <circle cx="12" cy="12" r="1"/>
+        </svg>
+        <span>Цель</span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- УТОЧНЕНИЕ БАЛАНСА -->
+  <div class="overlay" id="balanceModal" aria-hidden="true">
+    <div
+      class="sheet"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="balanceModalHeading"
+    >
+      <div class="sheet-grabber"></div>
+      <div class="sheet-head">
+        <h2 id="balanceModalHeading">Уточнить баланс</h2>
+        <button
+          type="button"
+          class="sheet-close"
+          aria-label="Закрыть"
+          onclick="closeModal('balanceModal')"
+        >&times;</button>
+      </div>
+
+      <form onsubmit="setActualBalance(event)">
+        <div class="field">
+          <label for="actualBalanceInput">
+            Доступно для трат без копилки · BYN
+          </label>
+          <input
+            id="actualBalanceInput"
+            type="text"
+            inputmode="decimal"
+            autocomplete="off"
+            placeholder="Например, 400,00"
+            required
+          >
+          <p class="field-hint">
+            Если всего у вас 500 BYN, а в копилке 100 BYN,
+            укажите здесь 400 BYN.
+          </p>
+        </div>
+
+        <button type="submit" class="btn btn-primary">
+          Сохранить остаток
+        </button>
+        <p class="small-note">
+          Записанные ранее доходы и расходы не удалятся.
+        </p>
+      </form>
     </div>
   </div>
 
-  <!-- ДОБАВИТЬ ДОХОД -->
-  <div class="modal-overlay" id="incomeModal">
-    <div class="modal">
-      <div class="modal-header">
-        <h3>➕ Добавить доход</h3>
-        <button type="button" class="modal-close" onclick="closeIncomeModal()">
-          &times;
-        </button>
+  <!-- ДОХОД -->
+  <div class="overlay" id="incomeModal" aria-hidden="true">
+    <div
+      class="sheet"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="incomeModalHeading"
+    >
+      <div class="sheet-grabber"></div>
+      <div class="sheet-head">
+        <h2 id="incomeModalHeading">Добавить доход</h2>
+        <button
+          type="button"
+          class="sheet-close"
+          aria-label="Закрыть"
+          onclick="closeModal('incomeModal')"
+        >&times;</button>
       </div>
 
-      <form id="incomeForm">
-        <div class="form-group">
+      <form
+        id="incomeForm"
+        onsubmit="event.preventDefault(); submitIncome(false)"
+      >
+        <div class="field">
           <label for="incTitle">Название</label>
           <input
-            type="text"
             id="incTitle"
-            placeholder="Зарплата, Фриланс, Подарок"
+            type="text"
+            placeholder="Например, зарплата"
             required
           >
         </div>
 
-        <div class="form-group">
+        <div class="field">
           <label for="incSource">Источник</label>
           <select id="incSource">
-            <option value="Подработка / Фриланс">💻 Подработка / Фриланс</option>
-            <option value="Зарплата">💼 Зарплата</option>
-            <option value="Аванс">💼 Аванс</option>
-            <option value="Стипендия">🎓 Стипендия</option>
-            <option value="Подарок / Семья">🎁 Подарок / Семья</option>
-            <option value="Прочее">💵 Прочее</option>
+            <option value="Подработка / Фриланс">Подработка / Фриланс</option>
+            <option value="Зарплата">Зарплата</option>
+            <option value="Аванс">Аванс</option>
+            <option value="Стипендия">Стипендия</option>
+            <option value="Подарок / Семья">Подарок / Семья</option>
+            <option value="Прочее">Прочее</option>
           </select>
         </div>
 
-        <div class="form-group">
-          <label for="incAmount">Сумма дохода (BYN)</label>
+        <div class="field">
+          <label for="incAmount">Полученная сумма · BYN</label>
           <input
-            type="number"
-            step="0.01"
-            min="0.01"
             id="incAmount"
+            type="text"
+            inputmode="decimal"
             placeholder="300"
             required
             oninput="calculateIncomeSplit()"
           >
         </div>
 
-        <div class="split-box" id="incSplitBox" style="display:none;">
-          <div
-            style="font-weight:800;color:#60a5fa;margin-bottom:8px;display:flex;justify-content:space-between;align-items:center;gap:8px;"
-          >
-            <span>🤖 AI Распределение дохода</span>
-            <span
-              id="splitRatioLabel"
-              style="font-size:0.75rem;color:var(--text-muted);"
-            >
-              30% на цель
-            </span>
-          </div>
+        <div class="split-card" id="incSplitBox" hidden>
+          <p class="split-title">Распределение дохода</p>
+          <p class="split-caption" id="splitRatioLabel">
+            Рекомендация по вашему плану
+          </p>
 
-          <div class="split-row">
-            <span>Отложить на цель:</span>
+          <div class="split-line">
+            <label for="incSaveAmount" style="margin:0;">
+              Отложить в копилку
+            </label>
             <input
-              type="number"
-              step="0.01"
-              min="0"
               id="incSaveAmount"
-              class="split-input"
+              type="text"
+              inputmode="decimal"
+              placeholder="0"
               oninput="updateSplitButtonsText()"
             >
           </div>
 
-          <div class="split-row" style="margin-bottom:0;">
-            <span>Свободно на расходы:</span>
-            <b id="splitSpendVal" style="color:#fff;">0.00 BYN</b>
+          <div class="split-line">
+            <span>Останется для трат</span>
+            <strong id="splitSpendVal">0,00 BYN</strong>
           </div>
         </div>
 
-        <div class="form-group" style="margin-top:12px;">
-          <label for="incDate">Дата</label>
-          <input type="date" id="incDate" required>
+        <div class="field">
+          <label for="incDate">Дата получения</label>
+          <input id="incDate" type="date" required>
         </div>
 
-        <div style="display:flex;flex-direction:column;gap:8px;margin-top:16px;">
+        <div class="sheet-actions">
           <button
             type="button"
-            class="btn btn-accent"
+            class="btn btn-green"
             id="btnSaveAndDeposit"
             onclick="submitIncome(true)"
           >
-            🎯 Отложить на цель
+            Отложить в копилку
           </button>
-
           <button
             type="button"
-            class="btn btn-secondary"
+            class="btn btn-quiet"
             id="btnJustAdd"
             onclick="submitIncome(false)"
           >
-            💵 Просто добавить без откладывания
+            Добавить без откладывания
           </button>
         </div>
       </form>
     </div>
   </div>
 
-  <!-- ДОБАВИТЬ РАСХОД -->
-  <div class="modal-overlay" id="expenseModal">
-    <div class="modal">
-      <div class="modal-header">
-        <h3>➖ Добавить расход</h3>
-        <button type="button" class="modal-close" onclick="closeExpenseModal()">
-          &times;
-        </button>
+  <!-- РАСХОД -->
+  <div class="overlay" id="expenseModal" aria-hidden="true">
+    <div
+      class="sheet"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="expenseModalHeading"
+    >
+      <div class="sheet-grabber"></div>
+      <div class="sheet-head">
+        <h2 id="expenseModalHeading">Добавить расход</h2>
+        <button
+          type="button"
+          class="sheet-close"
+          aria-label="Закрыть"
+          onclick="closeModal('expenseModal')"
+        >&times;</button>
       </div>
 
-      <form onsubmit="handleAddExpense(event)">
-        <div class="form-group">
+      <form id="expenseForm" onsubmit="handleAddExpense(event)">
+        <div class="field">
           <label for="expTitle">Название</label>
           <input
-            type="text"
             id="expTitle"
-            placeholder="Продукты, Проезд, Кафе..."
+            type="text"
+            placeholder="Например, продукты"
             required
           >
         </div>
 
-        <div class="form-group">
+        <div class="field">
           <label for="expCategory">Категория</label>
           <select id="expCategory">
-            <option value="Еда и продукты">🍔 Еда и продукты</option>
-            <option value="Транспорт">🚌 Транспорт</option>
-            <option value="Развлечения">🎬 Развлечения</option>
-            <option value="Покупки">🛍️ Покупки</option>
-            <option value="Подписки">📱 Подписки</option>
-            <option value="Образование">📚 Образование</option>
-            <option value="Здоровье">🏥 Здоровье</option>
-            <option value="Прочее">📦 Прочее</option>
+            <option value="Еда и продукты">Еда и продукты</option>
+            <option value="Транспорт">Транспорт</option>
+            <option value="Развлечения">Развлечения</option>
+            <option value="Покупки">Покупки</option>
+            <option value="Подписки">Подписки</option>
+            <option value="Образование">Образование</option>
+            <option value="Здоровье">Здоровье</option>
+            <option value="Прочее">Прочее</option>
           </select>
         </div>
 
-        <div class="form-group">
-          <label for="expAmount">Сумма (BYN)</label>
+        <div class="field">
+          <label for="expAmount">Сумма · BYN</label>
           <input
-            type="number" step="0.01" min="0.01"
-            id="expAmount" placeholder="15" required
+            id="expAmount"
+            type="text"
+            inputmode="decimal"
+            placeholder="15"
+            required
           >
         </div>
 
-        <div class="form-group" style="margin-top:12px;">
-          <label for="expDate">Дата</label>
-          <input type="date" id="expDate" required>
+        <div class="field">
+          <label for="expDate">Дата расхода</label>
+          <input id="expDate" type="date" required>
         </div>
 
-        <button type="submit" class="btn btn-danger">
+        <button type="submit" class="btn btn-primary">
           Сохранить расход
         </button>
       </form>
     </div>
   </div>
 
-  <!-- НИЖНЕЕ МЕНЮ -->
-  <nav class="bottom-nav">
-    <button
-      type="button"
-      class="nav-item active"
-      onclick="switchTab('dashboard', this)"
-    >
-      <icon>📊</icon><span>Обзор</span>
-    </button>
-    <button
-      type="button"
-      class="nav-item"
-      onclick="switchTab('incomes', this)"
-    >
-      <icon>💵</icon><span>Доходы</span>
-    </button>
-    <button
-      type="button"
-      class="nav-item"
-      onclick="switchTab('expenses', this)"
-    >
-      <icon>🛒</icon><span>Расходы</span>
-    </button>
-    <button
-      type="button"
-      class="nav-item"
-      onclick="switchTab('ai-planner', this)"
-    >
-      <icon>🤖</icon><span>AI План</span>
-    </button>
-    <button
-      type="button"
-      class="nav-item"
-      onclick="switchTab('goal-settings', this)"
-    >
-      <icon>⚙️</icon><span>Цель</span>
-    </button>
-  </nav>
-
   <script>
     /*
-      КЛЮЧ ХРАНЕНИЯ НЕ МЕНЯЕМ:
-      данные пользователей предыдущей версии остаются на месте.
+      Сохраняем ТОТ ЖЕ ключ, который использовался в предыдущем файле.
+      Никаких демонстрационных доходов или расходов здесь нет.
     */
     const STORAGE_KEY = 'byn_fin_planner_goal_split_v2';
 
@@ -1333,8 +2011,7 @@
           const raw = window.localStorage.getItem(key);
           return raw === null ? fallback : JSON.parse(raw);
         } catch (error) {
-          // Не перезаписываем старую запись пустыми данными,
-          // если её не удалось прочитать.
+          // Старую повреждённую запись не перезаписываем пустым состоянием.
           this._readFailed = true;
           return fallback;
         }
@@ -1361,7 +2038,6 @@
       const year = date.getFullYear();
       const month = String(date.getMonth() + 1).padStart(2, '0');
       const day = String(date.getDate()).padStart(2, '0');
-
       return `${year}-${month}-${day}`;
     }
 
@@ -1390,8 +2066,82 @@
         !Array.isArray(value);
     }
 
-    function loadState() {
-      const defaults = {
+    function toNumber(value) {
+      if (value === null || value === undefined || value === '') {
+        return 0;
+      }
+
+      const normalized = typeof value === 'string'
+        ? value.replace(/[\s\u00a0\u202f]/g, '').replace(',', '.')
+        : value;
+
+      const number = Number(normalized);
+      return Number.isFinite(number) ? number : 0;
+    }
+
+    function toCents(value) {
+      const cents = Math.round(toNumber(value) * 100);
+      return cents === 0 ? 0 : cents;
+    }
+
+    function roundBYN(value) {
+      return toCents(value) / 100;
+    }
+
+    /*
+      Принимает "100.50" и "100,50".
+      Ошибочный ввод НЕ превращается незаметно в ноль.
+    */
+    function parseMoney(raw, options = {}) {
+      const value = String(raw ?? '')
+        .trim()
+        .replace(/[\s\u00a0\u202f]/g, '')
+        .replace(',', '.');
+
+      if (!value && options.emptyAsZero) {
+        return 0;
+      }
+
+      if (!/^-?(?:\d+(?:\.\d{1,2})?|\.\d{1,2})$/.test(value)) {
+        return null;
+      }
+
+      const number = Number(value);
+
+      if (
+        !Number.isFinite(number) ||
+        (!options.allowNegative && number < 0)
+      ) {
+        return null;
+      }
+
+      return roundBYN(number);
+    }
+
+    function inputMoney(value) {
+      return String(roundBYN(value)).replace('.', ',');
+    }
+
+    const moneyFormatter = new Intl.NumberFormat('ru-BY', {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2
+    });
+
+    function byn(value) {
+      return `${moneyFormatter.format(roundBYN(value))} BYN`;
+    }
+
+    function escapeHtml(value) {
+      return String(value ?? '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+    }
+
+    function makeDefaults() {
+      return {
         ...CLEAN_DATA,
         goal: { ...CLEAN_DATA.goal },
         recurring: {
@@ -1401,8 +2151,10 @@
         incomes: [],
         expenses: []
       };
+    }
 
-      const stored = SafeStore.get(STORAGE_KEY, null);
+    function normalizeState(stored) {
+      const defaults = makeDefaults();
 
       if (!isRecord(stored)) {
         return defaults;
@@ -1448,110 +2200,172 @@
           ? stored.expenses
           : [],
 
-        balanceAdjustment:
-          Number.isFinite(Number(stored.balanceAdjustment))
-            ? Number(stored.balanceAdjustment)
-            : 0
+        balanceAdjustment: toNumber(stored.balanceAdjustment)
       };
     }
 
-    let appState = loadState();
+    const storedState = SafeStore.get(STORAGE_KEY, null);
+
+    if (storedState !== null && !isRecord(storedState)) {
+      SafeStore._readFailed = true;
+    }
+
+    let appState = normalizeState(storedState);
     let activePeriod = 'day';
+    let editingIncomeId = null;
+    let editingExpenseId = null;
 
     const CAT_COLORS = {
-      'Еда и продукты': '#3b82f6',
-      'Транспорт': '#10b981',
-      'Развлечения': '#f59e0b',
-      'Покупки': '#ec4899',
-      'Подписки': '#8b5cf6',
-      'Образование': '#06b6d4',
-      'Здоровье': '#f43f5e',
-      'Прочее': '#64748b'
+      'Еда и продукты': '#588fee',
+      'Транспорт': '#46b89b',
+      'Развлечения': '#edb261',
+      'Покупки': '#dd82aa',
+      'Подписки': '#9b87df',
+      'Образование': '#63b7ca',
+      'Здоровье': '#e87980',
+      'Прочее': '#94a3b8'
     };
 
-    function toNumber(value) {
-      const number = Number(value);
-      return Number.isFinite(number) ? number : 0;
+    function categoryColor(category) {
+      return Object.prototype.hasOwnProperty.call(CAT_COLORS, category)
+        ? CAT_COLORS[category]
+        : '#94a3b8';
     }
 
-    function roundBYN(value) {
-      return Math.round((value + Number.EPSILON) * 100) / 100;
-    }
+    function categoryIcon(category) {
+      const value = String(category || '');
 
-    function byn(value) {
-      return `${toNumber(value).toFixed(2)} BYN`;
-    }
-
-    function sumAmounts(items) {
-      return (Array.isArray(items) ? items : []).reduce(
-        (sum, item) => sum + toNumber(item && item.amount),
-        0
-      );
-    }
-
-    function escapeHtml(value) {
-      return String(value ?? '')
-        .replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;')
-        .replace(/"/g, '&quot;')
-        .replace(/'/g, '&#039;');
-    }
-
-    function getCategoryIcon(category) {
-      const cat = String(category || '');
-
-      if (cat.includes('Еда')) return '🍔';
-      if (cat.includes('Транспорт')) return '🚌';
-      if (cat.includes('Развлечения')) return '🎬';
-      if (cat.includes('Покупки')) return '🛍️';
-      if (cat.includes('Подписки')) return '📱';
-      if (cat.includes('Образование')) return '📚';
-      if (cat.includes('Здоровье')) return '🏥';
-
+      if (value.includes('Еда')) return '🍽️';
+      if (value.includes('Транспорт')) return '🚕';
+      if (value.includes('Развлечения')) return '🎟️';
+      if (value.includes('Покупки')) return '🛍️';
+      if (value.includes('Подписки')) return '📱';
+      if (value.includes('Образование')) return '📚';
+      if (value.includes('Здоровье')) return '💊';
       return '📦';
     }
 
-    function getSourceIcon(source) {
-      const src = String(source || '');
+    function sourceIcon(source) {
+      const value = String(source || '');
 
-      if (src.includes('Стипендия')) return '🎓';
-      if (src.includes('Зарплата') || src.includes('Аванс')) return '💼';
-      if (src.includes('Фриланс')) return '💻';
-      if (src.includes('Подарок')) return '🎁';
-
+      if (value.includes('Зарплата') || value.includes('Аванс')) {
+        return '💼';
+      }
+      if (value.includes('Стипендия')) return '🎓';
+      if (value.includes('Фриланс')) return '💻';
+      if (value.includes('Подарок')) return '🎁';
       return '💵';
     }
 
-    document.addEventListener('DOMContentLoaded', () => {
-      initTelegram();
-      initDates();
+    function displayDate(iso) {
+      const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(String(iso || ''));
 
-      if (SafeStore._readFailed) {
-        document.getElementById('storageWarning').style.display = 'flex';
+      if (!match) {
+        return String(iso || 'Дата не указана');
       }
 
+      const date = new Date(
+        Number(match[1]),
+        Number(match[2]) - 1,
+        Number(match[3])
+      );
+
+      return new Intl.DateTimeFormat('ru-BY', {
+        day: 'numeric',
+        month: 'short'
+      }).format(date);
+    }
+
+    function daysUntil(deadline) {
+      const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(
+        String(deadline || '')
+      );
+
+      if (!match) return 0;
+
+      const now = new Date();
+
+      const todayUTC = Date.UTC(
+        now.getFullYear(),
+        now.getMonth(),
+        now.getDate()
+      );
+
+      const deadlineUTC = Date.UTC(
+        Number(match[1]),
+        Number(match[2]) - 1,
+        Number(match[3])
+      );
+
+      return Math.round((deadlineUTC - todayUTC) / 86400000);
+    }
+
+    function dayWord(number) {
+      const last = number % 10;
+      const lastTwo = number % 100;
+
+      if (last === 1 && lastTwo !== 11) return 'день';
+      if (
+        last >= 2 &&
+        last <= 4 &&
+        (lastTwo < 12 || lastTwo > 14)
+      ) {
+        return 'дня';
+      }
+
+      return 'дней';
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      document.getElementById('todayLabel').textContent =
+        new Intl.DateTimeFormat('ru-BY', {
+          weekday: 'long',
+          day: 'numeric',
+          month: 'long'
+        }).format(new Date());
+
+      initDates();
+      initTelegram();
+      updateStorageWarning();
       renderAll();
+
+      document.querySelectorAll('.overlay').forEach(overlay => {
+        overlay.addEventListener('click', event => {
+          if (event.target === overlay) {
+            closeModal(overlay.id);
+          }
+        });
+      });
+
+      document.addEventListener('keydown', event => {
+        if (event.key === 'Escape') {
+          document.querySelectorAll('.overlay.active').forEach(overlay => {
+            closeModal(overlay.id);
+          });
+        }
+      });
     });
 
     function initTelegram() {
-      if (window.Telegram && window.Telegram.WebApp) {
-        const tg = window.Telegram.WebApp;
+      const tg = window.Telegram && window.Telegram.WebApp;
 
-        try {
-          tg.ready();
-          tg.expand();
-        } catch (error) {
-          // В обычном браузере приложение работает без Telegram.
-        }
+      if (!tg) return;
 
-        if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
-          const firstName =
-            tg.initDataUnsafe.user.first_name || 'Финансист';
+      try {
+        tg.ready();
+        tg.expand();
+      } catch (error) {
+        // В обычном браузере приложение работает без Telegram.
+      }
 
-          document.getElementById('userGreeting').textContent =
-            `Привет, ${firstName}`;
-        }
+      const user = tg.initDataUnsafe && tg.initDataUnsafe.user;
+
+      if (user && user.first_name) {
+        document.getElementById('userGreeting').textContent =
+          `Привет, ${user.first_name}`;
+
+        document.getElementById('userAvatar').textContent =
+          String(user.first_name).slice(0, 1).toLocaleUpperCase('ru-RU');
       }
     }
 
@@ -1566,163 +2380,114 @@
       }
     }
 
+    function updateStorageWarning(show = SafeStore._readFailed) {
+      document.getElementById('storageWarning').hidden = !show;
+    }
+
     function saveData() {
       const savedPermanently = SafeStore.set(STORAGE_KEY, appState);
-
-      document.getElementById('storageWarning').style.display =
-        savedPermanently ? 'none' : 'flex';
-
+      updateStorageWarning(!savedPermanently);
       renderAll();
+      return savedPermanently;
     }
 
     /*
-      Расчёт баланса:
-
-      Всего с копилкой =
-        полученные доходы − расходы + уточнение.
-
-      Актуальный баланс БЕЗ копилки =
-        всего с копилкой − сумма в копилке.
-
-      Сумму копилки не прибавляем к доходам повторно.
+      Общая сумма включает копилку.
+      Актуальный баланс для трат НЕ включает копилку.
+      Зарплата и аванс из расписания не считаются полученными деньгами.
     */
     function getActualBalances() {
-      const income = roundBYN(sumAmounts(appState.incomes));
-      const expense = roundBYN(sumAmounts(appState.expenses));
-      const recorded = roundBYN(income - expense);
-
-      const gross = roundBYN(
-        recorded + toNumber(appState.balanceAdjustment)
+      const incomeCents = appState.incomes.reduce(
+        (sum, item) => sum + toCents(item && item.amount),
+        0
       );
 
-      const saved = roundBYN(
-        Math.max(0, toNumber(appState.goal.saved))
+      const expenseCents = appState.expenses.reduce(
+        (sum, item) => sum + toCents(item && item.amount),
+        0
       );
 
-      const available = roundBYN(gross - saved);
+      const recordedCents = incomeCents - expenseCents;
+      const grossCents =
+        recordedCents + toCents(appState.balanceAdjustment);
+
+      const savedCents = Math.max(
+        0,
+        toCents(appState.goal.saved)
+      );
 
       return {
-        income,
-        expense,
-        recorded,
-        gross,
-        saved,
-        available
+        income: incomeCents / 100,
+        expense: expenseCents / 100,
+        recorded: recordedCents / 100,
+        gross: grossCents / 100,
+        saved: savedCents / 100,
+        available: (grossCents - savedCents) / 100
       };
-    }
-
-    function getDaysLeft(deadline) {
-      const today = new Date();
-
-      const startUTC = Date.UTC(
-        today.getFullYear(),
-        today.getMonth(),
-        today.getDate()
-      );
-
-      const match =
-        /^(\d{4})-(\d{2})-(\d{2})$/.exec(String(deadline || ''));
-
-      if (!match) return 1;
-
-      const endUTC = Date.UTC(
-        Number(match[1]),
-        Number(match[2]) - 1,
-        Number(match[3])
-      );
-
-      return Math.max(
-        1,
-        Math.round((endUTC - startUTC) / 86400000)
-      );
     }
 
     function calc() {
       const balances = getActualBalances();
-
-      // Плановые выплаты НЕ добавляем к актуальному балансу.
-      const recurringMonthlyTotal =
-        toNumber(appState.recurring.advance.amount) +
-        toNumber(appState.recurring.salary.amount);
-
-      const target = Math.max(
-        0,
-        toNumber(appState.goal.target)
-      );
-
-      const goalSaved = balances.saved;
-
+      const target = Math.max(0, roundBYN(appState.goal.target));
       const remainingTarget = Math.max(
         0,
-        target - goalSaved
+        roundBYN(target - balances.saved)
       );
 
-      const daysLeft = getDaysLeft(appState.goal.deadline);
-      const requiredDailySave = remainingTarget / daysLeft;
+      const rawDaysLeft = daysUntil(appState.goal.deadline);
+      const daysLeft = Math.max(1, rawDaysLeft);
 
-      const safeDailySpend =
-        Math.max(0, balances.available) / daysLeft;
-
-      const progressPercent = target > 0
-        ? Math.min(
-            100,
-            Math.round((goalSaved / target) * 100)
-          )
-        : 0;
+      const recurringMonthlyTotal =
+        roundBYN(appState.recurring.advance.amount) +
+        roundBYN(appState.recurring.salary.amount);
 
       return {
         totalIncome: balances.income,
         totalExpense: balances.expense,
-        recurringMonthlyTotal,
-
-        balanceAdjustment:
-          toNumber(appState.balanceAdjustment),
-
         grossBalance: balances.gross,
-
-        // Именно этот баланс показываем крупно:
         freeBalance: balances.available,
-
-        goalSaved,
+        goalSaved: balances.saved,
         target,
         remainingTarget,
+        rawDaysLeft,
         daysLeft,
-        progressPercent,
-        requiredDailySave,
-        safeDailySpend
+        recurringMonthlyTotal,
+        balanceAdjustment: roundBYN(appState.balanceAdjustment),
+
+        requiredDailySave: remainingTarget / daysLeft,
+        safeDailySpend:
+          Math.max(0, balances.available) / daysLeft,
+
+        progressPercent: target > 0
+          ? Math.min(
+              100,
+              Math.round((balances.saved / target) * 100)
+            )
+          : 0
       };
-    }
-
-    function renderActualBalance(c) {
-      const main = document.getElementById('actualBalanceTotal');
-
-      // Большая сумма — БЕЗ копилки.
-      main.textContent = byn(c.freeBalance);
-      main.classList.toggle('negative', c.freeBalance < 0);
-
-      document.getElementById('actualBalanceSaved').textContent =
-        byn(c.goalSaved);
-
-      const gross = document.getElementById('actualBalanceGross');
-
-      // Отдельная справочная строка — ВМЕСТЕ с копилкой.
-      gross.textContent = byn(c.grossBalance);
-      gross.classList.toggle('negative', c.grossBalance < 0);
     }
 
     function renderAll() {
       const c = calc();
 
-      renderActualBalance(c);
+      const balance = document.getElementById('actualBalanceTotal');
+      balance.textContent = byn(c.freeBalance);
+      balance.classList.toggle('negative', c.freeBalance < 0);
+
+      document.getElementById('actualBalanceSaved').textContent =
+        byn(c.goalSaved);
+
+      document.getElementById('actualBalanceGross').textContent =
+        byn(c.grossBalance);
 
       document.getElementById('goalNameDisplay').textContent =
         appState.goal.name || 'Моя финансовая цель';
 
-      document.getElementById('goalTargetDisplay').textContent =
-        byn(c.target);
-
       document.getElementById('goalSavedDisplay').textContent =
         byn(c.goalSaved);
+
+      document.getElementById('goalTargetDisplay').textContent =
+        byn(c.target);
 
       document.getElementById('goalRemainingDisplay').textContent =
         byn(c.remainingTarget);
@@ -1733,8 +2498,17 @@
       document.getElementById('goalProgressBar').style.width =
         `${c.progressPercent}%`;
 
+      document.getElementById('goalProgressTrack').setAttribute(
+        'aria-valuenow',
+        String(c.progressPercent)
+      );
+
       document.getElementById('goalDeadlineDays').textContent =
-        `⏳ ${c.daysLeft} дн.`;
+        c.rawDaysLeft < 0
+          ? 'Срок прошёл'
+          : c.rawDaysLeft === 0
+            ? 'Срок сегодня'
+            : `Ещё ${c.rawDaysLeft} ${dayWord(c.rawDaysLeft)}`;
 
       document.getElementById('safeDailySpend').textContent =
         byn(c.safeDailySpend);
@@ -1755,37 +2529,562 @@
         appState.goal.name || '';
 
       document.getElementById('goalTargetInput').value =
-        c.target;
+        inputMoney(c.target);
 
       document.getElementById('goalSavedInput').value =
-        c.goalSaved;
+        inputMoney(c.goalSaved);
 
       document.getElementById('goalDeadlineInput').value =
         appState.goal.deadline || '';
 
       document.getElementById('recAdvanceAmount').value =
-        appState.recurring.advance.amount || '';
+        toNumber(appState.recurring.advance.amount) > 0
+          ? inputMoney(appState.recurring.advance.amount)
+          : '';
 
       document.getElementById('recAdvanceDay').value =
         appState.recurring.advance.day || 15;
 
       document.getElementById('recSalaryAmount').value =
-        appState.recurring.salary.amount || '';
+        toNumber(appState.recurring.salary.amount) > 0
+          ? inputMoney(appState.recurring.salary.amount)
+          : '';
 
       document.getElementById('recSalaryDay').value =
         appState.recurring.salary.day || 30;
 
-      document.getElementById('recurringPlanNote').textContent =
-        `План на месяц: ${byn(c.recurringMonthlyTotal)}. ` +
-        'Когда зарплата или аванс действительно придут, нажмите ' +
-        '«+ Добавить доход», чтобы они вошли в актуальный баланс.';
-
+      renderRecurringNote(c);
       renderAlerts(c);
       renderRecentTransactions();
       renderIncomesList();
       renderExpensesList();
-      renderAIPlanner(c);
       renderCategoryChart();
+      renderPlanner(c);
+    }
+
+    function nextPlannedPayment() {
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+
+      const payments = [
+        {
+          name: 'аванс',
+          amount: toNumber(appState.recurring.advance.amount),
+          day: toNumber(appState.recurring.advance.day)
+        },
+        {
+          name: 'зарплата',
+          amount: toNumber(appState.recurring.salary.amount),
+          day: toNumber(appState.recurring.salary.day)
+        }
+      ];
+
+      const upcoming = payments
+        .filter(item => item.amount > 0)
+        .map(item => {
+          for (let monthOffset = 0; monthOffset <= 1; monthOffset++) {
+            const year = today.getFullYear();
+            const month = today.getMonth() + monthOffset;
+
+            const lastDay = new Date(
+              year,
+              month + 1,
+              0
+            ).getDate();
+
+            const date = new Date(
+              year,
+              month,
+              Math.min(
+                Math.max(1, item.day || 1),
+                lastDay
+              )
+            );
+
+            if (date >= today) {
+              return { ...item, date };
+            }
+          }
+
+          return null;
+        })
+        .filter(Boolean)
+        .sort((a, b) => a.date - b.date);
+
+      return upcoming[0] || null;
+    }
+
+    function renderRecurringNote(c) {
+      const note = document.getElementById('recurringPlanNote');
+
+      if (c.recurringMonthlyTotal <= 0) {
+        note.textContent =
+          'Укажите суммы и дни выплат. Это расписание, а не автоматическое зачисление денег.';
+        return;
+      }
+
+      const next = nextPlannedPayment();
+
+      const nextText = next
+        ? ` Ближайшее по плану: ${next.name} ` +
+          `${new Intl.DateTimeFormat('ru-BY', {
+            day: 'numeric',
+            month: 'long'
+          }).format(next.date)} — ${byn(next.amount)}.`
+        : '';
+
+      note.textContent =
+        `План: ${byn(c.recurringMonthlyTotal)} в месяц.` +
+        nextText +
+        ' Когда деньги придут, добавьте их как доход.';
+    }
+
+    function renderAlerts(c) {
+      const messages = [];
+
+      if (c.grossBalance < 0) {
+        messages.push(
+          '<div class="notice">Общий остаток отрицательный. ' +
+          'Проверьте операции или уточните баланс.</div>'
+        );
+      } else if (c.freeBalance < 0) {
+        messages.push(
+          '<div class="notice">В копилке указано больше денег, ' +
+          'чем есть на общем остатке. Уточните баланс без копилки ' +
+          'или проверьте сумму накоплений.</div>'
+        );
+      }
+
+      if (c.remainingTarget > 0 && c.rawDaysLeft < 0) {
+        messages.push(
+          '<div class="notice warning">Срок цели прошёл. ' +
+          'Выберите новую дату, чтобы план снова был актуальным.</div>'
+        );
+      }
+
+      if (c.progressPercent >= 100) {
+        messages.push(
+          '<div class="notice success">Цель достигнута. ' +
+          'Поздравляем с накоплением!</div>'
+        );
+      }
+
+      document.getElementById('alertContainer').innerHTML =
+        messages.join('');
+    }
+
+    function validItems(items) {
+      return items.filter(isRecord);
+    }
+
+    function transactionHtml(item, type, withActions) {
+      const isIncome = type === 'income';
+      const icon = isIncome
+        ? sourceIcon(item.source)
+        : categoryIcon(item.category);
+
+      const details = isIncome
+        ? item.source
+        : item.category;
+
+      const saved = isIncome && toNumber(item.savedAmount) > 0
+        ? ` · в копилку ${byn(item.savedAmount)}`
+        : '';
+
+      const hasId = item.id !== undefined && item.id !== null;
+      const id = escapeHtml(item.id);
+
+      const actions = withActions && hasId
+        ? `
+          <div class="tx-actions">
+            <button
+              type="button"
+              class="icon-button"
+              data-id="${id}"
+              onclick="${isIncome
+                ? 'openIncomeModal(this.dataset.id)'
+                : 'openExpenseModal(this.dataset.id)'}"
+              aria-label="Изменить операцию"
+            >✎</button>
+            <button
+              type="button"
+              class="icon-button delete"
+              data-id="${id}"
+              onclick="${isIncome
+                ? 'deleteIncome(this.dataset.id)'
+                : 'deleteExpense(this.dataset.id)'}"
+              aria-label="Удалить операцию"
+            >×</button>
+          </div>
+        `
+        : '';
+
+      return `
+        <div class="tx-row">
+          <div class="tx-icon ${isIncome ? 'income' : ''}" aria-hidden="true">
+            ${icon}
+          </div>
+          <div class="tx-copy">
+            <span class="tx-name">${escapeHtml(item.title)}</span>
+            <span class="tx-sub">
+              ${escapeHtml(displayDate(item.date))}
+              · ${escapeHtml(details)}${saved}
+            </span>
+          </div>
+          <div class="tx-side">
+            <strong class="tx-amount ${type}">
+              ${isIncome ? '+' : '−'}${byn(item.amount)}
+            </strong>
+            ${actions}
+          </div>
+        </div>
+      `;
+    }
+
+    function renderRecentTransactions() {
+      const container =
+        document.getElementById('recentTransactionsList');
+
+      const items = [
+        ...validItems(appState.incomes).map(item => ({
+          ...item,
+          _type: 'income'
+        })),
+        ...validItems(appState.expenses).map(item => ({
+          ...item,
+          _type: 'expense'
+        }))
+      ]
+        .sort(
+          (a, b) =>
+            String(b.date || '').localeCompare(
+              String(a.date || '')
+            )
+        )
+        .slice(0, 5);
+
+      container.innerHTML = items.length
+        ? items.map(item =>
+            transactionHtml(item, item._type, false)
+          ).join('')
+        : '<div class="empty">Пока нет операций.<br>Начните с первого дохода или расхода.</div>';
+    }
+
+    function renderIncomesList() {
+      const items = validItems(appState.incomes).slice().reverse();
+
+      document.getElementById('incomesList').innerHTML =
+        items.length
+          ? items.map(item =>
+              transactionHtml(item, 'income', true)
+            ).join('')
+          : '<div class="empty">Полученные доходы пока не добавлены.</div>';
+    }
+
+    function renderExpensesList() {
+      const items = validItems(appState.expenses).slice().reverse();
+
+      document.getElementById('expensesList').innerHTML =
+        items.length
+          ? items.map(item =>
+              transactionHtml(item, 'expense', true)
+            ).join('')
+          : '<div class="empty">Расходов пока нет.</div>';
+    }
+
+    function categoryTotals() {
+      const totals = Object.create(null);
+
+      validItems(appState.expenses).forEach(item => {
+        const category = String(item.category || 'Прочее');
+        totals[category] =
+          (totals[category] || 0) +
+          Math.max(0, toNumber(item.amount));
+      });
+
+      return totals;
+    }
+
+    function renderCategoryChart() {
+      const container =
+        document.getElementById('categoryChartContainer');
+
+      const categories = Object.entries(categoryTotals())
+        .filter(([, amount]) => amount > 0)
+        .sort((a, b) => b[1] - a[1]);
+
+      const total = categories.reduce(
+        (sum, [, amount]) => sum + amount,
+        0
+      );
+
+      if (total <= 0) {
+        container.innerHTML =
+          '<div class="empty">Добавьте расходы — здесь появится распределение по категориям.</div>';
+        return;
+      }
+
+      const circumference = 2 * Math.PI * 50;
+      let progress = 0;
+
+      const circles = categories.map(([category, amount]) => {
+        const part = amount / total;
+        const offset = -progress * circumference;
+        progress += part;
+
+        return `
+          <circle
+            cx="60"
+            cy="60"
+            r="50"
+            fill="none"
+            stroke="${categoryColor(category)}"
+            stroke-width="16"
+            stroke-dasharray="${part * circumference} ${circumference}"
+            stroke-dashoffset="${offset}"
+          ></circle>
+        `;
+      }).join('');
+
+      const bars = categories.map(([category, amount]) => {
+        const percent = Math.round(amount / total * 100);
+
+        return `
+          <div class="chart-row">
+            <div class="chart-row-head">
+              <span>
+                ${categoryIcon(category)}
+                ${escapeHtml(category)}
+              </span>
+              <strong>${percent}% · ${byn(amount)}</strong>
+            </div>
+            <div class="chart-track">
+              <div
+                class="chart-fill"
+                style="width:${percent}%;background:${categoryColor(category)};"
+              ></div>
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      container.innerHTML = `
+        <div class="chart-layout">
+          <div class="donut-wrap">
+            <svg
+              class="donut"
+              viewBox="0 0 120 120"
+              role="img"
+              aria-label="Распределение расходов по категориям"
+            >
+              <circle
+                cx="60"
+                cy="60"
+                r="50"
+                fill="none"
+                stroke="var(--track)"
+                stroke-width="16"
+              ></circle>
+              ${circles}
+            </svg>
+            <div class="donut-center">
+              <strong>${byn(total)}</strong>
+              <span>расходы</span>
+            </div>
+          </div>
+          <div class="chart-bars">${bars}</div>
+        </div>
+      `;
+    }
+
+    function setTimePeriod(period) {
+      activePeriod = period;
+
+      document.querySelectorAll('.segment').forEach(button => {
+        button.classList.toggle(
+          'active',
+          button.dataset.period === period
+        );
+      });
+
+      renderPlanner(calc());
+    }
+
+    function renderPlanner(c) {
+      const periods = {
+        day: { title: 'день', days: 1 },
+        week: { title: 'неделю', days: 7 },
+        month: { title: 'месяц', days: 30.4375 },
+        year: { title: 'год', days: 365 }
+      };
+
+      const period = periods[activePeriod] || periods.day;
+      const calculationDays = Math.min(period.days, c.daysLeft);
+
+      const limit = c.safeDailySpend * calculationDays;
+      const saving = Math.min(
+        c.remainingTarget,
+        c.requiredDailySave * calculationDays
+      );
+
+      document.getElementById('periodTitle').textContent =
+        period.title;
+
+      document.getElementById('aiSpendLimit').textContent =
+        byn(limit);
+
+      document.getElementById('aiSaveTarget').textContent =
+        byn(saving);
+
+      const advice = document.getElementById('aiPlanAdvice');
+
+      if (c.remainingTarget <= 0) {
+        advice.textContent =
+          'Цель уже достигнута. Сумма накопления больше не требуется.';
+      } else if (c.rawDaysLeft < 0) {
+        advice.textContent =
+          'Дата достижения цели прошла. Обновите срок во вкладке «Цель».';
+      } else if (c.freeBalance < 0) {
+        advice.textContent =
+          'Сумма в копилке превышает общий остаток. Проверьте накопления или уточните баланс.';
+      } else {
+        advice.textContent =
+          `На этот период из текущего остатка можно распределить ` +
+          `${byn(limit)} на траты. Для цели нужно дополнительно ` +
+          `отложить ${byn(saving)} из будущих поступлений.`;
+      }
+
+      renderAdvice(c);
+    }
+
+    function renderAdvice(c) {
+      const items = [];
+      const topCategory = Object.entries(categoryTotals())
+        .sort((a, b) => b[1] - a[1])[0];
+
+      if (topCategory && topCategory[1] > 0) {
+        items.push(
+          `Больше всего расходов сейчас в категории «${topCategory[0]}».`
+        );
+      }
+
+      if (c.remainingTarget > 0 && c.rawDaysLeft > 0) {
+        items.push(
+          `До цели осталось ${byn(c.remainingTarget)} за ` +
+          `${c.rawDaysLeft} ${dayWord(c.rawDaysLeft)}. ` +
+          `Ориентир: ${byn(c.requiredDailySave)} в день.`
+        );
+      }
+
+      if (c.goalSaved > 0) {
+        items.push(
+          `${byn(c.goalSaved)} в копилке не учитываются ` +
+          'в доступном для трат балансе.'
+        );
+      }
+
+      if (c.recurringMonthlyTotal > 0) {
+        items.push(
+          'Зарплата и аванс из расписания появятся в балансе ' +
+          'только после ручного добавления полученного дохода.'
+        );
+      }
+
+      if (items.length === 0) {
+        items.push(
+          'Добавьте доход, расход и цель — здесь появятся ориентиры.'
+        );
+      }
+
+      document.getElementById('smartAdviceList').innerHTML =
+        items.map(item => `<li>${escapeHtml(item)}</li>`).join('');
+    }
+
+    function saveRecurringIncome(event) {
+      event.preventDefault();
+
+      const advance = parseMoney(
+        document.getElementById('recAdvanceAmount').value,
+        { emptyAsZero: true }
+      );
+
+      const salary = parseMoney(
+        document.getElementById('recSalaryAmount').value,
+        { emptyAsZero: true }
+      );
+
+      const advanceDayInput =
+        document.getElementById('recAdvanceDay').value;
+
+      const salaryDayInput =
+        document.getElementById('recSalaryDay').value;
+
+      const advanceDay = advanceDayInput === ''
+        ? 15
+        : Number(advanceDayInput);
+
+      const salaryDay = salaryDayInput === ''
+        ? 30
+        : Number(salaryDayInput);
+
+      if (
+        advance === null ||
+        salary === null ||
+        !Number.isInteger(advanceDay) ||
+        !Number.isInteger(salaryDay) ||
+        advanceDay < 1 ||
+        advanceDay > 31 ||
+        salaryDay < 1 ||
+        salaryDay > 31
+      ) {
+        alert('Проверьте суммы и дни выплат. Суммы указывайте в BYN.');
+        return;
+      }
+
+      appState.recurring = {
+        ...appState.recurring,
+
+        advance: {
+          ...appState.recurring.advance,
+          amount: advance,
+          day: advanceDay
+        },
+
+        salary: {
+          ...appState.recurring.salary,
+          amount: salary,
+          day: salaryDay
+        }
+      };
+
+      saveData();
+      alert('Расписание сохранено.');
+    }
+
+    function openModal(id) {
+      const modal = document.getElementById(id);
+      modal.classList.add('active');
+      modal.setAttribute('aria-hidden', 'false');
+      document.body.classList.add('sheet-open');
+    }
+
+    function closeModal(id) {
+      const modal = document.getElementById(id);
+      modal.classList.remove('active');
+      modal.setAttribute('aria-hidden', 'true');
+
+      if (!document.querySelector('.overlay.active')) {
+        document.body.classList.remove('sheet-open');
+      }
+    }
+
+    function openBalanceModal() {
+      const current = calc().freeBalance;
+
+      document.getElementById('actualBalanceInput').value =
+        current === 0 ? '' : inputMoney(current);
+
+      openModal('balanceModal');
     }
 
     function setActualBalance(event) {
@@ -1794,569 +3093,189 @@
       const input =
         document.getElementById('actualBalanceInput');
 
-      const normalized = input.value
-        .trim()
-        .replace(/\s/g, '')
-        .replace(',', '.');
+      const desiredAvailable = parseMoney(
+        input.value,
+        { allowNegative: true }
+      );
 
-      if (!/^-?\d+(?:\.\d{1,2})?$/.test(normalized)) {
-        alert('Введите сумму в BYN, например: 400,50');
-        return;
-      }
-
-      const desiredAvailable = Number(normalized);
-
-      if (!Number.isFinite(desiredAvailable)) {
-        alert('Введите корректную сумму.');
+      if (desiredAvailable === null) {
+        alert('Введите сумму в BYN, например: 400,50.');
         return;
       }
 
       const { recorded, saved } = getActualBalances();
 
       /*
-        Пользователь вводит баланс БЕЗ копилки.
+        Доступно без копилки =
+          доходы − расходы + уточнение − копилка.
 
-        Требуется:
-        desiredAvailable =
-          recorded + balanceAdjustment − saved.
-
-        Следовательно:
-        balanceAdjustment =
-          desiredAvailable + saved − recorded.
+        Поэтому уточнение =
+          желаемый доступный баланс + копилка
+          − (доходы − расходы).
       */
       appState.balanceAdjustment = roundBYN(
         desiredAvailable + saved - recorded
       );
 
       saveData();
+      closeModal('balanceModal');
       input.value = '';
     }
 
-    function renderAlerts(c) {
-      const alerts = [];
-
-      if (c.grossBalance < 0) {
-        alerts.push(
-          `<div class="alert alert-danger">⚠️ Общий остаток отрицательный: ` +
-          `${byn(c.grossBalance)}. Проверьте операции или уточните баланс.</div>`
-        );
-      } else if (c.freeBalance < 0) {
-        alerts.push(
-          `<div class="alert alert-danger">⚠️ В копилке указано больше, ` +
-          `чем есть на общем остатке. Не хватает ` +
-          `${byn(Math.abs(c.freeBalance))}. Уточните доступный баланс ` +
-          `без копилки или проверьте накопления.</div>`
-        );
-      } else if (c.freeBalance === 0 && c.totalIncome > 0) {
-        alerts.push(
-          '<div class="alert alert-warning">' +
-          '⏳ Сейчас нет свободных денег для трат.' +
-          '</div>'
-        );
-      }
-
-      if (c.progressPercent >= 100) {
-        alerts.push(
-          '<div class="alert alert-success">' +
-          '🎉 <b>Поздравляем!</b> Цель накопления достигнута!' +
-          '</div>'
-        );
-      }
-
-      document.getElementById('alertContainer').innerHTML =
-        alerts.join('');
+    function removeTemporaryOptions(select) {
+      select.querySelectorAll('[data-temporary="1"]')
+        .forEach(option => option.remove());
     }
 
-    function renderRecentTransactions() {
-      const container =
-        document.getElementById('recentTransactionsList');
+    function setSelectValue(select, value) {
+      const selected = String(value || '');
 
-      const transactions = [
-        ...appState.incomes.map(item => ({
-          ...item,
-          type: 'inc'
-        })),
-        ...appState.expenses.map(item => ({
-          ...item,
-          type: 'exp'
-        }))
-      ]
-        .sort((a, b) => new Date(b.date) - new Date(a.date))
-        .slice(0, 5);
-
-      if (transactions.length === 0) {
-        container.innerHTML =
-          '<div style="color:var(--text-muted);font-size:0.85rem;' +
-          'text-align:center;padding:10px;">Операций пока нет</div>';
-        return;
+      if (
+        selected &&
+        !Array.from(select.options).some(option =>
+          option.value === selected
+        )
+      ) {
+        const option = new Option(selected, selected);
+        option.dataset.temporary = '1';
+        select.add(option);
       }
 
-      container.innerHTML = transactions.map(tx => `
-        <div class="tx-item">
-          <div class="tx-left">
-            <div class="tx-icon-chip">
-              ${tx.type === 'inc'
-                ? getSourceIcon(tx.source)
-                : getCategoryIcon(tx.category)}
-            </div>
-            <div class="tx-info">
-              <h4>
-                ${escapeHtml(tx.title)}
-                ${tx.savedForGoal ? '🎯' : ''}
-              </h4>
-              <span>
-                ${escapeHtml(tx.date)} •
-                ${escapeHtml(
-                  tx.type === 'inc'
-                    ? tx.source
-                    : tx.category
-                )}
-              </span>
-            </div>
-          </div>
-          <span class="tx-amount ${tx.type === 'inc' ? 'plus' : 'minus'}">
-            ${tx.type === 'inc' ? '+' : '-'}${byn(tx.amount)}
-          </span>
-        </div>
-      `).join('');
-    }
-
-    function renderIncomesList() {
-      const container = document.getElementById('incomesList');
-
-      if (appState.incomes.length === 0) {
-        container.innerHTML =
-          '<div style="color:var(--text-muted);font-size:0.85rem;' +
-          'text-align:center;padding:12px;">Доходы ещё не добавлены</div>';
-        return;
+      if (selected) {
+        select.value = selected;
       }
-
-      container.innerHTML = appState.incomes.map(item => {
-        const savedAmount = toNumber(item.savedAmount);
-
-        return `
-          <div class="tx-item">
-            <div class="tx-left">
-              <div class="tx-icon-chip">
-                ${getSourceIcon(item.source)}
-              </div>
-              <div class="tx-info">
-                <h4>${escapeHtml(item.title)}</h4>
-                <span>
-                  ${escapeHtml(item.date)} •
-                  ${escapeHtml(item.source)}
-                  ${savedAmount > 0
-                    ? `(Отложено: ${byn(savedAmount)})`
-                    : ''}
-                </span>
-              </div>
-            </div>
-            <div style="display:flex;align-items:center;">
-              <span class="tx-amount plus">
-                +${byn(item.amount)}
-              </span>
-              <button
-                type="button"
-                class="btn-delete"
-                data-id="${escapeHtml(item.id)}"
-                onclick="deleteIncome(this.dataset.id)"
-                aria-label="Удалить доход"
-              >🗑️</button>
-            </div>
-          </div>
-        `;
-      }).join('');
     }
 
-    function renderExpensesList() {
-      const container = document.getElementById('expensesList');
+    function openIncomeModal(id) {
+      const form = document.getElementById('incomeForm');
+      const source = document.getElementById('incSource');
 
-      if (appState.expenses.length === 0) {
-        container.innerHTML =
-          '<div style="color:var(--text-muted);font-size:0.85rem;' +
-          'text-align:center;padding:12px;">Расходы не добавлены</div>';
-        return;
-      }
+      form.reset();
+      removeTemporaryOptions(source);
+      editingIncomeId = null;
 
-      container.innerHTML = appState.expenses.map(item => `
-        <div class="tx-item">
-          <div class="tx-left">
-            <div class="tx-icon-chip">
-              ${getCategoryIcon(item.category)}
-            </div>
-            <div class="tx-info">
-              <h4>${escapeHtml(item.title)}</h4>
-              <span>
-                ${escapeHtml(item.date)} •
-                ${escapeHtml(item.category)}
-              </span>
-            </div>
-          </div>
-          <div style="display:flex;align-items:center;">
-            <span class="tx-amount minus">
-              -${byn(item.amount)}
-            </span>
-            <button
-              type="button"
-              class="btn-delete"
-              data-id="${escapeHtml(item.id)}"
-              onclick="deleteExpense(this.dataset.id)"
-              aria-label="Удалить расход"
-            >🗑️</button>
-          </div>
-        </div>
-      `).join('');
-    }
+      document.getElementById('incDate').value =
+        localDateString();
 
-    function saveRecurringIncome(event) {
-      event.preventDefault();
+      document.getElementById('incomeModalHeading').textContent =
+        'Добавить доход';
 
-      const advanceAmount = toNumber(
-        document.getElementById('recAdvanceAmount').value
-      );
+      if (id !== undefined && id !== null) {
+        const item = appState.incomes.find(
+          income =>
+            isRecord(income) &&
+            String(income.id) === String(id)
+        );
 
-      const advanceDay =
-        parseInt(
-          document.getElementById('recAdvanceDay').value,
-          10
-        ) || 15;
-
-      const salaryAmount = toNumber(
-        document.getElementById('recSalaryAmount').value
-      );
-
-      const salaryDay =
-        parseInt(
-          document.getElementById('recSalaryDay').value,
-          10
-        ) || 30;
-
-      appState.recurring = {
-        ...appState.recurring,
-
-        advance: {
-          ...appState.recurring.advance,
-          amount: roundBYN(advanceAmount),
-          day: advanceDay
-        },
-
-        salary: {
-          ...appState.recurring.salary,
-          amount: roundBYN(salaryAmount),
-          day: salaryDay
+        if (!item) {
+          alert('Доход не найден.');
+          return;
         }
-      };
 
-      saveData();
-    }
+        editingIncomeId = String(id);
 
-    function setTimePeriod(period, button) {
-      activePeriod = period;
+        document.getElementById('incomeModalHeading').textContent =
+          'Изменить доход';
 
-      document.querySelectorAll('.period-btn').forEach(item => {
-        item.classList.remove('active');
-      });
+        document.getElementById('incTitle').value =
+          item.title || '';
 
-      button.classList.add('active');
-      renderAIPlanner(calc());
-    }
+        setSelectValue(source, item.source);
 
-    function renderAIPlanner(c) {
-      const periods = {
-        day: ['День', 1],
-        week: ['Неделю', 7],
-        month: ['Месяц', 30.4375],
-        year: ['Год', 365]
-      };
+        document.getElementById('incAmount').value =
+          inputMoney(item.amount);
 
-      const [periodLabel, periodDays] =
-        periods[activePeriod] || periods.day;
+        document.getElementById('incSaveAmount').value =
+          inputMoney(item.savedAmount || 0);
 
-      const calculationDays =
-        Math.min(periodDays, c.daysLeft);
+        document.getElementById('incDate').value =
+          item.date || localDateString();
 
-      const limit =
-        c.safeDailySpend * calculationDays;
+        document.getElementById('incSplitBox').hidden = false;
+        document.getElementById('splitRatioLabel').textContent =
+          'Можно изменить сумму для копилки';
 
-      const target =
-        c.requiredDailySave * calculationDays;
-
-      document.getElementById('periodTitle').textContent =
-        periodLabel;
-
-      document.getElementById('aiSpendLimit').textContent =
-        byn(limit);
-
-      document.getElementById('aiSaveTarget').textContent =
-        byn(target);
-
-      const advice =
-        document.getElementById('aiPlanAdvice');
-
-      if (c.remainingTarget <= 0) {
-        advice.textContent =
-          `🎉 Цель «${appState.goal.name}» достигнута!`;
-      } else if (c.freeBalance < 0) {
-        advice.textContent =
-          '⚠️ Сумма в копилке превышает общий остаток. ' +
-          'Уточните доступный баланс без копилки или проверьте накопления.';
-      } else if (c.safeDailySpend > 0) {
-        const deadlineNote = periodDays > c.daysLeft
-          ? ` Расчёт ограничен сроком цели: ${c.daysLeft} дн.`
-          : '';
-
-        advice.textContent =
-          `💡 На период (${periodLabel.toLowerCase()}) ` +
-          `рекомендуется отложить ${byn(target)}. ` +
-          `Лимит свободных трат: ${byn(limit)}.` +
-          deadlineNote;
+        updateSplitButtonsText();
       } else {
-        advice.textContent =
-          '⚠️ Пока свободного остатка нет. Плановые зарплата и аванс ' +
-          'не учитываются до фактического получения.';
+        document.getElementById('incSplitBox').hidden = true;
+        updateSplitButtonsText();
       }
 
-      renderSmartAdvice(c);
-    }
-
-    function renderCategoryChart() {
-      const container =
-        document.getElementById('categoryChartContainer');
-
-      const totals = Object.create(null);
-
-      appState.expenses.forEach(item => {
-        const category =
-          String(item.category || 'Прочее');
-
-        totals[category] =
-          (totals[category] || 0) +
-          toNumber(item.amount);
-      });
-
-      const totalExpense =
-        Object.values(totals).reduce(
-          (sum, amount) => sum + amount,
-          0
-        );
-
-      if (totalExpense <= 0) {
-        container.innerHTML =
-          '<div style="color:var(--text-muted);font-size:0.85rem;' +
-          'text-align:center;padding:20px 0;">' +
-          'Расходы ещё не зафиксированы</div>';
-        return;
-      }
-
-      const categories =
-        Object.entries(totals)
-          .sort((a, b) => b[1] - a[1]);
-
-      let cumulativePercent = 0;
-
-      const donutSlices = categories.map(([category, amount]) => {
-        const percent = amount / totalExpense;
-        const color =
-          CAT_COLORS[category] || '#3b82f6';
-
-        const dashArray =
-          `${percent * 314} 314`;
-
-        const dashOffset =
-          -cumulativePercent * 314;
-
-        cumulativePercent += percent;
-
-        return `
-          <circle
-            cx="60"
-            cy="60"
-            r="50"
-            fill="transparent"
-            stroke="${color}"
-            stroke-width="16"
-            stroke-dasharray="${dashArray}"
-            stroke-dashoffset="${dashOffset}"
-          ></circle>
-        `;
-      }).join('');
-
-      container.innerHTML = `
-        <div class="chart-container">
-          <svg class="svg-donut" viewBox="0 0 120 120">
-            ${donutSlices}
-          </svg>
-
-          <div class="chart-legend">
-            ${categories.map(([category, amount]) => {
-              const percent =
-                Math.round(
-                  (amount / totalExpense) * 100
-                );
-
-              const color =
-                CAT_COLORS[category] || '#3b82f6';
-
-              return `
-                <div class="chart-bar-row">
-                  <div class="chart-bar-label">
-                    <span>
-                      ${getCategoryIcon(category)}
-                      ${escapeHtml(category)}
-                    </span>
-                    <b style="color:#fff;">
-                      ${byn(amount)} (${percent}%)
-                    </b>
-                  </div>
-
-                  <div class="chart-bar-track">
-                    <div
-                      class="chart-bar-fill"
-                      style="width:${percent}%;background:${color};"
-                    ></div>
-                  </div>
-                </div>
-              `;
-            }).join('')}
-          </div>
-        </div>
-      `;
-    }
-
-    function getTopExpenseCategory() {
-      const totals = Object.create(null);
-
-      appState.expenses.forEach(item => {
-        const category =
-          String(item.category || 'Прочее');
-
-        totals[category] =
-          (totals[category] || 0) +
-          toNumber(item.amount);
-      });
-
-      const sorted =
-        Object.entries(totals)
-          .sort((a, b) => b[1] - a[1]);
-
-      return sorted.length
-        ? sorted[0][0]
-        : 'Прочее';
-    }
-
-    function renderSmartAdvice(c) {
-      const container =
-        document.getElementById('smartAdviceList');
-
-      let html =
-        '<ul style="padding-left:18px;display:flex;' +
-        'flex-direction:column;gap:8px;">';
-
-      if (appState.expenses.length > 0) {
-        html +=
-          `<li>Наибольшие расходы приходятся на ` +
-          `<b>${escapeHtml(getTopExpenseCategory())}</b>.</li>`;
-      }
-
-      if (c.remainingTarget > 0) {
-        html +=
-          `<li>Для достижения цели осталось накопить ` +
-          `<b>${byn(c.remainingTarget)}</b> за ${c.daysLeft} дн. ` +
-          `Ориентир — <b>${byn(c.requiredDailySave)}</b> ежедневно.</li>`;
-      }
-
-      if (c.goalSaved > 0) {
-        html +=
-          `<li>В копилке зарезервировано ` +
-          `<b>${byn(c.goalSaved)}</b>. ` +
-          `Эта сумма не входит в актуальный баланс.</li>`;
-      }
-
-      html += '</ul>';
-      container.innerHTML = html;
+      openModal('incomeModal');
     }
 
     function calculateIncomeSplit() {
-      const amount = toNumber(
+      const amount = parseMoney(
         document.getElementById('incAmount').value
       );
 
-      const splitBox =
-        document.getElementById('incSplitBox');
+      const box = document.getElementById('incSplitBox');
 
-      if (amount <= 0) {
-        splitBox.style.display = 'none';
+      if (amount === null || amount <= 0) {
+        box.hidden = true;
         updateSplitButtonsText();
         return;
       }
 
       const c = calc();
-      let savePercent = 0;
+      let percentage = 0;
 
       if (c.remainingTarget > 0) {
         const monthlyNeed =
-          c.requiredDailySave *
-          Math.min(30, c.daysLeft);
+          c.requiredDailySave * Math.min(30, c.daysLeft);
 
-        const monthlyIncomeBase =
-          c.recurringMonthlyTotal > 0
-            ? c.recurringMonthlyTotal
-            : amount;
+        const incomeBase = c.recurringMonthlyTotal > 0
+          ? c.recurringMonthlyTotal
+          : amount;
 
-        savePercent = Math.min(
+        percentage = Math.min(
           80,
           Math.max(
             15,
             Math.round(
               monthlyNeed /
-              Math.max(1, monthlyIncomeBase) *
+              Math.max(1, incomeBase) *
               100
             )
           )
         );
       }
 
-      const recommendedSave = Math.min(
+      const recommendation = Math.min(
         amount,
         c.remainingTarget,
-        roundBYN(amount * savePercent / 100)
+        roundBYN(amount * percentage / 100)
       );
 
       document.getElementById('incSaveAmount').value =
-        recommendedSave.toFixed(2);
+        inputMoney(recommendation);
 
       document.getElementById('splitRatioLabel').textContent =
-        savePercent > 0
-          ? `${savePercent}% рекомендует ИИ`
-          : 'Цель достигнута';
+        percentage > 0
+          ? `Рекомендация по плану: около ${percentage}%`
+          : 'Цель уже достигнута';
 
-      splitBox.style.display = 'block';
+      box.hidden = false;
       updateSplitButtonsText();
     }
 
     function updateSplitButtonsText() {
-      const totalAmount = Math.max(
-        0,
-        toNumber(
-          document.getElementById('incAmount').value
-        )
+      const amount = parseMoney(
+        document.getElementById('incAmount').value
       );
 
-      const enteredSave = Math.max(
-        0,
-        toNumber(
-          document.getElementById('incSaveAmount').value
-        )
+      const requested = parseMoney(
+        document.getElementById('incSaveAmount').value,
+        { emptyAsZero: true }
       );
 
-      const saveAmount =
-        Math.min(totalAmount, enteredSave);
-
-      const spendAmount =
-        Math.max(0, totalAmount - saveAmount);
+      const total = amount !== null ? Math.max(0, amount) : 0;
+      const saved = requested !== null
+        ? Math.min(total, Math.max(0, requested))
+        : 0;
 
       document.getElementById('splitSpendVal').textContent =
-        byn(spendAmount);
+        byn(total - saved);
 
       const saveButton =
         document.getElementById('btnSaveAndDeposit');
@@ -2365,27 +3284,29 @@
         document.getElementById('btnJustAdd');
 
       saveButton.disabled =
-        totalAmount <= 0 || saveAmount <= 0;
+        total <= 0 || requested === null || saved <= 0;
 
-      saveButton.innerHTML =
-        saveAmount > 0
-          ? `🎯 Отложить <b>${byn(saveAmount)}</b> на цель`
-          : '🎯 Отложить на цель';
+      saveButton.textContent = saved > 0
+        ? `Отложить ${byn(saved)} в копилку`
+        : 'Отложить в копилку';
 
-      addButton.innerHTML =
-        totalAmount > 0
-          ? `💵 Просто добавить <b>${byn(totalAmount)}</b>`
-          : '💵 Просто добавить без откладывания';
+      addButton.textContent =
+        editingIncomeId !== null
+          ? 'Сохранить без откладывания'
+          : 'Добавить без откладывания';
+    }
+
+    function createId() {
+      return (
+        Date.now().toString(36) +
+        Math.random().toString(36).slice(2, 9)
+      );
     }
 
     function submitIncome(autoSaveToGoal) {
-      const form =
-        document.getElementById('incomeForm');
+      const form = document.getElementById('incomeForm');
 
-      if (!form.checkValidity()) {
-        form.reportValidity();
-        return;
-      }
+      if (!form.reportValidity()) return;
 
       const title =
         document.getElementById('incTitle').value.trim();
@@ -2393,61 +3314,136 @@
       const source =
         document.getElementById('incSource').value;
 
-      const amount = roundBYN(
-        toNumber(
-          document.getElementById('incAmount').value
-        )
+      const amount = parseMoney(
+        document.getElementById('incAmount').value
       );
 
       const date =
         document.getElementById('incDate').value;
 
-      if (!title || amount <= 0 || !date) {
-        alert('Укажите название, сумму и дату дохода.');
+      if (!title || amount === null || amount <= 0 || !date) {
+        alert('Проверьте название, сумму и дату дохода.');
         return;
       }
 
-      const requestedSave = toNumber(
-        document.getElementById('incSaveAmount').value
-      );
+      let saved = 0;
 
-      const saveAmount = autoSaveToGoal
-        ? roundBYN(
-            Math.min(
-              amount,
-              Math.max(0, requestedSave)
-            )
-          )
+      if (autoSaveToGoal) {
+        const requested = parseMoney(
+          document.getElementById('incSaveAmount').value
+        );
+
+        if (
+          requested === null ||
+          requested <= 0 ||
+          requested > amount
+        ) {
+          alert(
+            'Сумма для копилки должна быть больше нуля ' +
+            'и не превышать полученный доход.'
+          );
+          return;
+        }
+
+        saved = requested;
+      }
+
+      const index = editingIncomeId === null
+        ? -1
+        : appState.incomes.findIndex(
+            item =>
+              isRecord(item) &&
+              String(item.id) === editingIncomeId
+          );
+
+      if (editingIncomeId !== null && index < 0) {
+        alert('Не удалось найти доход для изменения.');
+        return;
+      }
+
+      const oldItem = index >= 0
+        ? appState.incomes[index]
+        : null;
+
+      const oldSaved = oldItem
+        ? Math.max(0, roundBYN(oldItem.savedAmount))
         : 0;
 
-      if (autoSaveToGoal && saveAmount <= 0) {
-        alert('Укажите сумму для копилки.');
-        return;
-      }
-
-      appState.incomes.push({
-        id:
-          Date.now().toString(36) +
-          Math.random().toString(36).slice(2, 8),
+      const updatedItem = {
+        ...(oldItem || {}),
+        id: oldItem ? oldItem.id : createId(),
         title,
         source,
         amount,
-        savedAmount: saveAmount,
-        savedForGoal: saveAmount > 0,
+        savedAmount: saved,
+        savedForGoal: saved > 0,
         date
-      });
+      };
 
-      if (saveAmount > 0) {
-        appState.goal.saved = roundBYN(
-          toNumber(appState.goal.saved) +
-          saveAmount
-        );
+      if (index >= 0) {
+        appState.incomes[index] = updatedItem;
+      } else {
+        appState.incomes.push(updatedItem);
       }
 
+      appState.goal.saved = roundBYN(
+        Math.max(
+          0,
+          toNumber(appState.goal.saved) - oldSaved + saved
+        )
+      );
+
       saveData();
-      closeIncomeModal();
+      closeModal('incomeModal');
       form.reset();
+      editingIncomeId = null;
       initDates();
+    }
+
+    function openExpenseModal(id) {
+      const form = document.getElementById('expenseForm');
+      const category = document.getElementById('expCategory');
+
+      form.reset();
+      removeTemporaryOptions(category);
+      editingExpenseId = null;
+
+      document.getElementById('expDate').value =
+        localDateString();
+
+      document.getElementById('expenseModalHeading').textContent =
+        'Добавить расход';
+
+      if (id !== undefined && id !== null) {
+        const item = appState.expenses.find(
+          expense =>
+            isRecord(expense) &&
+            String(expense.id) === String(id)
+        );
+
+        if (!item) {
+          alert('Расход не найден.');
+          return;
+        }
+
+        editingExpenseId = String(id);
+
+        document.getElementById('expenseModalHeading').textContent =
+          'Изменить расход';
+
+        document.getElementById('expTitle').value =
+          item.title || '';
+
+        setSelectValue(category, item.category);
+
+        document.getElementById('expAmount').value =
+          inputMoney(item.amount);
+
+        document.getElementById('expDate').value =
+          item.date || localDateString();
+      }
+
+      openModal('expenseModal');
     }
 
     function handleAddExpense(event) {
@@ -2459,64 +3455,103 @@
       const category =
         document.getElementById('expCategory').value;
 
-      const amount = roundBYN(
-        toNumber(
-          document.getElementById('expAmount').value
-        )
+      const amount = parseMoney(
+        document.getElementById('expAmount').value
       );
 
       const date =
         document.getElementById('expDate').value;
 
-      if (!title || amount <= 0 || !date) {
-        alert('Укажите название, сумму и дату расхода.');
+      if (!title || amount === null || amount <= 0 || !date) {
+        alert('Проверьте название, сумму и дату расхода.');
         return;
       }
 
-      appState.expenses.push({
-        id:
-          Date.now().toString(36) +
-          Math.random().toString(36).slice(2, 8),
+      const index = editingExpenseId === null
+        ? -1
+        : appState.expenses.findIndex(
+            item =>
+              isRecord(item) &&
+              String(item.id) === editingExpenseId
+          );
+
+      if (editingExpenseId !== null && index < 0) {
+        alert('Не удалось найти расход для изменения.');
+        return;
+      }
+
+      const oldItem = index >= 0
+        ? appState.expenses[index]
+        : null;
+
+      const updatedItem = {
+        ...(oldItem || {}),
+        id: oldItem ? oldItem.id : createId(),
         title,
         category,
         amount,
         date
-      });
+      };
+
+      if (index >= 0) {
+        appState.expenses[index] = updatedItem;
+      } else {
+        appState.expenses.push(updatedItem);
+      }
 
       saveData();
-      closeExpenseModal();
+      closeModal('expenseModal');
       event.target.reset();
+      editingExpenseId = null;
       initDates();
     }
 
     function deleteIncome(id) {
       const item = appState.incomes.find(
-        income => String(income.id) === String(id)
+        income =>
+          isRecord(income) &&
+          String(income.id) === String(id)
       );
 
-      if (item && toNumber(item.savedAmount) > 0) {
-        appState.goal.saved = roundBYN(
-          Math.max(
-            0,
-            toNumber(appState.goal.saved) -
-            toNumber(item.savedAmount)
-          )
-        );
-      }
+      if (!item) return;
 
-      appState.incomes =
-        appState.incomes.filter(
-          income => String(income.id) !== String(id)
-        );
+      if (!confirm('Удалить этот доход?')) return;
+
+      const saved = Math.max(
+        0,
+        roundBYN(item.savedAmount)
+      );
+
+      appState.goal.saved = roundBYN(
+        Math.max(
+          0,
+          toNumber(appState.goal.saved) - saved
+        )
+      );
+
+      appState.incomes = appState.incomes.filter(
+        income =>
+          !isRecord(income) ||
+          String(income.id) !== String(id)
+      );
 
       saveData();
     }
 
     function deleteExpense(id) {
-      appState.expenses =
-        appState.expenses.filter(
-          item => String(item.id) !== String(id)
-        );
+      const exists = appState.expenses.some(
+        item =>
+          isRecord(item) &&
+          String(item.id) === String(id)
+      );
+
+      if (!exists || !confirm('Удалить этот расход?')) return;
+
+      appState.expenses = appState.expenses.filter(
+        item =>
+          !isRecord(item) ||
+          String(item.id) !== String(id)
+      );
 
       saveData();
     }
@@ -2525,19 +3560,15 @@
       event.preventDefault();
 
       const name =
-        document.getElementById('goalNameInput')
-          .value.trim();
+        document.getElementById('goalNameInput').value.trim();
 
-      const target = roundBYN(
-        toNumber(
-          document.getElementById('goalTargetInput').value
-        )
+      const target = parseMoney(
+        document.getElementById('goalTargetInput').value
       );
 
-      const saved = roundBYN(
-        toNumber(
-          document.getElementById('goalSavedInput').value
-        )
+      const saved = parseMoney(
+        document.getElementById('goalSavedInput').value,
+        { emptyAsZero: true }
       );
 
       const deadline =
@@ -2545,11 +3576,13 @@
 
       if (
         !name ||
+        target === null ||
         target <= 0 ||
+        saved === null ||
         saved < 0 ||
         !deadline
       ) {
-        alert('Проверьте название, сумму и срок цели.');
+        alert('Проверьте название, суммы и дату цели.');
         return;
       }
 
@@ -2562,11 +3595,7 @@
       };
 
       saveData();
-
-      switchTab(
-        'dashboard',
-        document.querySelectorAll('.nav-item')[0]
-      );
+      switchTab('dashboard');
     }
 
     function applyPeriodPreset(days) {
@@ -2577,48 +3606,156 @@
         localDateString(date);
     }
 
-    function switchTab(tabId, button) {
-      document.querySelectorAll('.tab-content').forEach(item => {
-        item.classList.remove('active');
+    function switchTab(tabId) {
+      const target = document.getElementById(`tab-${tabId}`);
+      if (!target) return;
+
+      document.querySelectorAll('.tab').forEach(tab => {
+        tab.classList.toggle('active', tab === target);
       });
 
-      document.querySelectorAll('.nav-item').forEach(item => {
-        item.classList.remove('active');
+      document.querySelectorAll('.tab-button').forEach(button => {
+        const active = button.dataset.tab === tabId;
+        button.classList.toggle('active', active);
+
+        if (active) {
+          button.setAttribute('aria-current', 'page');
+        } else {
+          button.removeAttribute('aria-current');
+        }
       });
 
-      document
-        .getElementById(`tab-${tabId}`)
-        .classList.add('active');
+      window.scrollTo(0, 0);
+    }
 
-      if (button) {
-        button.classList.add('active');
+    /*
+      Резервная копия — обычный JSON.
+      Никуда по сети данные не отправляются.
+    */
+    async function exportBackup() {
+      const fileName =
+        `finansy-BYN-${localDateString()}.json`;
+
+      const payload = {
+        app: 'byn-fin-planner',
+        exportedAt: new Date().toISOString(),
+        data: appState
+      };
+
+      const json = JSON.stringify(payload, null, 2);
+      const blob = new Blob(
+        [json],
+        { type: 'application/json' }
+      );
+
+      try {
+        if (
+          typeof File !== 'undefined' &&
+          navigator.share &&
+          navigator.canShare
+        ) {
+          const file = new File(
+            [blob],
+            fileName,
+            { type: 'application/json' }
+          );
+
+          if (navigator.canShare({ files: [file] })) {
+            await navigator.share({
+              files: [file],
+              title: 'Резервная копия финансов'
+            });
+            return;
+          }
+        }
+      } catch (error) {
+        if (error && error.name === 'AbortError') {
+          return;
+        }
+        // Если системное меню недоступно, попробуем скачать файл.
       }
+
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+
+      link.href = url;
+      link.download = fileName;
+      link.style.display = 'none';
+
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+
+      setTimeout(() => URL.revokeObjectURL(url), 60000);
     }
 
-    function openIncomeModal() {
-      document
-        .getElementById('incomeModal')
-        .classList.add('active');
+    function importBackup(event) {
+      const input = event.target;
+      const file = input.files && input.files[0];
+      input.value = '';
 
-      calculateIncomeSplit();
-    }
+      if (!file) return;
 
-    function closeIncomeModal() {
-      document
-        .getElementById('incomeModal')
-        .classList.remove('active');
-    }
+      if (file.size > 10 * 1024 * 1024) {
+        alert('Файл слишком большой. Выберите копию размером до 10 МБ.');
+        return;
+      }
 
-    function openExpenseModal() {
-      document
-        .getElementById('expenseModal')
-        .classList.add('active');
-    }
+      const reader = new FileReader();
 
-    function closeExpenseModal() {
-      document
-        .getElementById('expenseModal')
-        .classList.remove('active');
+      reader.onerror = () => {
+        alert('Не удалось прочитать файл.');
+      };
+
+      reader.onload = () => {
+        let imported;
+
+        try {
+          const json = JSON.parse(String(reader.result));
+
+          imported = isRecord(json) &&
+            Object.prototype.hasOwnProperty.call(json, 'data')
+              ? json.data
+              : json;
+        } catch (error) {
+          alert('Это не файл резервной копии JSON.');
+          return;
+        }
+
+        if (
+          !isRecord(imported) ||
+          !isRecord(imported.goal) ||
+          !Array.isArray(imported.incomes) ||
+          !Array.isArray(imported.expenses)
+        ) {
+          alert('Структура резервной копии не подходит.');
+          return;
+        }
+
+        const agreement = confirm(
+          'Восстановить данные из файла?\n\n' +
+          'Текущие записи на этом устройстве будут заменены. ' +
+          'Если они нужны, сначала сохраните их копию.'
+        );
+
+        if (!agreement) return;
+
+        appState = normalizeState(imported);
+        editingIncomeId = null;
+        editingExpenseId = null;
+
+        const savedPermanently = saveData();
+        switchTab('dashboard');
+
+        alert(
+          savedPermanently
+            ? 'Данные восстановлены.'
+            : 'Данные открыты, но хранилище браузера недоступно. ' +
+              'После закрытия приложения они могут исчезнуть.'
+        );
+      };
+
+      reader.readAsText(file);
     }
   </script>
 </body>
