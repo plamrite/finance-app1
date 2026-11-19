@@ -9,7 +9,7 @@
   <style>
     :root {
       --bg: #0b0f19;
-      --card-bg: rgba(21, 28, 44, 0.75);
+      --card-bg: rgba(21, 28, 44, 0.82);
       --card-solid: #151c2c;
       --card-border: rgba(255, 255, 255, 0.08);
       --card-border-glow: rgba(59, 130, 246, 0.3);
@@ -23,79 +23,93 @@
       --text-muted: #94a3b8;
       --input-bg: #0f172a;
       --radius: 20px;
-      --radius-sm: 12px;
-      --nav-height: 72px;
+      --radius-sm: 14px;
+      --nav-base-height: 64px;
     }
 
     * {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
       -webkit-tap-highlight-color: transparent;
+      touch-action: manipulation;
+    }
+
+    html, body {
+      width: 100%;
+      height: 100%;
+      background-color: var(--bg);
+      -webkit-text-size-adjust: 100%;
     }
 
     body {
-      background-color: var(--bg);
       background-image: 
-        radial-gradient(circle at 10% 10%, rgba(59, 130, 246, 0.12) 0%, transparent 40%),
-        radial-gradient(circle at 90% 80%, rgba(16, 185, 129, 0.08) 0%, transparent 40%);
+        radial-gradient(circle at 10% 10%, rgba(59, 130, 246, 0.15) 0%, transparent 40%),
+        radial-gradient(circle at 90% 80%, rgba(16, 185, 129, 0.1) 0%, transparent 40%);
       background-attachment: fixed;
       color: var(--text);
-      padding-bottom: calc(var(--nav-height) + 24px);
+      /* iOS Safe Areas Padding */
+      padding-top: max(12px, env(safe-area-inset-top));
+      padding-left: max(16px, env(safe-area-inset-left));
+      padding-right: max(16px, env(safe-area-inset-right));
+      padding-bottom: calc(var(--nav-base-height) + env(safe-area-inset-bottom) + 24px);
       min-height: 100vh;
-      display: flex;
-      flex-direction: column;
+      min-height: -webkit-fill-available;
+      overflow-x: hidden;
+      -webkit-overflow-scrolling: touch;
     }
 
     .container {
-      max-width: 520px;
+      max-width: 500px;
       margin: 0 auto;
-      padding: 16px;
       width: 100%;
     }
 
+    /* iOS Native Style Header */
     header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 20px;
+      margin-bottom: 18px;
       padding: 4px 0;
     }
 
     .user-welcome {
-      font-size: 1.2rem;
+      font-size: 1.25rem;
       font-weight: 800;
       display: flex;
       align-items: center;
       gap: 8px;
+      letter-spacing: -0.02em;
     }
 
     .badge-byn {
-      background: linear-gradient(135deg, rgba(59, 130, 246, 0.2), rgba(16, 185, 129, 0.2));
+      background: linear-gradient(135deg, rgba(59, 130, 246, 0.25), rgba(16, 185, 129, 0.25));
       color: #60a5fa;
       border: 1px solid rgba(59, 130, 246, 0.4);
       font-size: 0.75rem;
-      padding: 4px 10px;
+      padding: 5px 12px;
       border-radius: 20px;
       font-weight: 700;
-      letter-spacing: 0.05em;
+      letter-spacing: 0.03em;
       box-shadow: 0 0 12px rgba(59, 130, 246, 0.2);
     }
 
+    /* Cards */
     .card {
       background: var(--card-bg);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
       border: 1px solid var(--card-border);
       border-radius: var(--radius);
-      padding: 20px;
+      padding: 18px 20px;
       margin-bottom: 16px;
-      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.35);
     }
 
     .card-title {
-      font-size: 0.8rem;
+      font-size: 0.78rem;
       color: var(--text-muted);
       text-transform: uppercase;
       font-weight: 700;
@@ -106,27 +120,29 @@
       align-items: center;
     }
 
+    /* Hero Goal Card */
     .goal-card {
-      background: linear-gradient(135deg, rgba(30, 41, 59, 0.8) 0%, rgba(15, 23, 42, 0.95) 100%);
+      background: linear-gradient(135deg, rgba(30, 41, 59, 0.85) 0%, rgba(15, 23, 42, 0.98) 100%);
       border: 1px solid var(--card-border-glow);
       position: relative;
       overflow: hidden;
-      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4), 0 0 20px rgba(59, 130, 246, 0.15);
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.45), 0 0 24px rgba(59, 130, 246, 0.15);
     }
 
     .goal-card::before {
       content: '';
       position: absolute;
       top: 0; left: 0; right: 0;
-      height: 2px;
+      height: 3px;
       background: linear-gradient(90deg, var(--primary), var(--accent));
     }
 
     .goal-title {
-      font-size: 1.25rem;
+      font-size: 1.3rem;
       font-weight: 800;
       color: #ffffff;
-      margin-bottom: 4px;
+      margin-bottom: 2px;
+      letter-spacing: -0.02em;
     }
 
     .goal-amount {
@@ -136,7 +152,7 @@
       background: linear-gradient(180deg, #ffffff 0%, #cbd5e1 100%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
-      margin: 6px 0 14px 0;
+      margin: 4px 0 14px 0;
     }
 
     .progress-bar-bg {
@@ -166,6 +182,7 @@
       font-weight: 600;
     }
 
+    /* Grids */
     .grid-2 {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -173,7 +190,7 @@
     }
 
     .stat-card {
-      background: rgba(15, 23, 42, 0.6);
+      background: rgba(15, 23, 42, 0.65);
       border: 1px solid var(--card-border);
       border-radius: var(--radius-sm);
       padding: 14px;
@@ -184,6 +201,7 @@
       font-size: 1.25rem;
       font-weight: 800;
       margin-top: 4px;
+      letter-spacing: -0.02em;
     }
 
     .stat-value.green { color: #34d399; }
@@ -191,6 +209,7 @@
     .stat-value.blue { color: #60a5fa; }
     .stat-value.orange { color: #fbbf24; }
 
+    /* Period Filter Pills */
     .period-selector {
       display: flex;
       background: var(--input-bg);
@@ -210,7 +229,7 @@
       font-weight: 700;
       border-radius: 10px;
       cursor: pointer;
-      transition: all 0.25s;
+      transition: all 0.2s;
     }
 
     .period-btn.active {
@@ -248,12 +267,13 @@
       color: #6ee7b7;
     }
 
+    /* Transactions */
     .tx-item {
       display: flex;
       justify-content: space-between;
       align-items: center;
       padding: 12px 0;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
     }
 
     .tx-item:last-child {
@@ -267,15 +287,16 @@
     }
 
     .tx-icon-chip {
-      width: 40px;
-      height: 40px;
+      width: 42px;
+      height: 42px;
       border-radius: 12px;
       background: rgba(255, 255, 255, 0.05);
       border: 1px solid var(--card-border);
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 1.2rem;
+      font-size: 1.25rem;
+      flex-shrink: 0;
     }
 
     .tx-info h4 {
@@ -293,6 +314,7 @@
     .tx-amount {
       font-weight: 800;
       font-size: 1rem;
+      letter-spacing: -0.01em;
     }
 
     .tx-amount.plus { color: #34d399; }
@@ -303,29 +325,33 @@
       border: none;
       color: var(--text-muted);
       cursor: pointer;
-      padding: 6px;
-      margin-left: 8px;
-      font-size: 0.9rem;
+      padding: 8px;
+      margin-left: 6px;
+      font-size: 1rem;
     }
 
-    .btn-delete:hover { color: var(--danger); }
-
+    /* iOS Compatible Buttons */
     .btn {
       width: 100%;
-      padding: 14px;
+      padding: 15px;
       border: none;
       border-radius: 14px;
       font-weight: 800;
       font-size: 0.95rem;
       cursor: pointer;
-      transition: all 0.2s;
+      transition: transform 0.15s, opacity 0.2s;
       display: flex;
       justify-content: center;
       align-items: center;
       gap: 8px;
+      -webkit-appearance: none;
+      appearance: none;
     }
 
-    .btn:active { transform: scale(0.98); }
+    .btn:active {
+      transform: scale(0.97);
+      opacity: 0.9;
+    }
 
     .btn-primary {
       background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
@@ -344,20 +370,13 @@
       color: white;
     }
 
-    .btn-secondary {
-      background: rgba(255, 255, 255, 0.05);
-      border: 1px solid var(--card-border);
-      color: var(--text-muted);
-      margin-top: 8px;
-    }
-
     .form-group {
       margin-bottom: 14px;
     }
 
     label {
       display: block;
-      font-size: 0.8rem;
+      font-size: 0.78rem;
       font-weight: 700;
       color: var(--text-muted);
       text-transform: uppercase;
@@ -365,16 +384,19 @@
       margin-bottom: 6px;
     }
 
+    /* 16px Font Prevents iOS Auto-Zoom on Input Click */
     input, select {
       width: 100%;
-      padding: 12px 14px;
+      padding: 13px 14px;
       background: var(--input-bg);
       border: 1px solid var(--card-border);
       border-radius: 12px;
       color: var(--text);
-      font-size: 0.95rem;
+      font-size: 16px !important;
       font-weight: 600;
       outline: none;
+      -webkit-appearance: none;
+      appearance: none;
     }
 
     input:focus, select:focus {
@@ -392,19 +414,15 @@
       background: var(--input-bg);
       border: 1px solid var(--card-border);
       color: var(--text);
-      padding: 8px 4px;
+      padding: 10px 4px;
       font-size: 0.75rem;
       font-weight: 700;
-      border-radius: 8px;
+      border-radius: 10px;
       cursor: pointer;
+      -webkit-appearance: none;
     }
 
-    .btn-preset:hover {
-      border-color: var(--primary);
-      color: var(--primary);
-    }
-
-    /* Native SVG Donut Chart */
+    /* Native Donut Chart Layout */
     .chart-container {
       display: flex;
       flex-direction: column;
@@ -413,7 +431,7 @@
       margin-top: 10px;
     }
 
-    @media (min-width: 400px) {
+    @media (min-width: 380px) {
       .chart-container {
         flex-direction: row;
         justify-content: space-around;
@@ -421,10 +439,11 @@
     }
 
     .svg-donut {
-      width: 140px;
-      height: 140px;
+      width: 130px;
+      height: 130px;
       transform: rotate(-90deg);
       border-radius: 50%;
+      flex-shrink: 0;
     }
 
     .chart-legend {
@@ -474,12 +493,11 @@
       font-weight: 600;
     }
 
-    /* Recurring Income Section Style */
     .recurring-box {
       background: rgba(16, 185, 129, 0.06);
       border: 1px solid rgba(16, 185, 129, 0.25);
-      border-radius: 14px;
-      padding: 14px;
+      border-radius: var(--radius-sm);
+      padding: 16px;
       margin-bottom: 16px;
     }
 
@@ -487,28 +505,29 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 10px;
+      margin-bottom: 12px;
     }
 
     .recurring-title {
-      font-size: 0.85rem;
+      font-size: 0.88rem;
       font-weight: 800;
       color: #34d399;
     }
 
+    /* iOS Bottom Navigation Bar with Home Indicator Support */
     .bottom-nav {
       position: fixed;
       bottom: 0; left: 0; right: 0;
-      height: var(--nav-height);
-      background: rgba(21, 28, 44, 0.88);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
+      height: calc(var(--nav-base-height) + env(safe-area-inset-bottom));
+      padding-bottom: env(safe-area-inset-bottom);
+      background: rgba(15, 23, 42, 0.92);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
       border-top: 1px solid var(--card-border);
       display: flex;
       justify-content: space-around;
       align-items: center;
       z-index: 100;
-      padding-bottom: env(safe-area-inset-bottom);
     }
 
     .nav-item {
@@ -525,20 +544,23 @@
       cursor: pointer;
       width: 20%;
       height: 100%;
+      transition: color 0.2s;
     }
 
     .nav-item icon {
       font-size: 1.35rem;
-      margin-bottom: 3px;
+      margin-bottom: 2px;
     }
 
     .nav-item.active { color: #60a5fa; }
 
+    /* Modal Popup Adaptive for iOS */
     .modal-overlay {
       position: fixed;
       top: 0; left: 0; right: 0; bottom: 0;
       background: rgba(0, 0, 0, 0.75);
-      backdrop-filter: blur(6px);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
       display: flex;
       align-items: flex-end;
       justify-content: center;
@@ -568,17 +590,25 @@
       width: 100%;
       max-width: 480px;
       padding: 24px;
-      max-height: 85vh;
+      padding-bottom: calc(24px + env(safe-area-inset-bottom));
+      max-height: 88vh;
       overflow-y: auto;
-      transform: translateY(30px);
-      transition: transform 0.25s ease;
+      -webkit-overflow-scrolling: touch;
+      transform: translateY(100%);
+      transition: transform 0.3s cubic-bezier(0.1, 0.9, 0.2, 1);
     }
 
     @media (min-width: 480px) {
-      .modal { border-radius: var(--radius); }
+      .modal {
+        border-radius: var(--radius);
+        padding-bottom: 24px;
+        transform: translateY(20px);
+      }
     }
 
-    .modal-overlay.active .modal { transform: translateY(0); }
+    .modal-overlay.active .modal {
+      transform: translateY(0);
+    }
 
     .modal-header {
       display: flex;
@@ -590,7 +620,7 @@
     .modal-header h3 { font-size: 1.15rem; font-weight: 800; }
 
     .modal-close {
-      background: rgba(255, 255, 255, 0.05);
+      background: rgba(255, 255, 255, 0.08);
       border: none;
       color: var(--text-muted);
       width: 32px;
@@ -598,6 +628,9 @@
       border-radius: 50%;
       font-size: 1.2rem;
       cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
 
     .tab-content { display: none; }
@@ -677,8 +710,6 @@
 
     <!-- TAB: INCOMES -->
     <div id="tab-incomes" class="tab-content">
-      
-      <!-- Recurring Income Settings Card -->
       <div class="recurring-box">
         <div class="recurring-header">
           <div class="recurring-title">💼 Фиксированный доход (ЗП / Аванс)</div>
@@ -705,7 +736,7 @@
               <input type="number" min="1" max="31" id="recSalaryDay" placeholder="30">
             </div>
           </div>
-          <button type="submit" class="btn btn-accent" style="padding:10px; font-size:0.85rem;">Сохранить ЗП и Аванс</button>
+          <button type="submit" class="btn btn-accent" style="padding:12px; font-size:0.88rem;">Сохранить ЗП и Аванс</button>
         </form>
       </div>
 
@@ -751,7 +782,6 @@
         </div>
       </div>
 
-      <!-- Expense Categories Chart -->
       <div class="card">
         <div class="card-title">📊 График расходов по категориям</div>
         <div id="categoryChartContainer">
@@ -876,7 +906,7 @@
           <label>Сумма (BYN)</label>
           <input type="number" step="0.01" min="0.1" id="expAmount" placeholder="15" required>
         </div>
-        <div class="form-group">
+        <div class="form-group" style="margin-top:12px;">
           <label>Дата</label>
           <input type="date" id="expDate" required>
         </div>
@@ -910,7 +940,7 @@
   </nav>
 
   <script>
-    /* Safe Storage Fallback Wrapper */
+    /* Safe Storage Wrapper */
     const SafeStore = {
       _mem: {},
       get(key, fallback) {
@@ -930,9 +960,8 @@
       }
     };
 
-    const STORAGE_KEY = 'byn_fin_planner_v4_clean';
+    const STORAGE_KEY = 'byn_fin_planner_ios_v1';
 
-    // Clean Initial State (ZERO fake demo transactions)
     const CLEAN_DATA = {
       goal: {
         name: 'Моя финансовая цель',
@@ -1012,12 +1041,8 @@
       renderAll();
     }
 
-    /* Core Calculation Engine with Salary & Advance Inclusion */
     function calc() {
-      // Direct manual incomes sum
       const manualIncomes = appState.incomes.reduce((acc, item) => acc + Number(item.amount), 0);
-      
-      // Monthly recurring sum
       const advanceVal = Number(appState.recurring?.advance?.amount || 0);
       const salaryVal = Number(appState.recurring?.salary?.amount || 0);
       const recurringMonthlyTotal = advanceVal + salaryVal;
@@ -1065,11 +1090,9 @@
       };
     }
 
-    /* Render Main Views */
     function renderAll() {
       const c = calc();
 
-      // Goal Card Updates
       document.getElementById('goalNameDisplay').textContent = appState.goal.name;
       document.getElementById('goalTargetDisplay').textContent = `${c.target.toFixed(2)} BYN`;
       document.getElementById('goalSavedDisplay').textContent = `${c.savedMoney.toFixed(2)} BYN`;
@@ -1078,18 +1101,15 @@
       document.getElementById('goalProgressBar').style.width = `${c.progressPercent}%`;
       document.getElementById('goalDeadlineDays').textContent = `⏳ ${c.daysLeft} дн.`;
 
-      // Quick Metrics
       document.getElementById('safeDailySpend').textContent = `${c.safeDailySpend.toFixed(2)} BYN`;
       document.getElementById('requiredDailySave').textContent = `${c.requiredDailySave.toFixed(2)} BYN`;
       document.getElementById('totalIncomeDisplay').textContent = `${c.totalIncome.toFixed(2)} BYN`;
       document.getElementById('totalExpenseDisplay').textContent = `${c.totalExpense.toFixed(2)} BYN`;
 
-      // Goal Form Fill
       document.getElementById('goalNameInput').value = appState.goal.name;
       document.getElementById('goalTargetInput').value = appState.goal.target;
       document.getElementById('goalDeadlineInput').value = appState.goal.deadline;
 
-      // Recurring Inputs Fill
       if (appState.recurring) {
         document.getElementById('recAdvanceAmount').value = appState.recurring.advance?.amount || '';
         document.getElementById('recAdvanceDay').value = appState.recurring.advance?.day || 15;
@@ -1110,23 +1130,14 @@
       alertContainer.innerHTML = '';
 
       if (c.progressPercent >= 100) {
-        alertContainer.innerHTML = `
-          <div class="alert alert-success">
-            🎉 <b>Поздравляем!</b> Цель накопления выполнена!
-          </div>`;
+        alertContainer.innerHTML = `<div class="alert alert-success">🎉 <b>Поздравляем!</b> Цель выполнена!</div>`;
         return;
       }
 
       if (c.currentBalance < 0) {
-        alertContainer.innerHTML = `
-          <div class="alert alert-danger">
-            ⚠️ <b>Перерасход!</b> Расходы превышают доходы на ${Math.abs(c.currentBalance).toFixed(2)} BYN.
-          </div>`;
+        alertContainer.innerHTML = `<div class="alert alert-danger">⚠️ <b>Перерасход!</b> Расходы превышают доходы на ${Math.abs(c.currentBalance).toFixed(2)} BYN.</div>`;
       } else if (c.safeDailySpend <= 0 && c.totalIncome > 0) {
-        alertContainer.innerHTML = `
-          <div class="alert alert-warning">
-            ⏳ <b>Внимание!</b> Чтобы уложиться в срок, оптимизируйте ежедневные расходы.
-          </div>`;
+        alertContainer.innerHTML = `<div class="alert alert-warning">⏳ <b>Внимание!</b> Оптимизируйте ежедневные расходы.</div>`;
       }
     }
 
@@ -1217,7 +1228,6 @@
       };
 
       saveData();
-      alert('Данные по ЗП и Авансу успешно сохранены!');
     }
 
     function setTimePeriod(period) {
@@ -1270,7 +1280,6 @@
       renderSmartAdvice(c);
     }
 
-    /* Native Visual SVG Donut + Bar Chart Renderer */
     function renderCategoryChart() {
       const container = document.getElementById('categoryChartContainer');
       const catTotals = {};
@@ -1288,7 +1297,6 @@
 
       const sortedCats = Object.entries(catTotals).sort((a,b) => b[1] - a[1]);
 
-      // Calculate SVG Donut Rings
       let cumulativePercent = 0;
       const donutSlices = sortedCats.map(([cat, amount]) => {
         const pct = amount / totalExp;
@@ -1299,7 +1307,7 @@
         return `<circle cx="60" cy="60" r="50" fill="transparent" stroke="${color}" stroke-width="16" stroke-dasharray="${strokeDasharray}" stroke-dashoffset="${strokeDashoffset}"></circle>`;
       }).join('');
 
-      const svgDonutHtml = `
+      container.innerHTML = `
         <div class="chart-container">
           <svg class="svg-donut" viewBox="0 0 120 120">
             ${donutSlices}
@@ -1323,8 +1331,6 @@
           </div>
         </div>
       `;
-
-      container.innerHTML = svgDonutHtml;
     }
 
     function getTopExpenseCategory() {
@@ -1350,7 +1356,7 @@
       }
 
       if (c.recurringMonthlyTotal > 0) {
-        html += `<li>Фиксированный регулярный доход (ЗП + Аванс): <b>${c.recurringMonthlyTotal.toFixed(2)} BYN / мес</b>.</li>`;
+        html += `<li>Регулярный доход (ЗП + Аванс): <b>${c.recurringMonthlyTotal.toFixed(2)} BYN / мес</b>.</li>`;
       }
 
       html += `</ul>`;
