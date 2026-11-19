@@ -8,20 +8,23 @@
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <style>
     :root {
-      --bg: #0f172a;
-      --card-bg: #1e293b;
-      --card-border: #334155;
+      --bg: #0b0f19;
+      --card-bg: rgba(21, 28, 44, 0.75);
+      --card-solid: #151c2c;
+      --card-border: rgba(255, 255, 255, 0.08);
+      --card-border-glow: rgba(59, 130, 246, 0.3);
       --primary: #3b82f6;
-      --primary-hover: #2563eb;
+      --primary-glow: rgba(59, 130, 246, 0.35);
       --accent: #10b981;
-      --accent-hover: #059669;
-      --danger: #ef4444;
+      --accent-glow: rgba(16, 185, 129, 0.25);
+      --danger: #f43f5e;
       --warning: #f59e0b;
       --text: #f8fafc;
       --text-muted: #94a3b8;
       --input-bg: #0f172a;
-      --radius: 16px;
-      --nav-height: 70px;
+      --radius: 20px;
+      --radius-sm: 12px;
+      --nav-height: 72px;
     }
 
     * {
@@ -34,96 +37,125 @@
 
     body {
       background-color: var(--bg);
+      background-image: 
+        radial-gradient(circle at 10% 10%, rgba(59, 130, 246, 0.12) 0%, transparent 40%),
+        radial-gradient(circle at 90% 80%, rgba(16, 185, 129, 0.08) 0%, transparent 40%);
+      background-attachment: fixed;
       color: var(--text);
-      padding-bottom: calc(var(--nav-height) + 20px);
+      padding-bottom: calc(var(--nav-height) + 24px);
       min-height: 100vh;
       display: flex;
       flex-direction: column;
     }
 
     .container {
-      max-width: 600px;
+      max-width: 520px;
       margin: 0 auto;
       padding: 16px;
       width: 100%;
     }
 
-    /* Header */
     header {
       display: flex;
       justify-content: space-between;
       align-items: center;
       margin-bottom: 20px;
+      padding: 4px 0;
     }
 
     .user-welcome {
-      font-size: 1.25rem;
-      font-weight: 700;
+      font-size: 1.2rem;
+      font-weight: 800;
       display: flex;
       align-items: center;
       gap: 8px;
     }
 
     .badge-byn {
-      background: rgba(59, 130, 246, 0.2);
-      color: var(--primary);
-      border: 1px solid var(--primary);
+      background: linear-gradient(135deg, rgba(59, 130, 246, 0.2), rgba(16, 185, 129, 0.2));
+      color: #60a5fa;
+      border: 1px solid rgba(59, 130, 246, 0.4);
       font-size: 0.75rem;
-      padding: 2px 8px;
+      padding: 4px 10px;
       border-radius: 20px;
-      font-weight: 600;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      box-shadow: 0 0 12px rgba(59, 130, 246, 0.2);
     }
 
-    /* Cards */
     .card {
-      background-color: var(--card-bg);
+      background: var(--card-bg);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
       border: 1px solid var(--card-border);
       border-radius: var(--radius);
       padding: 20px;
       margin-bottom: 16px;
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
     }
 
     .card-title {
-      font-size: 0.9rem;
+      font-size: 0.8rem;
       color: var(--text-muted);
       text-transform: uppercase;
-      letter-spacing: 0.05em;
-      margin-bottom: 8px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      margin-bottom: 12px;
       display: flex;
       justify-content: space-between;
       align-items: center;
     }
 
-    /* Dashboard Main Goal Card */
     .goal-card {
-      background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
-      border: 1px solid #3b82f655;
+      background: linear-gradient(135deg, rgba(30, 41, 59, 0.8) 0%, rgba(15, 23, 42, 0.95) 100%);
+      border: 1px solid var(--card-border-glow);
       position: relative;
       overflow: hidden;
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4), 0 0 20px rgba(59, 130, 246, 0.15);
+    }
+
+    .goal-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, var(--primary), var(--accent));
+    }
+
+    .goal-title {
+      font-size: 1.25rem;
+      font-weight: 800;
+      color: #ffffff;
+      margin-bottom: 4px;
     }
 
     .goal-amount {
-      font-size: 2rem;
-      font-weight: 800;
-      color: #ffffff;
-      margin: 4px 0;
+      font-size: 2.2rem;
+      font-weight: 900;
+      letter-spacing: -0.03em;
+      background: linear-gradient(180deg, #ffffff 0%, #cbd5e1 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin: 6px 0 14px 0;
     }
 
     .progress-bar-bg {
-      background: rgba(255, 255, 255, 0.1);
+      background: rgba(255, 255, 255, 0.08);
       height: 12px;
-      border-radius: 6px;
+      border-radius: 10px;
       overflow: hidden;
-      margin: 14px 0 8px 0;
+      margin-bottom: 12px;
+      padding: 2px;
+      border: 1px solid rgba(255, 255, 255, 0.05);
     }
 
     .progress-bar-fill {
-      background: linear-gradient(90deg, var(--primary), var(--accent));
+      background: linear-gradient(90deg, #3b82f6 0%, #10b981 100%);
       height: 100%;
       width: 0%;
-      transition: width 0.5s ease;
-      border-radius: 6px;
+      transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+      border-radius: 8px;
+      box-shadow: 0 0 12px rgba(16, 185, 129, 0.5);
     }
 
     .goal-stats {
@@ -131,52 +163,39 @@
       justify-content: space-between;
       font-size: 0.85rem;
       color: var(--text-muted);
+      font-weight: 600;
     }
 
-    /* Stat Grid */
     .grid-2 {
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 12px;
     }
 
-    .grid-4 {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 10px;
-    }
-
-    @media (min-width: 480px) {
-      .grid-4 {
-        grid-template-columns: repeat(4, 1fr);
-      }
-    }
-
     .stat-card {
-      background: var(--card-bg);
+      background: rgba(15, 23, 42, 0.6);
       border: 1px solid var(--card-border);
-      border-radius: 12px;
+      border-radius: var(--radius-sm);
       padding: 14px;
       text-align: center;
     }
 
     .stat-value {
-      font-size: 1.2rem;
-      font-weight: 700;
+      font-size: 1.25rem;
+      font-weight: 800;
       margin-top: 4px;
     }
 
-    .stat-value.green { color: var(--accent); }
-    .stat-value.red { color: var(--danger); }
-    .stat-value.blue { color: var(--primary); }
-    .stat-value.orange { color: var(--warning); }
+    .stat-value.green { color: #34d399; }
+    .stat-value.red { color: #f87171; }
+    .stat-value.blue { color: #60a5fa; }
+    .stat-value.orange { color: #fbbf24; }
 
-    /* Period Filter Pills */
     .period-selector {
       display: flex;
       background: var(--input-bg);
       padding: 4px;
-      border-radius: 12px;
+      border-radius: 14px;
       margin-bottom: 16px;
       border: 1px solid var(--card-border);
     }
@@ -186,63 +205,83 @@
       background: transparent;
       border: none;
       color: var(--text-muted);
-      padding: 8px 0;
+      padding: 10px 0;
       font-size: 0.85rem;
-      font-weight: 600;
-      border-radius: 8px;
+      font-weight: 700;
+      border-radius: 10px;
       cursor: pointer;
-      transition: all 0.2s;
+      transition: all 0.25s;
     }
 
     .period-btn.active {
       background: var(--primary);
       color: #ffffff;
+      box-shadow: 0 4px 12px var(--primary-glow);
     }
 
-    /* Alerts */
     .alert {
-      padding: 12px 16px;
-      border-radius: 12px;
+      padding: 14px 16px;
+      border-radius: var(--radius-sm);
       margin-bottom: 16px;
-      font-size: 0.9rem;
+      font-size: 0.88rem;
       display: flex;
       align-items: center;
       gap: 10px;
+      line-height: 1.4;
     }
 
     .alert-warning {
-      background: rgba(245, 158, 11, 0.15);
-      border: 1px solid var(--warning);
+      background: rgba(245, 158, 11, 0.12);
+      border: 1px solid rgba(245, 158, 11, 0.4);
       color: #fcd34d;
     }
 
     .alert-danger {
-      background: rgba(239, 68, 68, 0.15);
-      border: 1px solid var(--danger);
+      background: rgba(244, 63, 94, 0.12);
+      border: 1px solid rgba(244, 63, 94, 0.4);
       color: #fca5a5;
     }
 
     .alert-success {
-      background: rgba(16, 185, 129, 0.15);
-      border: 1px solid var(--accent);
+      background: rgba(16, 185, 129, 0.12);
+      border: 1px solid rgba(16, 185, 129, 0.4);
       color: #6ee7b7;
     }
 
-    /* Transaction List */
     .tx-item {
       display: flex;
       justify-content: space-between;
       align-items: center;
       padding: 12px 0;
-      border-bottom: 1px solid var(--card-border);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
     }
 
     .tx-item:last-child {
       border-bottom: none;
     }
 
+    .tx-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .tx-icon-chip {
+      width: 40px;
+      height: 40px;
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--card-border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+    }
+
     .tx-info h4 {
       font-size: 0.95rem;
+      font-weight: 700;
+      color: #f1f5f9;
       margin-bottom: 2px;
     }
 
@@ -252,47 +291,89 @@
     }
 
     .tx-amount {
-      font-weight: 700;
+      font-weight: 800;
       font-size: 1rem;
     }
 
-    .tx-amount.plus { color: var(--accent); }
-    .tx-amount.minus { color: var(--danger); }
+    .tx-amount.plus { color: #34d399; }
+    .tx-amount.minus { color: #f87171; }
 
     .btn-delete {
       background: none;
       border: none;
       color: var(--text-muted);
       cursor: pointer;
-      padding: 4px 8px;
+      padding: 6px;
       margin-left: 8px;
       font-size: 0.9rem;
     }
 
-    .btn-delete:hover {
-      color: var(--danger);
+    .btn-delete:hover { color: var(--danger); }
+
+    .btn {
+      width: 100%;
+      padding: 14px;
+      border: none;
+      border-radius: 14px;
+      font-weight: 800;
+      font-size: 0.95rem;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 8px;
     }
 
-    /* Form & Controls */
+    .btn:active { transform: scale(0.98); }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+      color: white;
+      box-shadow: 0 4px 16px var(--primary-glow);
+    }
+
+    .btn-accent {
+      background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+      color: white;
+      box-shadow: 0 4px 16px var(--accent-glow);
+    }
+
+    .btn-danger {
+      background: linear-gradient(135deg, #f43f5e 0%, #e11d48 100%);
+      color: white;
+    }
+
+    .btn-secondary {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--card-border);
+      color: var(--text-muted);
+      margin-top: 8px;
+    }
+
     .form-group {
       margin-bottom: 14px;
     }
 
     label {
       display: block;
-      font-size: 0.85rem;
+      font-size: 0.8rem;
+      font-weight: 700;
       color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
       margin-bottom: 6px;
     }
 
     input, select {
       width: 100%;
-      padding: 12px;
+      padding: 12px 14px;
       background: var(--input-bg);
       border: 1px solid var(--card-border);
-      border-radius: 10px;
+      border-radius: 12px;
       color: var(--text);
-      font-size: 1rem;
+      font-size: 0.95rem;
+      font-weight: 600;
       outline: none;
     }
 
@@ -300,43 +381,57 @@
       border-color: var(--primary);
     }
 
-    .btn {
-      width: 100%;
-      padding: 14px;
-      border: none;
-      border-radius: 12px;
-      font-weight: 700;
-      font-size: 1rem;
-      cursor: pointer;
-      transition: background 0.2s;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      gap: 8px;
+    .preset-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 6px;
+      margin-top: 6px;
     }
 
-    .btn-primary {
-      background: var(--primary);
-      color: white;
-    }
-
-    .btn-primary:hover {
-      background: var(--primary-hover);
-    }
-
-    .btn-accent {
-      background: var(--accent);
-      color: white;
-    }
-
-    .btn-secondary {
-      background: transparent;
+    .btn-preset {
+      background: var(--input-bg);
       border: 1px solid var(--card-border);
-      color: var(--text-muted);
-      margin-top: 8px;
+      color: var(--text);
+      padding: 8px 4px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      border-radius: 8px;
+      cursor: pointer;
     }
 
-    /* Charts (Native CSS SVG) */
+    .btn-preset:hover {
+      border-color: var(--primary);
+      color: var(--primary);
+    }
+
+    /* Native SVG Donut Chart */
+    .chart-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 16px;
+      margin-top: 10px;
+    }
+
+    @media (min-width: 400px) {
+      .chart-container {
+        flex-direction: row;
+        justify-content: space-around;
+      }
+    }
+
+    .svg-donut {
+      width: 140px;
+      height: 140px;
+      transform: rotate(-90deg);
+      border-radius: 50%;
+    }
+
+    .chart-legend {
+      flex: 1;
+      width: 100%;
+    }
+
     .chart-bar-row {
       margin-bottom: 10px;
     }
@@ -344,28 +439,29 @@
     .chart-bar-label {
       display: flex;
       justify-content: space-between;
-      font-size: 0.8rem;
+      font-size: 0.82rem;
+      font-weight: 600;
       margin-bottom: 4px;
     }
 
     .chart-bar-track {
       height: 8px;
       background: var(--input-bg);
-      border-radius: 4px;
+      border-radius: 6px;
       overflow: hidden;
+      border: 1px solid rgba(255, 255, 255, 0.05);
     }
 
     .chart-bar-fill {
       height: 100%;
-      background: var(--primary);
-      border-radius: 4px;
+      border-radius: 6px;
+      transition: width 0.5s ease;
     }
 
-    /* Live AI Split Display */
     .split-box {
-      background: rgba(59, 130, 246, 0.1);
-      border: 1px dashed var(--primary);
-      border-radius: 10px;
+      background: rgba(59, 130, 246, 0.08);
+      border: 1px dashed rgba(59, 130, 246, 0.4);
+      border-radius: 12px;
       padding: 12px;
       margin-top: 10px;
       font-size: 0.85rem;
@@ -375,16 +471,38 @@
       display: flex;
       justify-content: space-between;
       margin-bottom: 4px;
+      font-weight: 600;
     }
 
-    /* Bottom Navigation */
+    /* Recurring Income Section Style */
+    .recurring-box {
+      background: rgba(16, 185, 129, 0.06);
+      border: 1px solid rgba(16, 185, 129, 0.25);
+      border-radius: 14px;
+      padding: 14px;
+      margin-bottom: 16px;
+    }
+
+    .recurring-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+
+    .recurring-title {
+      font-size: 0.85rem;
+      font-weight: 800;
+      color: #34d399;
+    }
+
     .bottom-nav {
       position: fixed;
-      bottom: 0;
-      left: 0;
-      right: 0;
+      bottom: 0; left: 0; right: 0;
       height: var(--nav-height);
-      background: var(--card-bg);
+      background: rgba(21, 28, 44, 0.88);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
       border-top: 1px solid var(--card-border);
       display: flex;
       justify-content: space-around;
@@ -400,7 +518,8 @@
       justify-content: center;
       color: var(--text-muted);
       text-decoration: none;
-      font-size: 0.7rem;
+      font-size: 0.72rem;
+      font-weight: 700;
       background: none;
       border: none;
       cursor: pointer;
@@ -409,27 +528,31 @@
     }
 
     .nav-item icon {
-      font-size: 1.3rem;
-      margin-bottom: 2px;
+      font-size: 1.35rem;
+      margin-bottom: 3px;
     }
 
-    .nav-item.active {
-      color: var(--primary);
-    }
+    .nav-item.active { color: #60a5fa; }
 
-    /* Modals */
     .modal-overlay {
       position: fixed;
       top: 0; left: 0; right: 0; bottom: 0;
-      background: rgba(0,0,0,0.75);
+      background: rgba(0, 0, 0, 0.75);
+      backdrop-filter: blur(6px);
       display: flex;
-      align-items: center;
+      align-items: flex-end;
       justify-content: center;
       z-index: 200;
-      padding: 16px;
       opacity: 0;
       pointer-events: none;
-      transition: opacity 0.2s ease;
+      transition: opacity 0.25s ease;
+    }
+
+    @media (min-width: 480px) {
+      .modal-overlay {
+        align-items: center;
+        padding: 16px;
+      }
     }
 
     .modal-overlay.active {
@@ -438,65 +561,52 @@
     }
 
     .modal {
-      background: var(--card-bg);
+      background: var(--card-solid);
       border: 1px solid var(--card-border);
-      border-radius: var(--radius);
+      border-top-left-radius: 24px;
+      border-top-right-radius: 24px;
       width: 100%;
-      max-width: 450px;
-      padding: 20px;
-      max-height: 90vh;
+      max-width: 480px;
+      padding: 24px;
+      max-height: 85vh;
       overflow-y: auto;
+      transform: translateY(30px);
+      transition: transform 0.25s ease;
     }
+
+    @media (min-width: 480px) {
+      .modal { border-radius: var(--radius); }
+    }
+
+    .modal-overlay.active .modal { transform: translateY(0); }
 
     .modal-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 16px;
+      margin-bottom: 18px;
     }
+
+    .modal-header h3 { font-size: 1.15rem; font-weight: 800; }
 
     .modal-close {
-      background: none;
+      background: rgba(255, 255, 255, 0.05);
       border: none;
       color: var(--text-muted);
-      font-size: 1.5rem;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      font-size: 1.2rem;
       cursor: pointer;
     }
 
-    .preset-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 6px;
-      margin-top: 6px;
-    }
-
-    .btn-preset {
-      background: var(--input-bg);
-      border: 1px solid var(--card-border);
-      color: var(--text);
-      padding: 6px;
-      font-size: 0.75rem;
-      border-radius: 6px;
-      cursor: pointer;
-    }
-
-    .btn-preset:hover {
-      border-color: var(--primary);
-    }
-
-    .tab-content {
-      display: none;
-    }
-
-    .tab-content.active {
-      display: block;
-    }
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
   </style>
 </head>
 <body>
 
   <div class="container">
-    <!-- Header -->
     <header>
       <div class="user-welcome">
         <span id="userGreeting">Привет, Финансист</span> 👋
@@ -506,14 +616,12 @@
 
     <!-- TAB: DASHBOARD -->
     <div id="tab-dashboard" class="tab-content active">
-      
-      <!-- Main Goal Progress -->
       <div class="card goal-card">
         <div class="card-title">
-          <span>🎯 Ваша цель</span>
-          <span id="goalDeadlineDays">-- дней</span>
+          <span>🎯 Накопление на цель</span>
+          <span id="goalDeadlineDays" style="color:#60a5fa; text-transform:none;">-- дней</span>
         </div>
-        <h2 id="goalNameDisplay">Загрузка цели...</h2>
+        <h2 class="goal-title" id="goalNameDisplay">Моя цель</h2>
         <div class="goal-amount" id="goalTargetDisplay">0 BYN</div>
         
         <div class="progress-bar-bg">
@@ -521,53 +629,46 @@
         </div>
 
         <div class="goal-stats">
-          <span>Собрано: <b id="goalSavedDisplay" style="color:var(--accent)">0 BYN</b></span>
-          <span id="goalPercentDisplay">0%</span>
-          <span>Осталось: <b id="goalRemainingDisplay">0 BYN</b></span>
+          <span>Собрано: <b id="goalSavedDisplay" style="color:#34d399">0 BYN</b></span>
+          <span id="goalPercentDisplay" style="color:#ffffff;">0%</span>
+          <span>Осталось: <b id="goalRemainingDisplay" style="color:#f87171">0 BYN</b></span>
         </div>
       </div>
 
-      <!-- Safe Spending Alert Banner -->
       <div id="alertContainer"></div>
 
-      <!-- Quick Numbers Grid -->
       <div class="grid-2" style="margin-bottom: 16px;">
         <div class="stat-card">
-          <div class="card-title" style="justify-content:center;">🛡️ Безопасно на сегодня</div>
+          <div class="card-title" style="justify-content:center; margin-bottom:4px;">🛡️ Безопасно / день</div>
           <div class="stat-value green" id="safeDailySpend">0 BYN</div>
         </div>
         <div class="stat-card">
-          <div class="card-title" style="justify-content:center;">📌 План накоплений/день</div>
+          <div class="card-title" style="justify-content:center; margin-bottom:4px;">📌 План откладывания</div>
           <div class="stat-value blue" id="requiredDailySave">0 BYN</div>
         </div>
       </div>
 
-      <!-- Overview Balance Grid -->
       <div class="card">
-        <div class="card-title">💰 Текущий баланс</div>
+        <div class="card-title">💰 Финансовый баланс</div>
         <div class="grid-2">
           <div>
-            <label>Всего доходов</label>
+            <label>Доходы (+ ЗП/Аванс)</label>
             <div class="stat-value green" id="totalIncomeDisplay">0 BYN</div>
           </div>
           <div>
-            <label>Всего расходов</label>
+            <label>Расходы</label>
             <div class="stat-value red" id="totalExpenseDisplay">0 BYN</div>
           </div>
         </div>
       </div>
 
-      <!-- Quick Action Buttons -->
       <div class="grid-2" style="margin-bottom: 16px;">
-        <button class="btn btn-accent" onclick="openIncomeModal()">➕ Добавить доход</button>
-        <button class="btn btn-primary" style="background:#ef4444;" onclick="openExpenseModal()">➖ Добавить расход</button>
+        <button class="btn btn-accent" onclick="openIncomeModal()">➕ Доход</button>
+        <button class="btn btn-danger" onclick="openExpenseModal()">➖ Расход</button>
       </div>
 
-      <!-- Recent Transactions -->
       <div class="card">
-        <div class="card-title">
-          <span>📋 Последние операции</span>
-        </div>
+        <div class="card-title">📋 Последние операции</div>
         <div id="recentTransactionsList">
           <div style="color:var(--text-muted); font-size:0.85rem; text-align:center; padding: 10px;">Операций пока нет</div>
         </div>
@@ -576,9 +677,41 @@
 
     <!-- TAB: INCOMES -->
     <div id="tab-incomes" class="tab-content">
+      
+      <!-- Recurring Income Settings Card -->
+      <div class="recurring-box">
+        <div class="recurring-header">
+          <div class="recurring-title">💼 Фиксированный доход (ЗП / Аванс)</div>
+          <span style="font-size:0.75rem; color:var(--text-muted);">Ежемесячно</span>
+        </div>
+        <form onsubmit="saveRecurringIncome(event)">
+          <div class="grid-2" style="margin-bottom:10px;">
+            <div>
+              <label>Аванс (BYN)</label>
+              <input type="number" step="0.01" min="0" id="recAdvanceAmount" placeholder="400">
+            </div>
+            <div>
+              <label>День аванса</label>
+              <input type="number" min="1" max="31" id="recAdvanceDay" placeholder="15">
+            </div>
+          </div>
+          <div class="grid-2" style="margin-bottom:12px;">
+            <div>
+              <label>Зарплата (BYN)</label>
+              <input type="number" step="0.01" min="0" id="recSalaryAmount" placeholder="800">
+            </div>
+            <div>
+              <label>День зарплаты</label>
+              <input type="number" min="1" max="31" id="recSalaryDay" placeholder="30">
+            </div>
+          </div>
+          <button type="submit" class="btn btn-accent" style="padding:10px; font-size:0.85rem;">Сохранить ЗП и Аванс</button>
+        </form>
+      </div>
+
       <div class="card">
-        <div class="card-title">💵 Управление доходами</div>
-        <button class="btn btn-accent" onclick="openIncomeModal()" style="margin-bottom: 16px;">+ Добавить доход</button>
+        <div class="card-title">💵 Внеплановые и разовые доходы</div>
+        <button class="btn btn-accent" onclick="openIncomeModal()" style="margin-bottom: 16px;">+ Добавить разовый доход</button>
         <div id="incomesList"></div>
       </div>
     </div>
@@ -587,7 +720,7 @@
     <div id="tab-expenses" class="tab-content">
       <div class="card">
         <div class="card-title">🛒 Управление расходами</div>
-        <button class="btn btn-primary" style="background:#ef4444; margin-bottom: 16px;" onclick="openExpenseModal()">+ Добавить расход</button>
+        <button class="btn btn-danger" onclick="openExpenseModal()" style="margin-bottom: 16px;">+ Добавить расход</button>
         <div id="expensesList"></div>
       </div>
     </div>
@@ -602,31 +735,30 @@
       </div>
 
       <div class="card">
-        <div class="card-title">🤖 AI Бюджетный План (<span id="periodTitle">День</span>)</div>
+        <div class="card-title">🤖 AI Бюджет (<span id="periodTitle">День</span>)</div>
         <div class="grid-2" style="margin-bottom: 14px;">
           <div class="stat-card">
             <label>Лимит трат</label>
             <div class="stat-value orange" id="aiSpendLimit">0 BYN</div>
           </div>
           <div class="stat-card">
-            <label>План накоплений</label>
+            <label>Цель отложить</label>
             <div class="stat-value blue" id="aiSaveTarget">0 BYN</div>
           </div>
         </div>
-        <div id="aiPlanAdvice" style="font-size:0.85rem; line-height:1.4; color:var(--text-muted); background:var(--input-bg); padding:12px; border-radius:10px;">
+        <div id="aiPlanAdvice" style="font-size:0.85rem; line-height:1.4; color:var(--text-muted); background:var(--input-bg); padding:12px; border-radius:12px; border:1px solid var(--card-border);">
           Анализ бюджета...
         </div>
       </div>
 
       <!-- Expense Categories Chart -->
       <div class="card">
-        <div class="card-title">📊 Структура расходов по категориям</div>
+        <div class="card-title">📊 График расходов по категориям</div>
         <div id="categoryChartContainer">
-          <div style="color:var(--text-muted); font-size:0.85rem; text-align:center;">Данные отсутствуют</div>
+          <div style="color:var(--text-muted); font-size:0.85rem; text-align:center; padding: 20px 0;">Расходы отсутствуют</div>
         </div>
       </div>
 
-      <!-- Smart Recommendations -->
       <div class="card">
         <div class="card-title">💡 Умные рекомендации AI</div>
         <div id="smartAdviceList" style="font-size:0.85rem; line-height:1.5;"></div>
@@ -640,14 +772,14 @@
         <form id="goalForm" onsubmit="saveGoalSettings(event)">
           <div class="form-group">
             <label>Название цели</label>
-            <input type="text" id="goalNameInput" required placeholder="Например: Новый ноутбук, Поездка...">
+            <input type="text" id="goalNameInput" required placeholder="Например: Новый ноутбук, Автомобиль...">
           </div>
           <div class="form-group">
             <label>Целевая сумма (BYN)</label>
-            <input type="number" step="0.01" min="1" id="goalTargetInput" required placeholder="1200">
+            <input type="number" step="0.01" min="1" id="goalTargetInput" required placeholder="1000">
           </div>
           <div class="form-group">
-            <label>Срок достижения (Быстрый выбор месяцев)</label>
+            <label>Срок достижения (Быстрый выбор)</label>
             <div class="preset-grid">
               <button type="button" class="btn-preset" onclick="applyPeriodPreset(30)">1 мес (30 д)</button>
               <button type="button" class="btn-preset" onclick="applyPeriodPreset(60)">2 мес (60 д)</button>
@@ -658,17 +790,11 @@
             </div>
           </div>
           <div class="form-group">
-            <label>Кастомный дедлайн (Дата)</label>
+            <label>Дата дедлайна</label>
             <input type="date" id="goalDeadlineInput" required>
           </div>
           <button type="submit" class="btn btn-primary">Сохранить цель</button>
         </form>
-      </div>
-
-      <div class="card">
-        <div class="card-title">🔄 Сброс данных</div>
-        <p style="font-size:0.8rem; color:var(--text-muted); margin-bottom:12px;">Вы можете сбросить данные к начальным демо-данным в любой момент.</p>
-        <button class="btn btn-secondary" onclick="resetToDemoData()">Восстановить демо-данные</button>
       </div>
     </div>
 
@@ -678,35 +804,33 @@
   <div class="modal-overlay" id="incomeModal">
     <div class="modal">
       <div class="modal-header">
-        <h3>➕ Добавить доход</h3>
+        <h3>➕ Добавить разовый доход</h3>
         <button class="modal-close" onclick="closeIncomeModal()">&times;</button>
       </div>
       <form onsubmit="handleAddIncome(event)">
         <div class="form-group">
           <label>Название</label>
-          <input type="text" id="incTitle" placeholder="Стипендия, Зарплата, Фриланс" required>
+          <input type="text" id="incTitle" placeholder="Фриланс, Подарок, Премия" required>
         </div>
         <div class="form-group">
           <label>Источник</label>
           <select id="incSource">
-            <option value="Стипендия">Стипендия</option>
-            <option value="Зарплата">Зарплата</option>
-            <option value="Подработка / Фриланс">Подработка / Фриланс</option>
-            <option value="Подарок / Семья">Подарок / Семья</option>
-            <option value="Другое">Другое</option>
+            <option value="Подработка / Фриланс">💻 Подработка / Фриланс</option>
+            <option value="Стипендия">🎓 Стипендия</option>
+            <option value="Подарок / Семья">🎁 Подарок / Семья</option>
+            <option value="Прочее">💵 Прочее</option>
           </select>
         </div>
         <div class="form-group">
           <label>Сумма (BYN)</label>
-          <input type="number" step="0.01" min="0.1" id="incAmount" placeholder="250" required oninput="calculateIncomeSplit()">
+          <input type="number" step="0.01" min="0.1" id="incAmount" placeholder="100" required oninput="calculateIncomeSplit()">
         </div>
 
-        <!-- Dynamic Live Income Split Calculator -->
         <div class="split-box" id="incSplitBox" style="display:none;">
-          <div style="font-weight:700; color:var(--primary); margin-bottom:6px;">🤖 AI Рекомендация распределения:</div>
+          <div style="font-weight:800; color:#60a5fa; margin-bottom:6px;">🤖 AI Рекомендация распределения:</div>
           <div class="split-row">
             <span>Отложить на цель (<span id="splitSavePct">0</span>%):</span>
-            <b id="splitSaveVal" style="color:var(--accent);">0 BYN</b>
+            <b id="splitSaveVal" style="color:#34d399;">0 BYN</b>
           </div>
           <div class="split-row">
             <span>Свободно на расходы (<span id="splitSpendPct">0</span>%):</span>
@@ -738,14 +862,14 @@
         <div class="form-group">
           <label>Категория</label>
           <select id="expCategory">
-            <option value="Еда и продукты">Еда и продукты</option>
-            <option value="Транспорт">Транспорт</option>
-            <option value="Развлечения">Развлечения</option>
-            <option value="Покупки">Покупки</option>
-            <option value="Подписки">Подписки</option>
-            <option value="Образование">Образование</option>
-            <option value="Здоровье">Здоровье</option>
-            <option value="Прочее">Прочее</option>
+            <option value="Еда и продукты">🍔 Еда и продукты</option>
+            <option value="Транспорт">🚌 Транспорт</option>
+            <option value="Развлечения">🎬 Развлечения</option>
+            <option value="Покупки">🛍️ Покупки</option>
+            <option value="Подписки">📱 Подписки</option>
+            <option value="Образование">📚 Образование</option>
+            <option value="Здоровье">🏥 Здоровье</option>
+            <option value="Прочее">📦 Прочее</option>
           </select>
         </div>
         <div class="form-group">
@@ -756,7 +880,7 @@
           <label>Дата</label>
           <input type="date" id="expDate" required>
         </div>
-        <button type="submit" class="btn btn-primary" style="background:var(--danger);">Сохранить расход</button>
+        <button type="submit" class="btn btn-danger">Сохранить расход</button>
       </form>
     </div>
   </div>
@@ -786,7 +910,7 @@
   </nav>
 
   <script>
-    /* Safe Storage Fallback Wrapper for Restricted Webviews */
+    /* Safe Storage Fallback Wrapper */
     const SafeStore = {
       _mem: {},
       get(key, fallback) {
@@ -806,30 +930,56 @@
       }
     };
 
-    const STORAGE_KEY = 'byn_fin_planner_v2';
+    const STORAGE_KEY = 'byn_fin_planner_v4_clean';
 
-    // Demo Initial Data
-    const DEMO_DATA = {
+    // Clean Initial State (ZERO fake demo transactions)
+    const CLEAN_DATA = {
       goal: {
-        name: 'Новый ноутбук / Поездка',
-        target: 1200,
+        name: 'Моя финансовая цель',
+        target: 1000,
         deadline: new Date(Date.now() + 90 * 24 * 60 * 60 * 1000).toISOString().split('T')[0]
       },
-      incomes: [
-        { id: '1', title: 'Стипендия', source: 'Стипендия', amount: 210, date: new Date().toISOString().split('T')[0] },
-        { id: '2', title: 'Фриланс проект', source: 'Подработка / Фриланс', amount: 350, date: new Date().toISOString().split('T')[0] }
-      ],
-      expenses: [
-        { id: '101', title: 'Продукты на неделю', category: 'Еда и продукты', amount: 85, date: new Date().toISOString().split('T')[0] },
-        { id: '102', title: 'Проездной', category: 'Транспорт', amount: 35, date: new Date().toISOString().split('T')[0] },
-        { id: '103', title: 'Сервис Яндекс/Spotify', category: 'Подписки', amount: 15, date: new Date().toISOString().split('T')[0] }
-      ]
+      recurring: {
+        advance: { amount: 0, day: 15 },
+        salary: { amount: 0, day: 30 }
+      },
+      incomes: [],
+      expenses: []
     };
 
-    let appState = SafeStore.get(STORAGE_KEY, DEMO_DATA);
-    let activePeriod = 'day'; // 'day', 'week', 'month', 'year'
+    let appState = SafeStore.get(STORAGE_KEY, CLEAN_DATA);
+    let activePeriod = 'day';
 
-    // Init App & Telegram SDK
+    const CAT_COLORS = {
+      'Еда и продукты': '#3b82f6',
+      'Транспорт': '#10b981',
+      'Развлечения': '#f59e0b',
+      'Покупки': '#ec4899',
+      'Подписки': '#8b5cf6',
+      'Образование': '#06b6d4',
+      'Здоровье': '#f43f5e',
+      'Прочее': '#64748b'
+    };
+
+    function getCategoryIcon(cat) {
+      if (cat.includes('Еда')) return '🍔';
+      if (cat.includes('Транспорт')) return '🚌';
+      if (cat.includes('Развлечения')) return '🎬';
+      if (cat.includes('Покупки')) return '🛍️';
+      if (cat.includes('Подписки')) return '📱';
+      if (cat.includes('Образование')) return '📚';
+      if (cat.includes('Здоровье')) return '🏥';
+      return '📦';
+    }
+
+    function getSourceIcon(src) {
+      if (src.includes('Стипендия')) return '🎓';
+      if (src.includes('Зарплата')) return '💼';
+      if (src.includes('Фриланс')) return '💻';
+      if (src.includes('Подарок')) return '🎁';
+      return '💵';
+    }
+
     document.addEventListener('DOMContentLoaded', () => {
       initTelegram();
       initDates();
@@ -862,17 +1012,17 @@
       renderAll();
     }
 
-    function resetToDemoData() {
-      if (confirm('Сбросить данные к начальным демо-данным?')) {
-        appState = JSON.parse(JSON.stringify(DEMO_DATA));
-        appState.goal.deadline = new Date(Date.now() + 90 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
-        saveData();
-      }
-    }
-
-    /* Core Calculation Engine */
+    /* Core Calculation Engine with Salary & Advance Inclusion */
     function calc() {
-      const totalIncome = appState.incomes.reduce((acc, item) => acc + Number(item.amount), 0);
+      // Direct manual incomes sum
+      const manualIncomes = appState.incomes.reduce((acc, item) => acc + Number(item.amount), 0);
+      
+      // Monthly recurring sum
+      const advanceVal = Number(appState.recurring?.advance?.amount || 0);
+      const salaryVal = Number(appState.recurring?.salary?.amount || 0);
+      const recurringMonthlyTotal = advanceVal + salaryVal;
+
+      const totalIncome = manualIncomes + recurringMonthlyTotal;
       const totalExpense = appState.expenses.reduce((acc, item) => acc + Number(item.amount), 0);
       const currentBalance = totalIncome - totalExpense;
       const savedMoney = Math.max(0, currentBalance);
@@ -880,7 +1030,6 @@
       const target = appState.goal.target || 1;
       const remainingTarget = Math.max(0, target - savedMoney);
 
-      // Days Calculation
       const today = new Date();
       today.setHours(0,0,0,0);
       const deadlineDate = new Date(appState.goal.deadline || today);
@@ -889,19 +1038,17 @@
       const diffTime = deadlineDate - today;
       const daysLeft = Math.max(1, Math.ceil(diffTime / (1000 * 60 * 60 * 24)));
 
-      // Required Savings Rates
       const requiredDailySave = remainingTarget / daysLeft;
       const requiredWeeklySave = requiredDailySave * 7;
       const requiredMonthlySave = requiredDailySave * 30.4375;
       const requiredYearlySave = requiredDailySave * 365;
 
-      // Daily Free Budget calculation
       const safeDailySpend = Math.max(0, (totalIncome - totalExpense - remainingTarget) / daysLeft);
-
-      // Percentage
       const progressPercent = Math.min(100, Math.round((savedMoney / target) * 100));
 
       return {
+        manualIncomes,
+        recurringMonthlyTotal,
         totalIncome,
         totalExpense,
         currentBalance,
@@ -918,7 +1065,7 @@
       };
     }
 
-    /* Main Render Orchestrator */
+    /* Render Main Views */
     function renderAll() {
       const c = calc();
 
@@ -929,9 +1076,9 @@
       document.getElementById('goalRemainingDisplay').textContent = `${c.remainingTarget.toFixed(2)} BYN`;
       document.getElementById('goalPercentDisplay').textContent = `${c.progressPercent}%`;
       document.getElementById('goalProgressBar').style.width = `${c.progressPercent}%`;
-      document.getElementById('goalDeadlineDays').textContent = `${c.daysLeft} дн. остав.`;
+      document.getElementById('goalDeadlineDays').textContent = `⏳ ${c.daysLeft} дн.`;
 
-      // Quick Stats
+      // Quick Metrics
       document.getElementById('safeDailySpend').textContent = `${c.safeDailySpend.toFixed(2)} BYN`;
       document.getElementById('requiredDailySave').textContent = `${c.requiredDailySave.toFixed(2)} BYN`;
       document.getElementById('totalIncomeDisplay').textContent = `${c.totalIncome.toFixed(2)} BYN`;
@@ -942,20 +1089,22 @@
       document.getElementById('goalTargetInput').value = appState.goal.target;
       document.getElementById('goalDeadlineInput').value = appState.goal.deadline;
 
-      // Render Alert Banners
-      renderAlerts(c);
+      // Recurring Inputs Fill
+      if (appState.recurring) {
+        document.getElementById('recAdvanceAmount').value = appState.recurring.advance?.amount || '';
+        document.getElementById('recAdvanceDay').value = appState.recurring.advance?.day || 15;
+        document.getElementById('recSalaryAmount').value = appState.recurring.salary?.amount || '';
+        document.getElementById('recSalaryDay').value = appState.recurring.salary?.day || 30;
+      }
 
-      // Render Transaction Lists
+      renderAlerts(c);
       renderRecentTransactions();
       renderIncomesList();
       renderExpensesList();
-
-      // Render AI Section & Charts
       renderAIPlanner(c);
       renderCategoryChart();
     }
 
-    /* Render Smart Alerts */
     function renderAlerts(c) {
       const alertContainer = document.getElementById('alertContainer');
       alertContainer.innerHTML = '';
@@ -963,7 +1112,7 @@
       if (c.progressPercent >= 100) {
         alertContainer.innerHTML = `
           <div class="alert alert-success">
-            🎉 <b>Поздравляем!</b> Вы полностью собрали необходимую сумму на цель!
+            🎉 <b>Поздравляем!</b> Цель накопления выполнена!
           </div>`;
         return;
       }
@@ -971,17 +1120,16 @@
       if (c.currentBalance < 0) {
         alertContainer.innerHTML = `
           <div class="alert alert-danger">
-            ⚠️ <b>Перерасход бюджета!</b> Ваши расходы превышают доходы на ${Math.abs(c.currentBalance).toFixed(2)} BYN.
+            ⚠️ <b>Перерасход!</b> Расходы превышают доходы на ${Math.abs(c.currentBalance).toFixed(2)} BYN.
           </div>`;
-      } else if (c.safeDailySpend <= 0) {
+      } else if (c.safeDailySpend <= 0 && c.totalIncome > 0) {
         alertContainer.innerHTML = `
           <div class="alert alert-warning">
-            ⏳ <b>Цель под риском!</b> Чтобы успеть к сроку, рекомендуется временно сократить ежедневные расходы.
+            ⏳ <b>Внимание!</b> Чтобы уложиться в срок, оптимизируйте ежедневные расходы.
           </div>`;
       }
     }
 
-    /* Render Transaction Lists */
     function renderRecentTransactions() {
       const container = document.getElementById('recentTransactionsList');
       const allTx = [
@@ -996,15 +1144,16 @@
 
       container.innerHTML = allTx.map(tx => `
         <div class="tx-item">
-          <div class="tx-info">
-            <h4>${escapeHtml(tx.title)}</h4>
-            <span>${tx.date} • ${tx.type === 'inc' ? tx.source : tx.category}</span>
+          <div class="tx-left">
+            <div class="tx-icon-chip">${tx.type === 'inc' ? getSourceIcon(tx.source) : getCategoryIcon(tx.category)}</div>
+            <div class="tx-info">
+              <h4>${escapeHtml(tx.title)}</h4>
+              <span>${tx.date} • ${tx.type === 'inc' ? tx.source : tx.category}</span>
+            </div>
           </div>
-          <div style="display:flex; align-items:center;">
-            <span class="tx-amount ${tx.type === 'inc' ? 'plus' : 'minus'}">
-              ${tx.type === 'inc' ? '+' : '-'}${Number(tx.amount).toFixed(2)} BYN
-            </span>
-          </div>
+          <span class="tx-amount ${tx.type === 'inc' ? 'plus' : 'minus'}">
+            ${tx.type === 'inc' ? '+' : '-'}${Number(tx.amount).toFixed(2)} BYN
+          </span>
         </div>
       `).join('');
     }
@@ -1012,14 +1161,17 @@
     function renderIncomesList() {
       const container = document.getElementById('incomesList');
       if (appState.incomes.length === 0) {
-        container.innerHTML = `<div style="color:var(--text-muted); font-size:0.85rem; text-align:center; padding: 12px;">Доходы не добавлены</div>`;
+        container.innerHTML = `<div style="color:var(--text-muted); font-size:0.85rem; text-align:center; padding: 12px;">Разовые доходы не добавлены</div>`;
         return;
       }
       container.innerHTML = appState.incomes.map(item => `
         <div class="tx-item">
-          <div class="tx-info">
-            <h4>${escapeHtml(item.title)}</h4>
-            <span>${item.date} • ${item.source}</span>
+          <div class="tx-left">
+            <div class="tx-icon-chip">${getSourceIcon(item.source)}</div>
+            <div class="tx-info">
+              <h4>${escapeHtml(item.title)}</h4>
+              <span>${item.date} • ${item.source}</span>
+            </div>
           </div>
           <div style="display:flex; align-items:center;">
             <span class="tx-amount plus">+${Number(item.amount).toFixed(2)} BYN</span>
@@ -1037,9 +1189,12 @@
       }
       container.innerHTML = appState.expenses.map(item => `
         <div class="tx-item">
-          <div class="tx-info">
-            <h4>${escapeHtml(item.title)}</h4>
-            <span>${item.date} • ${item.category}</span>
+          <div class="tx-left">
+            <div class="tx-icon-chip">${getCategoryIcon(item.category)}</div>
+            <div class="tx-info">
+              <h4>${escapeHtml(item.title)}</h4>
+              <span>${item.date} • ${item.category}</span>
+            </div>
           </div>
           <div style="display:flex; align-items:center;">
             <span class="tx-amount minus">-${Number(item.amount).toFixed(2)} BYN</span>
@@ -1049,7 +1204,22 @@
       `).join('');
     }
 
-    /* AI Planner & Period View */
+    function saveRecurringIncome(e) {
+      e.preventDefault();
+      const advAmt = parseFloat(document.getElementById('recAdvanceAmount').value) || 0;
+      const advDay = parseInt(document.getElementById('recAdvanceDay').value) || 15;
+      const salAmt = parseFloat(document.getElementById('recSalaryAmount').value) || 0;
+      const salDay = parseInt(document.getElementById('recSalaryDay').value) || 30;
+
+      appState.recurring = {
+        advance: { amount: advAmt, day: advDay },
+        salary: { amount: salAmt, day: salDay }
+      };
+
+      saveData();
+      alert('Данные по ЗП и Авансу успешно сохранены!');
+    }
+
     function setTimePeriod(period) {
       activePeriod = period;
       document.querySelectorAll('.period-btn').forEach(btn => btn.classList.remove('active'));
@@ -1089,19 +1259,18 @@
       limitElem.textContent = `${limit.toFixed(2)} BYN`;
       targetElem.textContent = `${target.toFixed(2)} BYN`;
 
-      // Dynamic AI Text Insight
       if (c.remainingTarget <= 0) {
-        adviceElem.textContent = `🎉 Цель "${appState.goal.name}" достигнута! Вы можете сформировать новую финансовую цель.`;
+        adviceElem.textContent = `🎉 Цель "${appState.goal.name}" достигнута!`;
       } else if (c.safeDailySpend > 0) {
-        adviceElem.textContent = `💡 На период (${periodLabel.toLowerCase()}) вам рекомендуется откладывать ${target.toFixed(2)} BYN. Ваша безопасная норма трат на жизненные нужды составляет ${limit.toFixed(2)} BYN.`;
+        adviceElem.textContent = `💡 На период (${periodLabel.toLowerCase()}) вам рекомендуется отложить ${target.toFixed(2)} BYN. Допустимый лимит расходов: ${limit.toFixed(2)} BYN.`;
       } else {
-        adviceElem.textContent = `⚠️ Текущего темпа поступлений недостаточно для выполнения цели за ${c.daysLeft} дней. Рекомендуется оптимизировать расходы по категории "${getTopExpenseCategory()}" или добавить источники дохода.`;
+        adviceElem.textContent = `⚠️ Добавьте доходы или сократите расходы по наибольшей категории трат.`;
       }
 
       renderSmartAdvice(c);
     }
 
-    /* Category Chart Visualizer */
+    /* Native Visual SVG Donut + Bar Chart Renderer */
     function renderCategoryChart() {
       const container = document.getElementById('categoryChartContainer');
       const catTotals = {};
@@ -1113,26 +1282,49 @@
       const totalExp = Object.values(catTotals).reduce((a,b) => a + b, 0);
 
       if (totalExp === 0) {
-        container.innerHTML = `<div style="color:var(--text-muted); font-size:0.85rem; text-align:center;">Расходы еще не зафиксированы</div>`;
+        container.innerHTML = `<div style="color:var(--text-muted); font-size:0.85rem; text-align:center; padding: 20px 0;">Расходы еще не зафиксированы</div>`;
         return;
       }
 
       const sortedCats = Object.entries(catTotals).sort((a,b) => b[1] - a[1]);
 
-      container.innerHTML = sortedCats.map(([cat, amount]) => {
-        const pct = Math.round((amount / totalExp) * 100);
-        return `
-          <div class="chart-bar-row">
-            <div class="chart-bar-label">
-              <span>${cat}</span>
-              <b>${amount.toFixed(2)} BYN (${pct}%)</b>
-            </div>
-            <div class="chart-bar-track">
-              <div class="chart-bar-fill" style="width:${pct}%"></div>
-            </div>
-          </div>
-        `;
+      // Calculate SVG Donut Rings
+      let cumulativePercent = 0;
+      const donutSlices = sortedCats.map(([cat, amount]) => {
+        const pct = amount / totalExp;
+        const color = CAT_COLORS[cat] || '#3b82f6';
+        const strokeDasharray = `${pct * 314} 314`;
+        const strokeDashoffset = -cumulativePercent * 314;
+        cumulativePercent += pct;
+        return `<circle cx="60" cy="60" r="50" fill="transparent" stroke="${color}" stroke-width="16" stroke-dasharray="${strokeDasharray}" stroke-dashoffset="${strokeDashoffset}"></circle>`;
       }).join('');
+
+      const svgDonutHtml = `
+        <div class="chart-container">
+          <svg class="svg-donut" viewBox="0 0 120 120">
+            ${donutSlices}
+          </svg>
+          <div class="chart-legend">
+            ${sortedCats.map(([cat, amount]) => {
+              const pct = Math.round((amount / totalExp) * 100);
+              const color = CAT_COLORS[cat] || '#3b82f6';
+              return `
+                <div class="chart-bar-row">
+                  <div class="chart-bar-label">
+                    <span>${getCategoryIcon(cat)} ${cat}</span>
+                    <b style="color:#ffffff;">${amount.toFixed(2)} BYN (${pct}%)</b>
+                  </div>
+                  <div class="chart-bar-track">
+                    <div class="chart-bar-fill" style="width:${pct}%; background:${color};"></div>
+                  </div>
+                </div>
+              `;
+            }).join('')}
+          </div>
+        </div>
+      `;
+
+      container.innerHTML = svgDonutHtml;
     }
 
     function getTopExpenseCategory() {
@@ -1149,20 +1341,22 @@
       const topCat = getTopExpenseCategory();
       
       let html = `<ul style="padding-left: 18px; display:flex; flex-direction:column; gap:8px;">`;
-      
-      html += `<li>Наибольшая статья расходов приходится на <b>${topCat}</b>. Пересмотрите необязательные покупки в этой категории.</li>`;
+      if (appState.expenses.length > 0) {
+        html += `<li>Наибольшие расходы приходятся на <b>${topCat}</b>.</li>`;
+      }
       
       if (c.daysLeft > 0 && c.remainingTarget > 0) {
-        html += `<li>Чтобы гарантированно накопить оставшиеся <b>${c.remainingTarget.toFixed(2)} BYN</b> за ${c.daysLeft} дн., сохраняйте минимум <b>${c.requiredDailySave.toFixed(2)} BYN</b> ежеденевно.</li>`;
+        html += `<li>Для достижения цели <b>${c.remainingTarget.toFixed(2)} BYN</b> за ${c.daysLeft} дн., откладывайте от <b>${c.requiredDailySave.toFixed(2)} BYN</b> ежедневно.</li>`;
       }
 
-      html += `<li>Ваш общий доход составляет <b>${c.totalIncome.toFixed(2)} BYN</b>. Откладывание 20% от дохода дает <b>${(c.totalIncome * 0.2).toFixed(2)} BYN</b> в месяц.</li>`;
-      html += `</ul>`;
+      if (c.recurringMonthlyTotal > 0) {
+        html += `<li>Фиксированный регулярный доход (ЗП + Аванс): <b>${c.recurringMonthlyTotal.toFixed(2)} BYN / мес</b>.</li>`;
+      }
 
+      html += `</ul>`;
       container.innerHTML = html;
     }
 
-    /* Dynamic Live Income Split Calculation */
     function calculateIncomeSplit() {
       const amountInput = parseFloat(document.getElementById('incAmount').value);
       const splitBox = document.getElementById('incSplitBox');
@@ -1173,10 +1367,9 @@
       }
 
       const c = calc();
-      let savePct = 30; // standard fallback
+      let savePct = 30;
 
       if (c.remainingTarget > 0) {
-        // Calculate dynamic ratio based on urgency
         const targetShare = (c.requiredDailySave * 30) / Math.max(1, (c.totalIncome || amountInput));
         savePct = Math.min(70, Math.max(15, Math.round(targetShare * 100)));
       }
@@ -1193,7 +1386,6 @@
       splitBox.style.display = 'block';
     }
 
-    /* Actions & Form Handlers */
     function handleAddIncome(e) {
       e.preventDefault();
       const title = document.getElementById('incTitle').value.trim();
@@ -1203,13 +1395,7 @@
 
       if (!title || isNaN(amount) || amount <= 0) return;
 
-      appState.incomes.push({
-        id: Date.now().toString(),
-        title,
-        source,
-        amount,
-        date
-      });
+      appState.incomes.push({ id: Date.now().toString(), title, source, amount, date });
 
       saveData();
       closeIncomeModal();
@@ -1226,13 +1412,7 @@
 
       if (!title || isNaN(amount) || amount <= 0) return;
 
-      appState.expenses.push({
-        id: Date.now().toString(),
-        title,
-        category,
-        amount,
-        date
-      });
+      appState.expenses.push({ id: Date.now().toString(), title, category, amount, date });
 
       saveData();
       closeExpenseModal();
@@ -1269,7 +1449,6 @@
       document.getElementById('goalDeadlineInput').value = targetDate.toISOString().split('T')[0];
     }
 
-    /* Navigation Tab Switcher */
     function switchTab(tabId, btnElem) {
       document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
       document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
@@ -1278,7 +1457,6 @@
       if (btnElem) btnElem.classList.add('active');
     }
 
-    /* Modal Controls */
     function openIncomeModal() {
       document.getElementById('incomeModal').classList.add('active');
       document.getElementById('incSplitBox').style.display = 'none';
@@ -1293,7 +1471,6 @@
       document.getElementById('expenseModal').classList.remove('active');
     }
 
-    /* Helper Utilities */
     function escapeHtml(str) {
       return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
     }
