@@ -9,10 +9,10 @@
   <style>
     :root {
       --bg: #0b0f19;
-      --card-bg: rgba(21, 28, 44, 0.82);
+      --card-bg: rgba(21, 28, 44, 0.88);
       --card-solid: #151c2c;
-      --card-border: rgba(255, 255, 255, 0.08);
-      --card-border-glow: rgba(59, 130, 246, 0.3);
+      --card-border: rgba(255, 255, 255, 0.1);
+      --card-border-glow: rgba(59, 130, 246, 0.35);
       --primary: #3b82f6;
       --primary-glow: rgba(59, 130, 246, 0.35);
       --accent: #10b981;
@@ -31,12 +31,12 @@
       box-sizing: border-box;
       margin: 0;
       padding: 0;
-      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
       -webkit-tap-highlight-color: transparent;
       touch-action: manipulation;
     }
 
-    html, body {
+    html {
       width: 100%;
       height: 100%;
       background-color: var(--bg);
@@ -44,18 +44,21 @@
     }
 
     body {
+      width: 100%;
+      background-color: var(--bg);
       background-image: 
         radial-gradient(circle at 10% 10%, rgba(59, 130, 246, 0.15) 0%, transparent 40%),
         radial-gradient(circle at 90% 80%, rgba(16, 185, 129, 0.1) 0%, transparent 40%);
       background-attachment: fixed;
       color: var(--text);
-      /* iOS Safe Areas Padding */
+      
       padding-top: max(12px, env(safe-area-inset-top));
       padding-left: max(16px, env(safe-area-inset-left));
       padding-right: max(16px, env(safe-area-inset-right));
-      padding-bottom: calc(var(--nav-base-height) + env(safe-area-inset-bottom) + 24px);
+      padding-bottom: calc(var(--nav-base-height) + env(safe-area-inset-bottom) + 20px);
+      
       min-height: 100vh;
-      min-height: -webkit-fill-available;
+      min-height: 100dvh;
       overflow-x: hidden;
       -webkit-overflow-scrolling: touch;
     }
@@ -66,7 +69,6 @@
       width: 100%;
     }
 
-    /* iOS Native Style Header */
     header {
       display: flex;
       justify-content: space-between;
@@ -76,7 +78,7 @@
     }
 
     .user-welcome {
-      font-size: 1.25rem;
+      font-size: 1.2rem;
       font-weight: 800;
       display: flex;
       align-items: center;
@@ -96,7 +98,6 @@
       box-shadow: 0 0 12px rgba(59, 130, 246, 0.2);
     }
 
-    /* Cards */
     .card {
       background: var(--card-bg);
       backdrop-filter: blur(16px);
@@ -120,9 +121,8 @@
       align-items: center;
     }
 
-    /* Hero Goal Card */
     .goal-card {
-      background: linear-gradient(135deg, rgba(30, 41, 59, 0.85) 0%, rgba(15, 23, 42, 0.98) 100%);
+      background: linear-gradient(135deg, rgba(30, 41, 59, 0.88) 0%, rgba(15, 23, 42, 0.98) 100%);
       border: 1px solid var(--card-border-glow);
       position: relative;
       overflow: hidden;
@@ -138,7 +138,7 @@
     }
 
     .goal-title {
-      font-size: 1.3rem;
+      font-size: 1.25rem;
       font-weight: 800;
       color: #ffffff;
       margin-bottom: 2px;
@@ -146,7 +146,7 @@
     }
 
     .goal-amount {
-      font-size: 2.2rem;
+      font-size: 2.1rem;
       font-weight: 900;
       letter-spacing: -0.03em;
       background: linear-gradient(180deg, #ffffff 0%, #cbd5e1 100%);
@@ -182,7 +182,6 @@
       font-weight: 600;
     }
 
-    /* Grids */
     .grid-2 {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -190,7 +189,7 @@
     }
 
     .stat-card {
-      background: rgba(15, 23, 42, 0.65);
+      background: rgba(15, 23, 42, 0.7);
       border: 1px solid var(--card-border);
       border-radius: var(--radius-sm);
       padding: 14px;
@@ -198,7 +197,7 @@
     }
 
     .stat-value {
-      font-size: 1.25rem;
+      font-size: 1.2rem;
       font-weight: 800;
       margin-top: 4px;
       letter-spacing: -0.02em;
@@ -209,7 +208,6 @@
     .stat-value.blue { color: #60a5fa; }
     .stat-value.orange { color: #fbbf24; }
 
-    /* Period Filter Pills */
     .period-selector {
       display: flex;
       background: var(--input-bg);
@@ -267,7 +265,6 @@
       color: #6ee7b7;
     }
 
-    /* Transactions */
     .tx-item {
       display: flex;
       justify-content: space-between;
@@ -295,12 +292,12 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 1.25rem;
+      font-size: 1.2rem;
       flex-shrink: 0;
     }
 
     .tx-info h4 {
-      font-size: 0.95rem;
+      font-size: 0.92rem;
       font-weight: 700;
       color: #f1f5f9;
       margin-bottom: 2px;
@@ -313,7 +310,7 @@
 
     .tx-amount {
       font-weight: 800;
-      font-size: 1rem;
+      font-size: 0.95rem;
       letter-spacing: -0.01em;
     }
 
@@ -330,14 +327,14 @@
       font-size: 1rem;
     }
 
-    /* iOS Compatible Buttons */
     .btn {
       width: 100%;
-      padding: 15px;
+      min-height: 48px;
+      padding: 12px 16px;
       border: none;
       border-radius: 14px;
       font-weight: 800;
-      font-size: 0.95rem;
+      font-size: 0.92rem;
       cursor: pointer;
       transition: transform 0.15s, opacity 0.2s;
       display: flex;
@@ -365,6 +362,12 @@
       box-shadow: 0 4px 16px var(--accent-glow);
     }
 
+    .btn-secondary {
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid var(--card-border);
+      color: #cbd5e1;
+    }
+
     .btn-danger {
       background: linear-gradient(135deg, #f43f5e 0%, #e11d48 100%);
       color: white;
@@ -384,10 +387,10 @@
       margin-bottom: 6px;
     }
 
-    /* 16px Font Prevents iOS Auto-Zoom on Input Click */
     input, select {
       width: 100%;
-      padding: 13px 14px;
+      min-height: 46px;
+      padding: 12px 14px;
       background: var(--input-bg);
       border: 1px solid var(--card-border);
       border-radius: 12px;
@@ -422,7 +425,6 @@
       -webkit-appearance: none;
     }
 
-    /* Native Donut Chart Layout */
     .chart-container {
       display: flex;
       flex-direction: column;
@@ -477,20 +479,30 @@
       transition: width 0.5s ease;
     }
 
+    /* AI Live Split Box */
     .split-box {
       background: rgba(59, 130, 246, 0.08);
       border: 1px dashed rgba(59, 130, 246, 0.4);
-      border-radius: 12px;
-      padding: 12px;
-      margin-top: 10px;
+      border-radius: 14px;
+      padding: 14px;
+      margin-top: 12px;
       font-size: 0.85rem;
     }
 
     .split-row {
       display: flex;
       justify-content: space-between;
-      margin-bottom: 4px;
+      align-items: center;
+      margin-bottom: 8px;
       font-weight: 600;
+    }
+
+    .split-input {
+      width: 110px !important;
+      min-height: 36px !important;
+      padding: 6px 10px !important;
+      font-size: 14px !important;
+      text-align: right;
     }
 
     .recurring-box {
@@ -514,13 +526,12 @@
       color: #34d399;
     }
 
-    /* iOS Bottom Navigation Bar with Home Indicator Support */
     .bottom-nav {
       position: fixed;
       bottom: 0; left: 0; right: 0;
       height: calc(var(--nav-base-height) + env(safe-area-inset-bottom));
       padding-bottom: env(safe-area-inset-bottom);
-      background: rgba(15, 23, 42, 0.92);
+      background: rgba(15, 23, 42, 0.94);
       backdrop-filter: blur(20px);
       -webkit-backdrop-filter: blur(20px);
       border-top: 1px solid var(--card-border);
@@ -554,11 +565,10 @@
 
     .nav-item.active { color: #60a5fa; }
 
-    /* Modal Popup Adaptive for iOS */
     .modal-overlay {
       position: fixed;
       top: 0; left: 0; right: 0; bottom: 0;
-      background: rgba(0, 0, 0, 0.75);
+      background: rgba(0, 0, 0, 0.78);
       backdrop-filter: blur(8px);
       -webkit-backdrop-filter: blur(8px);
       display: flex;
@@ -592,6 +602,7 @@
       padding: 24px;
       padding-bottom: calc(24px + env(safe-area-inset-bottom));
       max-height: 88vh;
+      max-height: 88dvh;
       overflow-y: auto;
       -webkit-overflow-scrolling: touch;
       transform: translateY(100%);
@@ -623,8 +634,8 @@
       background: rgba(255, 255, 255, 0.08);
       border: none;
       color: var(--text-muted);
-      width: 32px;
-      height: 32px;
+      width: 34px;
+      height: 34px;
       border-radius: 50%;
       font-size: 1.2rem;
       cursor: pointer;
@@ -662,7 +673,7 @@
         </div>
 
         <div class="goal-stats">
-          <span>Собрано: <b id="goalSavedDisplay" style="color:#34d399">0 BYN</b></span>
+          <span>В копилке цели: <b id="goalSavedDisplay" style="color:#34d399">0 BYN</b></span>
           <span id="goalPercentDisplay" style="color:#ffffff;">0%</span>
           <span>Осталось: <b id="goalRemainingDisplay" style="color:#f87171">0 BYN</b></span>
         </div>
@@ -685,11 +696,11 @@
         <div class="card-title">💰 Финансовый баланс</div>
         <div class="grid-2">
           <div>
-            <label>Доходы (+ ЗП/Аванс)</label>
+            <label>Общие доходы</label>
             <div class="stat-value green" id="totalIncomeDisplay">0 BYN</div>
           </div>
           <div>
-            <label>Расходы</label>
+            <label>Общие расходы</label>
             <div class="stat-value red" id="totalExpenseDisplay">0 BYN</div>
           </div>
         </div>
@@ -742,7 +753,7 @@
 
       <div class="card">
         <div class="card-title">💵 Внеплановые и разовые доходы</div>
-        <button class="btn btn-accent" onclick="openIncomeModal()" style="margin-bottom: 16px;">+ Добавить разовый доход</button>
+        <button class="btn btn-accent" onclick="openIncomeModal()" style="margin-bottom: 16px;">+ Добавить доход</button>
         <div id="incomesList"></div>
       </div>
     </div>
@@ -809,6 +820,10 @@
             <input type="number" step="0.01" min="1" id="goalTargetInput" required placeholder="1000">
           </div>
           <div class="form-group">
+            <label>Накоплено вручную в копилку (BYN)</label>
+            <input type="number" step="0.01" min="0" id="goalSavedInput" placeholder="0">
+          </div>
+          <div class="form-group">
             <label>Срок достижения (Быстрый выбор)</label>
             <div class="preset-grid">
               <button type="button" class="btn-preset" onclick="applyPeriodPreset(30)">1 мес (30 д)</button>
@@ -823,48 +838,54 @@
             <label>Дата дедлайна</label>
             <input type="date" id="goalDeadlineInput" required>
           </div>
-          <button type="submit" class="btn btn-primary">Сохранить цель</button>
+          <button type="submit" class="btn btn-primary">Сохранить параметры цели</button>
         </form>
       </div>
     </div>
 
   </div>
 
-  <!-- MODAL: ADD INCOME -->
+  <!-- MODAL: ADD INCOME (WITH AI LIVE SPLIT & DIRECT SAVINGS BUTTON) -->
   <div class="modal-overlay" id="incomeModal">
     <div class="modal">
       <div class="modal-header">
-        <h3>➕ Добавить разовый доход</h3>
+        <h3>➕ Добавить доход</h3>
         <button class="modal-close" onclick="closeIncomeModal()">&times;</button>
       </div>
-      <form onsubmit="handleAddIncome(event)">
+      <form id="incomeForm">
         <div class="form-group">
           <label>Название</label>
-          <input type="text" id="incTitle" placeholder="Фриланс, Подарок, Премия" required>
+          <input type="text" id="incTitle" placeholder="Зарплата, Фриланс, Подарок" required>
         </div>
         <div class="form-group">
           <label>Источник</label>
           <select id="incSource">
             <option value="Подработка / Фриланс">💻 Подработка / Фриланс</option>
+            <option value="Зарплата">💼 Зарплата</option>
             <option value="Стипендия">🎓 Стипендия</option>
             <option value="Подарок / Семья">🎁 Подарок / Семья</option>
             <option value="Прочее">💵 Прочее</option>
           </select>
         </div>
         <div class="form-group">
-          <label>Сумма (BYN)</label>
-          <input type="number" step="0.01" min="0.1" id="incAmount" placeholder="100" required oninput="calculateIncomeSplit()">
+          <label>Сумма дохода (BYN)</label>
+          <input type="number" step="0.01" min="0.1" id="incAmount" placeholder="300" required oninput="calculateIncomeSplit()">
         </div>
 
+        <!-- AI Live Split Box -->
         <div class="split-box" id="incSplitBox" style="display:none;">
-          <div style="font-weight:800; color:#60a5fa; margin-bottom:6px;">🤖 AI Рекомендация распределения:</div>
-          <div class="split-row">
-            <span>Отложить на цель (<span id="splitSavePct">0</span>%):</span>
-            <b id="splitSaveVal" style="color:#34d399;">0 BYN</b>
+          <div style="font-weight:800; color:#60a5fa; margin-bottom:8px; display:flex; justify-content:space-between; align-items:center;">
+            <span>🤖 AI Распределение дохода</span>
+            <span style="font-size:0.75rem; color:var(--text-muted);" id="splitRatioLabel">30% на цель</span>
           </div>
+          
           <div class="split-row">
-            <span>Свободно на расходы (<span id="splitSpendPct">0</span>%):</span>
-            <b id="splitSpendVal">0 BYN</b>
+            <span>Отложить на цель:</span>
+            <input type="number" step="0.01" min="0" id="incSaveAmount" class="split-input" oninput="updateSplitButtonsText()">
+          </div>
+          <div class="split-row" style="margin-bottom:0;">
+            <span>Свободно на расходы:</span>
+            <b id="splitSpendVal" style="color:#ffffff;">0.00 BYN</b>
           </div>
         </div>
 
@@ -872,7 +893,16 @@
           <label>Дата</label>
           <input type="date" id="incDate" required>
         </div>
-        <button type="submit" class="btn btn-accent">Сохранить доход</button>
+
+        <!-- Action Buttons -->
+        <div style="display:flex; flex-direction:column; gap:8px; margin-top:16px;">
+          <button type="button" class="btn btn-accent" id="btnSaveAndDeposit" onclick="submitIncome(true)">
+            🎯 Отложить на цель
+          </button>
+          <button type="button" class="btn btn-secondary" id="btnJustAdd" onclick="submitIncome(false)">
+            💵 Просто добавить без откладывания
+          </button>
+        </div>
       </form>
     </div>
   </div>
@@ -940,7 +970,7 @@
   </nav>
 
   <script>
-    /* Safe Storage Wrapper */
+    /* Safe Local & Memory Store Wrapper */
     const SafeStore = {
       _mem: {},
       get(key, fallback) {
@@ -960,12 +990,13 @@
       }
     };
 
-    const STORAGE_KEY = 'byn_fin_planner_ios_v1';
+    const STORAGE_KEY = 'byn_fin_planner_goal_split_v2';
 
     const CLEAN_DATA = {
       goal: {
         name: 'Моя финансовая цель',
         target: 1000,
+        saved: 0, // Direct Goal Piggybank Amount
         deadline: new Date(Date.now() + 90 * 24 * 60 * 60 * 1000).toISOString().split('T')[0]
       },
       recurring: {
@@ -1041,6 +1072,7 @@
       renderAll();
     }
 
+    /* Core Calculation Engine */
     function calc() {
       const manualIncomes = appState.incomes.reduce((acc, item) => acc + Number(item.amount), 0);
       const advanceVal = Number(appState.recurring?.advance?.amount || 0);
@@ -1049,11 +1081,14 @@
 
       const totalIncome = manualIncomes + recurringMonthlyTotal;
       const totalExpense = appState.expenses.reduce((acc, item) => acc + Number(item.amount), 0);
-      const currentBalance = totalIncome - totalExpense;
-      const savedMoney = Math.max(0, currentBalance);
-
+      
       const target = appState.goal.target || 1;
-      const remainingTarget = Math.max(0, target - savedMoney);
+      const goalSaved = appState.goal.saved || 0;
+      const remainingTarget = Math.max(0, target - goalSaved);
+
+      // Current balance minus reserved goal piggybank
+      const grossBalance = totalIncome - totalExpense;
+      const freeBalance = Math.max(0, grossBalance - goalSaved);
 
       const today = new Date();
       today.setHours(0,0,0,0);
@@ -1068,16 +1103,17 @@
       const requiredMonthlySave = requiredDailySave * 30.4375;
       const requiredYearlySave = requiredDailySave * 365;
 
-      const safeDailySpend = Math.max(0, (totalIncome - totalExpense - remainingTarget) / daysLeft);
-      const progressPercent = Math.min(100, Math.round((savedMoney / target) * 100));
+      const safeDailySpend = freeBalance / daysLeft;
+      const progressPercent = Math.min(100, Math.round((goalSaved / target) * 100));
 
       return {
         manualIncomes,
         recurringMonthlyTotal,
         totalIncome,
         totalExpense,
-        currentBalance,
-        savedMoney,
+        grossBalance,
+        freeBalance,
+        goalSaved,
         target,
         remainingTarget,
         daysLeft,
@@ -1095,7 +1131,7 @@
 
       document.getElementById('goalNameDisplay').textContent = appState.goal.name;
       document.getElementById('goalTargetDisplay').textContent = `${c.target.toFixed(2)} BYN`;
-      document.getElementById('goalSavedDisplay').textContent = `${c.savedMoney.toFixed(2)} BYN`;
+      document.getElementById('goalSavedDisplay').textContent = `${c.goalSaved.toFixed(2)} BYN`;
       document.getElementById('goalRemainingDisplay').textContent = `${c.remainingTarget.toFixed(2)} BYN`;
       document.getElementById('goalPercentDisplay').textContent = `${c.progressPercent}%`;
       document.getElementById('goalProgressBar').style.width = `${c.progressPercent}%`;
@@ -1108,6 +1144,7 @@
 
       document.getElementById('goalNameInput').value = appState.goal.name;
       document.getElementById('goalTargetInput').value = appState.goal.target;
+      document.getElementById('goalSavedInput').value = appState.goal.saved || 0;
       document.getElementById('goalDeadlineInput').value = appState.goal.deadline;
 
       if (appState.recurring) {
@@ -1130,14 +1167,14 @@
       alertContainer.innerHTML = '';
 
       if (c.progressPercent >= 100) {
-        alertContainer.innerHTML = `<div class="alert alert-success">🎉 <b>Поздравляем!</b> Цель выполнена!</div>`;
+        alertContainer.innerHTML = `<div class="alert alert-success">🎉 <b>Поздравляем!</b> Цель накопления достигнута!</div>`;
         return;
       }
 
-      if (c.currentBalance < 0) {
-        alertContainer.innerHTML = `<div class="alert alert-danger">⚠️ <b>Перерасход!</b> Расходы превышают доходы на ${Math.abs(c.currentBalance).toFixed(2)} BYN.</div>`;
+      if (c.grossBalance < 0) {
+        alertContainer.innerHTML = `<div class="alert alert-danger">⚠️ <b>Перерасход!</b> Расходы превышают доходы на ${Math.abs(c.grossBalance).toFixed(2)} BYN.</div>`;
       } else if (c.safeDailySpend <= 0 && c.totalIncome > 0) {
-        alertContainer.innerHTML = `<div class="alert alert-warning">⏳ <b>Внимание!</b> Оптимизируйте ежедневные расходы.</div>`;
+        alertContainer.innerHTML = `<div class="alert alert-warning">⏳ <b>Внимание!</b> Все доступные средства отложены на цель.</div>`;
       }
     }
 
@@ -1158,7 +1195,7 @@
           <div class="tx-left">
             <div class="tx-icon-chip">${tx.type === 'inc' ? getSourceIcon(tx.source) : getCategoryIcon(tx.category)}</div>
             <div class="tx-info">
-              <h4>${escapeHtml(tx.title)}</h4>
+              <h4>${escapeHtml(tx.title)} ${tx.savedForGoal ? '🎯' : ''}</h4>
               <span>${tx.date} • ${tx.type === 'inc' ? tx.source : tx.category}</span>
             </div>
           </div>
@@ -1181,7 +1218,7 @@
             <div class="tx-icon-chip">${getSourceIcon(item.source)}</div>
             <div class="tx-info">
               <h4>${escapeHtml(item.title)}</h4>
-              <span>${item.date} • ${item.source}</span>
+              <span>${item.date} • ${item.source} ${item.savedAmount > 0 ? `(Отложено: ${item.savedAmount.toFixed(2)} BYN)` : ''}</span>
             </div>
           </div>
           <div style="display:flex; align-items:center;">
@@ -1272,9 +1309,9 @@
       if (c.remainingTarget <= 0) {
         adviceElem.textContent = `🎉 Цель "${appState.goal.name}" достигнута!`;
       } else if (c.safeDailySpend > 0) {
-        adviceElem.textContent = `💡 На период (${periodLabel.toLowerCase()}) вам рекомендуется отложить ${target.toFixed(2)} BYN. Допустимый лимит расходов: ${limit.toFixed(2)} BYN.`;
+        adviceElem.textContent = `💡 На период (${periodLabel.toLowerCase()}) вам рекомендуется отложить ${target.toFixed(2)} BYN. Допустимый лимит свободных трат: ${limit.toFixed(2)} BYN.`;
       } else {
-        adviceElem.textContent = `⚠️ Добавьте доходы или сократите расходы по наибольшей категории трат.`;
+        adviceElem.textContent = `⚠️ Все свободные средства забронированы под цель накопления.`;
       }
 
       renderSmartAdvice(c);
@@ -1352,23 +1389,25 @@
       }
       
       if (c.daysLeft > 0 && c.remainingTarget > 0) {
-        html += `<li>Для достижения цели <b>${c.remainingTarget.toFixed(2)} BYN</b> за ${c.daysLeft} дн., откладывайте от <b>${c.requiredDailySave.toFixed(2)} BYN</b> ежедневно.</li>`;
+        html += `<li>Для достижения цели <b>${c.remainingTarget.toFixed(2)} BYN</b> за ${c.daysLeft} дн., откладывайте по <b>${c.requiredDailySave.toFixed(2)} BYN</b> ежедневно.</li>`;
       }
 
-      if (c.recurringMonthlyTotal > 0) {
-        html += `<li>Регулярный доход (ЗП + Аванс): <b>${c.recurringMonthlyTotal.toFixed(2)} BYN / мес</b>.</li>`;
+      if (c.goalSaved > 0) {
+        html += `<li>В копилке цели забронировано <b>${c.goalSaved.toFixed(2)} BYN</b>. Это защищено от дневных трат!</li>`;
       }
 
       html += `</ul>`;
       container.innerHTML = html;
     }
 
+    /* Live AI Split Calculation */
     function calculateIncomeSplit() {
       const amountInput = parseFloat(document.getElementById('incAmount').value);
       const splitBox = document.getElementById('incSplitBox');
 
       if (!amountInput || amountInput <= 0) {
         splitBox.style.display = 'none';
+        updateSplitButtonsText(0, 0);
         return;
       }
 
@@ -1377,35 +1416,72 @@
 
       if (c.remainingTarget > 0) {
         const targetShare = (c.requiredDailySave * 30) / Math.max(1, (c.totalIncome || amountInput));
-        savePct = Math.min(70, Math.max(15, Math.round(targetShare * 100)));
+        savePct = Math.min(80, Math.max(15, Math.round(targetShare * 100)));
       }
 
-      const spendPct = 100 - savePct;
       const saveVal = (amountInput * (savePct / 100)).toFixed(2);
-      const spendVal = (amountInput * (spendPct / 100)).toFixed(2);
-
-      document.getElementById('splitSavePct').textContent = savePct;
-      document.getElementById('splitSpendPct').textContent = spendPct;
-      document.getElementById('splitSaveVal').textContent = `${saveVal} BYN`;
-      document.getElementById('splitSpendVal').textContent = `${spendVal} BYN`;
+      document.getElementById('incSaveAmount').value = saveVal;
+      document.getElementById('splitRatioLabel').textContent = `${savePct}% рекомендует ИИ`;
 
       splitBox.style.display = 'block';
+      updateSplitButtonsText();
     }
 
-    function handleAddIncome(e) {
-      e.preventDefault();
+    function updateSplitButtonsText() {
+      const totalAmount = parseFloat(document.getElementById('incAmount').value) || 0;
+      let saveVal = parseFloat(document.getElementById('incSaveAmount').value) || 0;
+      
+      if (saveVal > totalAmount) saveVal = totalAmount;
+
+      const spendVal = Math.max(0, totalAmount - saveVal).toFixed(2);
+      document.getElementById('splitSpendVal').textContent = `${spendVal} BYN`;
+
+      const btnSave = document.getElementById('btnSaveAndDeposit');
+      const btnJustAdd = document.getElementById('btnJustAdd');
+
+      if (totalAmount > 0 && saveVal > 0) {
+        btnSave.innerHTML = `🎯 Отложить <b>${saveVal.toFixed(2)} BYN</b> на цель`;
+      } else {
+        btnSave.innerHTML = `🎯 Отложить на цель`;
+      }
+
+      btnJustAdd.innerHTML = totalAmount > 0 
+        ? `💵 Просто добавить <b>${totalAmount.toFixed(2)} BYN</b>` 
+        : `💵 Просто добавить без откладывания`;
+    }
+
+    function submitIncome(autoSaveToGoal) {
       const title = document.getElementById('incTitle').value.trim();
       const source = document.getElementById('incSource').value;
       const amount = parseFloat(document.getElementById('incAmount').value);
       const date = document.getElementById('incDate').value;
+      let saveVal = parseFloat(document.getElementById('incSaveAmount').value) || 0;
 
-      if (!title || isNaN(amount) || amount <= 0) return;
+      if (!title || isNaN(amount) || amount <= 0) {
+        alert('Пожалуйста, укажите название и сумму дохода');
+        return;
+      }
 
-      appState.incomes.push({ id: Date.now().toString(), title, source, amount, date });
+      if (!autoSaveToGoal) {
+        saveVal = 0;
+      } else {
+        saveVal = Math.min(amount, Math.max(0, saveVal));
+        appState.goal.saved = (appState.goal.saved || 0) + saveVal;
+      }
+
+      appState.incomes.push({
+        id: Date.now().toString(),
+        title,
+        source,
+        amount,
+        savedAmount: saveVal,
+        savedForGoal: autoSaveToGoal && saveVal > 0,
+        date
+      });
 
       saveData();
       closeIncomeModal();
-      e.target.reset();
+      document.getElementById('incomeForm').reset();
       initDates();
     }
 
@@ -1427,7 +1503,11 @@
     }
 
     function deleteIncome(id) {
-      appState.incomes = appState.incomes.filter(item => item.id !== id);
+      const item = appState.incomes.find(i => i.id === id);
+      if (item && item.savedAmount > 0) {
+        appState.goal.saved = Math.max(0, (appState.goal.saved || 0) - item.savedAmount);
+      }
+      appState.incomes = appState.incomes.filter(i => i.id !== id);
       saveData();
     }
 
@@ -1440,11 +1520,12 @@
       e.preventDefault();
       const name = document.getElementById('goalNameInput').value.trim();
       const target = parseFloat(document.getElementById('goalTargetInput').value);
+      const saved = parseFloat(document.getElementById('goalSavedInput').value) || 0;
       const deadline = document.getElementById('goalDeadlineInput').value;
 
       if (!name || isNaN(target) || target <= 0 || !deadline) return;
 
-      appState.goal = { name, target, deadline };
+      appState.goal = { name, target, saved, deadline };
       saveData();
       switchTab('dashboard', document.querySelectorAll('.nav-item')[0]);
     }
@@ -1466,6 +1547,7 @@
     function openIncomeModal() {
       document.getElementById('incomeModal').classList.add('active');
       document.getElementById('incSplitBox').style.display = 'none';
+      updateSplitButtonsText();
     }
     function closeIncomeModal() {
       document.getElementById('incomeModal').classList.remove('active');
